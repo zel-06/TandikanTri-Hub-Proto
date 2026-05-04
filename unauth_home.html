@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tandikan Tri-Hub</title>
+
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="home.html"><img src="logo.png" alt="Tandikan Tri Team Logo"></a>
+            <span class="logo-text">Tandikan Tri-Hub</span>
+        </div>
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="store.html">Store</a>
+            <a href="about.html">About</a>
+        </nav>
+        <div class="nav-actions">
+            <a href="login.html" class="btn-nav">Login / Create Account</a>
+        </div>
+    </header>
+
+    <main class="hero">
+        <div class="hero-content">
+            
+            <div class="hero-logo">
+                <img src="logo.png" alt="Tandikan Tri Team Logo">
+                <h1>Tandikan<br><span>Tri Team</span></h1>
+            </div>
+
+            <p class="hero-text">
+                Welcome to the Tandikan Tri-Hub—a community where you belong! Register today, 
+                easily manage your athletic journey, and prepare to conquer your next race.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="events.html" class="btn btn-primary">Browse Events</a>
+                <a href="login.html" class="btn btn-primary">Login / Create Account</a>
+            </div>
+
+        </div>
+    </main>
+
+    <section class="section upcoming-events">
+        <div class="section-content">
+            <h2 class="section-title">Upcoming Events</h2>
+            <div class="event-grid">
+                <article class="event-card">
+                    <h3>Tri Sprint Challenge</h3>
+                    <p>May 10, 2026 · Riverside Park</p>
+                    <p>Speed, stamina, and excitement for beginner and experienced athletes.</p>
+                    <a href="#" class="btn btn-secondary">Learn More</a>
+                </article>
+                <div class="event-btn">
+                    <a href="events.html">View All Events ></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section store-section">
+        <div class="section-content">
+            <h2 class="section-title">Store</h2>
+            <div class="store-grid">
+                <article class="product-card">
+                    <h3>Performance Jersey</h3>
+                    <p>Lightweight and breathable gear built for long races and training days.</p>
+                    <a href="#" class="btn btn-primary">Shop Now</a>
+                </article>
+                <div class="event-btn">
+                    <a href="store.html">View All Items ></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section feeds-section">
+        <div class="section-content">
+            <h2 class="section-title">Community Feeds</h2>
+            <div class="feeds-grid">
+                <article class="feed-card">
+                    <h3>User Post</h3>
+                    <p class="feed-meta">Jessica · 2 hours ago</p>
+                    <p>Just finished my first triathlon training session! Feeling strong and ready for the next event.</p>
+                </article>
+                <article class="feed-card announcement-card">
+                    <h3>Admin Announcement</h3>
+                    <p class="feed-meta">Tandikan Tri Team</p>
+                    <ul>
+                        <li>Registration for the Tri Sprint Challenge opens May 1.</li>
+                        <li>New coaching sessions begin June 5.</li>
+                        <li>Volunteer opportunities available for community members.</li>
+                    </ul>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 Tandikan Tri Team. All rights reserved.<br><span>"The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the <br> management of triathlon and duathlon events conducted by the Tandikan Tri Team."</span></p>
+    </footer>
+
+    <script>
+        // Profile and Notification menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Profile menu functionality
+            const profileBtn = document.querySelector('.btn-profile');
+            const profileMenu = document.querySelector('.profile-menu');
+
+            if (profileBtn && profileMenu) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Close notification menu if open
+                    const notificationMenu = document.querySelector('.notification-menu');
+                    if (notificationMenu && notificationMenu.classList.contains('active')) {
+                        notificationMenu.classList.remove('active');
+                    }
+                    profileMenu.classList.toggle('active');
+                });
+            }
+
+            // Notification menu functionality
+            const notificationBtn = document.querySelector('.btn-notification');
+            const notificationMenu = document.querySelector('.notification-menu');
+
+            if (notificationBtn && notificationMenu) {
+                notificationBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Close profile menu if open
+                    if (profileMenu && profileMenu.classList.contains('active')) {
+                        profileMenu.classList.remove('active');
+                    }
+                    notificationMenu.classList.toggle('active');
+                });
+            }
+
+            // Close menus when clicking outside
+            document.addEventListener('click', function(e) {
+                if (profileMenu && !profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                }
+                if (notificationMenu && !notificationBtn.contains(e.target) && !notificationMenu.contains(e.target)) {
+                    notificationMenu.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
