@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>Merchandise & Logistics Admin - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Merch</h1>
+                        <p>Logistics Admin</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="merchandise_logistics_admin.html" class="active"><span class="nav-icon">🏠</span>Overview</a>
+                    <a href="merchandise_logistics_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Role Focus</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Inventory</span>
+                    <span class="stat-value">Fulfillment</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">Merchandise & Logistics Admin</p>
+                    <h2>Manage merchandise inventory and the final fulfillment handover workflow.</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
+                    <button class="btn btn-primary">Open Fulfillment</button>
+                </div>
+            </header>
+
+            <section class="kpi-section">
+                <article class="kpi-card">
+                    <p class="kpi-title">Inventory Availability</p>
+                    <h3>178</h3>
+                    <span class="kpi-metric">Units in stock</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Orders Ready</p>
+                    <h3>31</h3>
+                    <span class="kpi-metric">Awaiting pickup/dispatch</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Low Stock Alerts</p>
+                    <h3>3</h3>
+                    <span class="kpi-metric">Needs restock</span>
+                </article>
+            </section>
+
+            <section class="dashboard-grid">
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Inventory & Logistics</h3>
+                            <p>Partial analytics and fulfillment oversight on a single page.</p>
+                        </div>
+                        <span class="status-pill">Partial View</span>
+                    </div>
+                    <div class="card-content">
+                        <p style="color:#b3c5df; line-height:1.7;">Track stock levels, order readiness, and handoff status without needing access to financial or user identity functions.</p>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

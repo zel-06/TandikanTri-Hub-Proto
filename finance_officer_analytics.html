@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>Finance Officer Analytics - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Finance</h1>
+                        <p>Billing Admin</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="finance_officer.html"><span class="nav-icon">🏠</span>Overview</a>
+                    <a href="finance_officer_analytics.html" class="active"><span class="nav-icon">📊</span>Analytics</a>
+                    <a href="finance_officer_payments.html"><span class="nav-icon">💳</span>Payment Verification</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Insights</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Revenue</span>
+                    <span class="stat-value">Payment Metrics</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">Analytics & Overview Dashboard</p>
+                    <h2>Partial view for sales metrics and outstanding payment actions only.</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
+                    <button class="btn btn-primary">Refresh</button>
+                </div>
+            </header>
+
+            <section class="kpi-section">
+                <article class="kpi-card">
+                    <p class="kpi-title">Sales Revenue</p>
+                    <h3>₱46,700</h3>
+                    <span class="kpi-metric">Pending collection focus</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Pending Payments</p>
+                    <h3>12</h3>
+                    <span class="kpi-metric">Awaiting verification</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Verified Orders</p>
+                    <h3>74</h3>
+                    <span class="kpi-metric">Ready for fulfillment</span>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

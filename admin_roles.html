@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>System Access & Role Management - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan</h1>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
+                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
+                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
+                    <a href="admin_users.html"><span class="nav-icon">👥</span>User Identity Management</a>
+                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
+                    <a href="admin_roles.html" class="active"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Quick Insights</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Active Roles</span>
+                    <span class="stat-value">5</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">System Access & Role Management</p>
+                    <h2>Control access levels and ensure officers only see the modules they need.</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
+                    <button class="btn btn-primary">Create Admin Account</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid">
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Account Generation</h3>
+                            <p>Create secure backend access for officers and assign them a role.</p>
+                        </div>
+                        <span class="status-pill">RBAC</span>
+                    </div>
+                    <div class="card-content">
+                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
+                            <li>Issue new login credentials for organizers, finance officers, and support staff.</li>
+                            <li>Set strict permissions so each officer only sees allowed modules.</li>
+                            <li>Use role templates for faster setup.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <aside class="side-cards">
+                    <article class="card alerts-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Account Deactivation</h3>
+                                <p>Immediately remove access without deleting historical records.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">Suspend outgoing officers instantly while preserving their audit trail.</p>
+                    </article>
+
+                    <article class="card activity-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Security Overrides</h3>
+                                <p>Force password resets and manage compromised accounts.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">Use powerful controls to secure the admin network after suspicious activity.</p>
+                    </article>
+                </aside>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

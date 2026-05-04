@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>E-Commerce & Fulfillment Tracker - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan</h1>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
+                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
+                    <a href="admin_ecommerce.html" class="active"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
+                    <a href="admin_users.html"><span class="nav-icon">👥</span>User Identity Management</a>
+                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
+                    <a href="admin_roles.html"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Quick Insights</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Low Stock</span>
+                    <span class="stat-value">3 SKUs</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">E-Commerce & Fulfillment Tracker</p>
+                    <h2>Manage inventory, orders, and handover logistics for your merchandise workflows.</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
+                    <button class="btn btn-primary">New Product</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid">
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Inventory Management</h3>
+                            <p>Add products, set size variations, and track stock quantity instantly.</p>
+                        </div>
+                        <span class="status-pill">Stock</span>
+                    </div>
+                    <div class="card-content">
+                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
+                            <li>Manage product catalogs with full control over sizes and pricing.</li>
+                            <li>Update available quantities and see stock alerts when thresholds are reached.</li>
+                            <li>Create product bundles and promotional offerings for the next event.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <aside class="side-cards">
+                    <article class="card alerts-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Order Status Pipeline</h3>
+                                <p>Monitor orders from Pending through Completed in one view.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">Drag or click orders to update status and keep fulfillment moving smoothly.</p>
+                    </article>
+
+                    <article class="card activity-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Fulfillment Handover</h3>
+                                <p>Assign pickup or rider details and track final handoff.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">Record campus pickup claims and local delivery riders, then mark orders as complete.</p>
+                    </article>
+                </aside>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

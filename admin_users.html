@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>User Identity Management - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan</h1>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
+                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
+                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
+                    <a href="admin_users.html" class="active"><span class="nav-icon">👥</span>User Identity Management</a>
+                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
+                    <a href="admin_roles.html"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Quick Insights</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">New Signups</span>
+                    <span class="stat-value">8</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">User Identity Management</p>
+                    <h2>Ensure every account is genuine, verified, and trusted on the platform.</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
+                    <button class="btn btn-primary">Review Registrations</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid">
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Registration Verification</h3>
+                            <p>Approve new sign-ups and grant full platform access.</p>
+                        </div>
+                        <span class="status-pill">Verify</span>
+                    </div>
+                    <div class="card-content">
+                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
+                            <li>Review applicant details, documents, and event eligibility.</li>
+                            <li>Grant verified users access to feeds, checkout, and events.</li>
+                            <li>Reject or request additional info for suspicious registrations.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <aside class="side-cards">
+                    <article class="card alerts-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Profile Management</h3>
+                                <p>Inspect athlete profiles, contact info, and emergency details.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">See full participant details in one place so you can make verification and safety decisions confidently.</p>
+                    </article>
+
+                    <article class="card activity-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Activity Logs & Sanctions</h3>
+                                <p>Search user histories and apply account actions when needed.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">Review event participation, orders, and login activity. Suspend or ban accounts as policy requires.</p>
+                    </article>
+                </aside>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

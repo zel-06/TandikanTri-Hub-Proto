@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tandikan Tri-Hub</title>
+
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="home.html"><img src="logo.png" alt="Tandikan Tri Team Logo"></a>
+            <span class="logo-text">Tandikan Tri-Hub</span>
+        </div>
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="store.html">Store</a>
+            <a href="about.html">About</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="btn-icon btn-notification" title="Notifications">🔔</button>
+            <button class="btn-icon btn-profile" title="Profile & Dashboard">👤</button>
+            <button class="btn-icon btn-cart" title="Shopping Cart">🛒</button>
+        </div>
+    </header>
+
+    <!-- Profile Slide-out Menu -->
+    <div class="profile-menu">
+        <div class="profile-menu-header">
+            <div class="profile-picture">
+                <img src="logo.png" alt="Profile Picture">
+            </div>
+            <div class="profile-info">
+                <h4>John Doe</h4>
+                <p>john.doe@email.com</p>
+            </div>
+        </div>
+        <div class="profile-menu-body">
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span>Profile Settings</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔧</span>
+                <span>Account Settings</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="login.html" class="menu-item logout">
+                <span class="menu-icon">🚪</span>
+                <span>Log Out</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Notification Slide-out Menu -->
+    <div class="notification-menu">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <p>Stay updated with your events</p>
+        </div>
+        <div class="notification-body">
+            <a href="#" class="notification-item unread">
+                <div class="notification-content">
+                    <span class="notification-icon">✅</span>
+                    <div class="notification-text">
+                        <h4>Registration Confirmed</h4>
+                        <p>Your registration for Tandikan Tri 2026 has been successfully confirmed. Welcome to the event!</p>
+                        <div class="notification-time">2 hours ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item critical">
+                <div class="notification-content">
+                    <span class="notification-icon">⚠️</span>
+                    <div class="notification-text">
+                        <h4>Payment Verification Pending</h4>
+                        <p>Your payment proof for Tandikan Tri 2026 is under review. We'll notify you once verified.</p>
+                        <div class="notification-time">1 day ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item unread">
+                <div class="notification-content">
+                    <span class="notification-icon">🏊‍♂️</span>
+                    <div class="notification-text">
+                        <h4>Swim Training Reminder</h4>
+                        <p>Don't forget your swim training session this Saturday at 6:00 AM. Prepare for the big race!</p>
+                        <div class="notification-time">3 days ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item">
+                <div class="notification-content">
+                    <span class="notification-icon">📅</span>
+                    <div class="notification-text">
+                        <h4>Event Schedule Updated</h4>
+                        <p>The race schedule for Tandikan Tri 2026 has been updated. Check the latest timings.</p>
+                        <div class="notification-time">5 days ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item unread">
+                <div class="notification-content">
+                    <span class="notification-icon">🏆</span>
+                    <div class="notification-text">
+                        <h4>Congratulations!</h4>
+                        <p>You've earned the "Early Bird" badge for registering early. Great job!</p>
+                        <div class="notification-time">1 week ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item">
+                <div class="notification-content">
+                    <span class="notification-icon">📊</span>
+                    <div class="notification-text">
+                        <h4>Training Progress Report</h4>
+                        <p>Your weekly training summary is ready. You've improved 15% in swim times!</p>
+                        <div class="notification-time">1 week ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item unread">
+                <div class="notification-content">
+                    <span class="notification-icon">👥</span>
+                    <div class="notification-text">
+                        <h4>New Team Member</h4>
+                        <p>Sarah Johnson has joined your training group. Say hello in the next session!</p>
+                        <div class="notification-time">2 weeks ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item">
+                <div class="notification-content">
+                    <span class="notification-icon">📰</span>
+                    <div class="notification-text">
+                        <h4>Event Newsletter</h4>
+                        <p>Read the latest Tandikan Tri Team newsletter with race tips and athlete stories.</p>
+                        <div class="notification-time">2 weeks ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item critical">
+                <div class="notification-content">
+                    <span class="notification-icon">🚨</span>
+                    <div class="notification-text">
+                        <h4>Weather Alert</h4>
+                        <p>Heavy rain expected on race day. Check for any schedule changes or safety updates.</p>
+                        <div class="notification-time">3 weeks ago</div>
+                    </div>
+                </div>
+            </a>
+            <a href="#" class="notification-item">
+                <div class="notification-content">
+                    <span class="notification-icon">🎯</span>
+                    <div class="notification-text">
+                        <h4>Personal Best Challenge</h4>
+                        <p>Beat your personal best time and earn exclusive Tandikan Tri Team merchandise!</p>
+                        <div class="notification-time">3 weeks ago</div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <!-- Shopping Cart Slide-out -->
+    <div class="shopping-cart">
+        <div class="cart-header">
+            <h3>Shopping Cart</h3>
+            <p>Your items</p>
+        </div>
+        <div class="cart-body" id="cartBody">
+            <div class="cart-empty">
+                <div class="cart-empty-icon">🛍️</div>
+                <p>Your cart is empty. Add items to get started!</p>
+            </div>
+        </div>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span class="cart-total-label">Total:</span>
+                <span class="cart-total-price" id="cartTotal">₱0</span>
+            </div>
+            <button class="checkout-btn" id="checkoutBtn">Proceed to Checkout</button>
+        </div>
+    </div>
+
+    <!-- Modal Overlay -->
+    <div class="modal-overlay" id="modalOverlay"></div>
+
+    <!-- Product Detail Modal -->
+    <div class="product-detail-modal" id="productDetailModal">
+        <button class="product-detail-close" id="closeProductModal">&times;</button>
+        <div id="productDetailContent"></div>
+    </div>
+
+    <!-- Checkout Modal -->
+    <div class="checkout-modal" id="checkoutModal">
+        <button class="checkout-close" id="closeCheckoutModal">&times;</button>
+        <h2>Order Summary</h2>
+        <div id="checkoutItemsList"></div>
+        <div class="checkout-summary">
+            <div class="checkout-total">
+                <span>Total Amount:</span>
+                <span id="checkoutTotal">₱0</span>
+            </div>
+        </div>
+        <div class="checkout-actions">
+            <button class="btn-primary" id="proceedToPaymentBtn">Proceed to Payment</button>
+            <button class="btn-secondary" id="closeCheckoutBtn">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="payment-modal" id="paymentModal">
+        <button class="btn-close" id="closePaymentModal">&times;</button>
+        <h2>Payment Details</h2>
+        
+        <div class="payment-method-section">
+            <h3>QR Code Payment</h3>
+            <div class="qr-code-container">
+                <div class="qr-placeholder">📱</div>
+                <p>Scan the QR code to make your payment</p>
+                <p style="font-size: 0.8rem; color: #9ca3af;">GCash / PayMaya</p>
+            </div>
+        </div>
+
+        <div class="payment-total">
+            <span class="payment-total-label">Amount to Pay:</span>
+            <span class="payment-total-amount" id="paymentAmount">₱0</span>
+        </div>
+
+        <div class="upload-section">
+            <label>Upload Payment Proof</label>
+            <div class="file-input-wrapper">
+                <input type="file" id="paymentProofFile" accept="image/*">
+                <label for="paymentProofFile" class="file-input-label">
+                    📸 Click to upload screenshot or photo of payment
+                </label>
+            </div>
+        </div>
+
+        <div class="payment-actions">
+            <button class="btn-primary" id="submitPaymentBtn">Submit Payment</button>
+            <button class="btn-secondary" id="closePaymentBtn">Cancel</button>
+        </div>
+    </div>
+
+    <section class="section store-section">
+        <div class="section-content">
+            <h2 class="section-title">Tandikan Official Merchandise</h2>
+            <p class="store-intro">Gear up with official Tandikan Tri Team merchandise. Support the team with our quality athletic apparel and accessories.</p>
+            <div class="store-grid">
+                <article class="product-card" data-id="1" data-name="Performance Jersey" data-price="1500" data-emoji="🏊‍♂️" data-description="Lightweight and breathable gear built for long races and training days. Features moisture-wicking fabric and UV protection. Perfect for swimmers and endurance athletes.">
+                    <div class="product-image">
+                        <div class="image-placeholder">🏊‍♂️</div>
+                    </div>
+                    <h3>Performance Jersey</h3>
+                    <p>Lightweight and breathable gear built for long races and training days. Features moisture-wicking fabric and UV protection.</p>
+                    <p class="product-price">₱1,500</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="2" data-name="Triathlon Shorts" data-price="1200" data-emoji="🚴‍♂️" data-description="Comfortable compression shorts designed for optimal performance during swim, bike, and run transitions. Stay comfortable throughout your race.">
+                    <div class="product-image">
+                        <div class="image-placeholder">🚴‍♂️</div>
+                    </div>
+                    <h3>Triathlon Shorts</h3>
+                    <p>Comfortable compression shorts designed for optimal performance during swim, bike, and run transitions.</p>
+                    <p class="product-price">₱1,200</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="3" data-name="Running Cap" data-price="800" data-emoji="🏃‍♂️" data-description="Adjustable cap with moisture-wicking sweatband, perfect for sunny race days and training sessions. Keep the sun out of your eyes!">
+                    <div class="product-image">
+                        <div class="image-placeholder">🏃‍♂️</div>
+                    </div>
+                    <h3>Running Cap</h3>
+                    <p>Adjustable cap with moisture-wicking sweatband, perfect for sunny race days and training sessions.</p>
+                    <p class="product-price">₱800</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="4" data-name="Hydration Bottle" data-price="600" data-emoji="🥤" data-description="Insulated stainless steel bottle keeps your drinks cold for hours. BPA-free and eco-friendly. Essential hydration companion for every athlete.">
+                    <div class="product-image">
+                        <div class="image-placeholder">🥤</div>
+                    </div>
+                    <h3>Hydration Bottle</h3>
+                    <p>Insulated stainless steel bottle keeps your drinks cold for hours. BPA-free and eco-friendly.</p>
+                    <p class="product-price">₱600</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="5" data-name="Compression Socks" data-price="900" data-emoji="🧦" data-description="High-quality compression socks for improved circulation and reduced fatigue during long training sessions. Recovery essential for every athlete.">
+                    <div class="product-image">
+                        <div class="image-placeholder">🧦</div>
+                    </div>
+                    <h3>Compression Socks</h3>
+                    <p>High-quality compression socks for improved circulation and reduced fatigue during long training sessions.</p>
+                    <p class="product-price">₱900</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="6" data-name="Team Hoodie" data-price="2200" data-emoji="🎽" data-description="Cozy hoodie with Tandikan Tri Team logo. Perfect for cool mornings and post-race celebrations. Show your team spirit!">
+                    <div class="product-image">
+                        <div class="image-placeholder">🎽</div>
+                    </div>
+                    <h3>Team Hoodie</h3>
+                    <p>Cozy hoodie with Tandikan Tri Team logo. Perfect for cool mornings and post-race celebrations.</p>
+                    <p class="product-price">₱2,200</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="7" data-name="Sports Sunglasses" data-price="1800" data-emoji="🕶️" data-description="Polarized lenses with UV protection, designed for athletes. Lightweight and comfortable for all activities. Protect your eyes in style.">
+                    <div class="product-image">
+                        <div class="image-placeholder">🕶️</div>
+                    </div>
+                    <h3>Sports Sunglasses</h3>
+                    <p>Polarized lenses with UV protection, designed for athletes. Lightweight and comfortable for all activities.</p>
+                    <p class="product-price">₱1,800</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="8" data-name="Transition Bag" data-price="1000" data-emoji="🎒" data-description="Waterproof transition bag for race day. Keep your gear organized and dry during swim-to-bike transitions. Stay organized, stay focused.">
+                    <div class="product-image">
+                        <div class="image-placeholder">🎒</div>
+                    </div>
+                    <h3>Transition Bag</h3>
+                    <p>Waterproof transition bag for race day. Keep your gear organized and dry during swim-to-bike transitions.</p>
+                    <p class="product-price">₱1,000</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 Tandikan Tri Team. All rights reserved.<br><span>"The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the <br> management of triathlon and duathlon events conducted by the Tandikan Tri Team."</span></p>
+    </footer>
+
+    <script>
+        // Profile and Notification menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Profile menu functionality
+            const profileBtn = document.querySelector('.btn-profile');
+            const profileMenu = document.querySelector('.profile-menu');
+
+            if (profileBtn && profileMenu) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Close notification menu if open
+                    const notificationMenu = document.querySelector('.notification-menu');
+                    if (notificationMenu && notificationMenu.classList.contains('active')) {
+                        notificationMenu.classList.remove('active');
+                    }
+                    profileMenu.classList.toggle('active');
+                });
+            }
+
+            // Notification menu functionality
+            const notificationBtn = document.querySelector('.btn-notification');
+            const notificationMenu = document.querySelector('.notification-menu');
+
+            if (notificationBtn && notificationMenu) {
+                notificationBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Close profile menu if open
+                    if (profileMenu && profileMenu.classList.contains('active')) {
+                        profileMenu.classList.remove('active');
+                    }
+                    notificationMenu.classList.toggle('active');
+                });
+            }
+
+            // Close menus when clicking outside
+            document.addEventListener('click', function(e) {
+                if (profileMenu && !profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                }
+                if (notificationMenu && !notificationBtn.contains(e.target) && !notificationMenu.contains(e.target)) {
+                    notificationMenu.classList.remove('active');
+                }
+            });
+
+            // Shopping Cart functionality
+            let cart = [];
+            
+            const cartBtn = document.querySelector('.btn-cart');
+            const shoppingCart = document.querySelector('.shopping-cart');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const productDetailModal = document.getElementById('productDetailModal');
+            const checkoutModal = document.getElementById('checkoutModal');
+            const paymentModal = document.getElementById('paymentModal');
+
+            // Toggle shopping cart
+            if (cartBtn && shoppingCart) {
+                cartBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    shoppingCart.classList.toggle('active');
+                });
+            }
+
+            // Add to cart functionality
+            const addToCartBtns = document.querySelectorAll('.add-to-cart-btn');
+            addToCartBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const productCard = this.closest('.product-card');
+                    const product = {
+                        id: productCard.dataset.id,
+                        name: productCard.dataset.name,
+                        price: parseInt(productCard.dataset.price),
+                        emoji: productCard.dataset.emoji,
+                        description: productCard.dataset.description,
+                        quantity: 1
+                    };
+
+                    const existingProduct = cart.find(item => item.id === product.id);
+                    if (existingProduct) {
+                        existingProduct.quantity++;
+                    } else {
+                        cart.push(product);
+                    }
+
+                    updateCart();
+                    shoppingCart.classList.add('active');
+                });
+            });
+
+            // Click on product card to view details
+            const productCards = document.querySelectorAll('.product-card');
+            productCards.forEach(card => {
+                card.addEventListener('click', function(e) {
+                    if (!e.target.classList.contains('add-to-cart-btn')) {
+                        const product = {
+                            id: this.dataset.id,
+                            name: this.dataset.name,
+                            price: this.dataset.price,
+                            emoji: this.dataset.emoji,
+                            description: this.dataset.description
+                        };
+                        showProductDetail(product);
+                    }
+                });
+                card.style.cursor = 'pointer';
+            });
+
+            function updateCart() {
+                const cartBody = document.getElementById('cartBody');
+                const cartTotal = document.getElementById('cartTotal');
+                
+                if (cart.length === 0) {
+                    cartBody.innerHTML = '<div class="cart-empty"><div class="cart-empty-icon">🛍️</div><p>Your cart is empty. Add items to get started!</p></div>';
+                    cartTotal.textContent = '₱0';
+                    return;
+                }
+
+                let cartHTML = '';
+                let total = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    cartHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-image">${item.emoji}</div>
+                            <div class="cart-item-details">
+                                <h4>${item.name}</h4>
+                                <p>₱${item.price}</p>
+                                <div class="cart-item-quantity">
+                                    <button onclick="decreaseQuantity('${item.id}')">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button onclick="increaseQuantity('${item.id}')">+</button>
+                                </div>
+                            </div>
+                            <span class="cart-item-remove" onclick="removeFromCart('${item.id}')">&times;</span>
+                        </div>
+                    `;
+                });
+
+                cartBody.innerHTML = cartHTML;
+                cartTotal.textContent = '₱' + total.toLocaleString();
+            }
+
+            window.increaseQuantity = function(id) {
+                const product = cart.find(item => item.id === id);
+                if (product) {
+                    product.quantity++;
+                    updateCart();
+                }
+            };
+
+            window.decreaseQuantity = function(id) {
+                const product = cart.find(item => item.id === id);
+                if (product && product.quantity > 1) {
+                    product.quantity--;
+                    updateCart();
+                }
+            };
+
+            window.removeFromCart = function(id) {
+                cart = cart.filter(item => item.id !== id);
+                updateCart();
+            };
+
+            function showProductDetail(product) {
+                const content = document.getElementById('productDetailContent');
+                content.innerHTML = `
+                    <h2>${product.name}</h2>
+                    <div class="product-image">
+                        <div class="image-placeholder">${product.emoji}</div>
+                    </div>
+                    <p>${product.description}</p>
+                    <p class="product-price">₱${product.price}</p>
+                    <div class="product-detail-actions">
+                        <button class="btn-primary" onclick="addProductToCart('${product.id}', '${product.name}', ${product.price}, '${product.emoji}', '${product.description}')">Add to Cart</button>
+                        <button class="btn-secondary" onclick="closeProductDetail()">Close</button>
+                    </div>
+                `;
+                modalOverlay.classList.add('active');
+                productDetailModal.style.display = 'block';
+            }
+
+            window.addProductToCart = function(id, name, price, emoji, description) {
+                const product = {
+                    id: id,
+                    name: name,
+                    price: price,
+                    emoji: emoji,
+                    description: description,
+                    quantity: 1
+                };
+
+                const existingProduct = cart.find(item => item.id === product.id);
+                if (existingProduct) {
+                    existingProduct.quantity++;
+                } else {
+                    cart.push(product);
+                }
+
+                updateCart();
+                closeProductDetail();
+                shoppingCart.classList.add('active');
+            };
+
+            window.closeProductDetail = function() {
+                modalOverlay.classList.remove('active');
+                productDetailModal.style.display = 'none';
+            };
+
+            // Checkout functionality
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            const proceedToPaymentBtn = document.getElementById('proceedToPaymentBtn');
+            const closeCheckoutBtn = document.getElementById('closeCheckoutBtn');
+            const closeCheckoutModal = document.getElementById('closeCheckoutModal');
+
+            if (checkoutBtn) {
+                checkoutBtn.addEventListener('click', function() {
+                    if (cart.length === 0) {
+                        alert('Your cart is empty. Add items to proceed with checkout.');
+                        return;
+                    }
+                    showCheckout();
+                });
+            }
+
+            function showCheckout() {
+                const checkoutItemsList = document.getElementById('checkoutItemsList');
+                const checkoutTotal = document.getElementById('checkoutTotal');
+                
+                let itemsHTML = '';
+                let total = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    itemsHTML += `
+                        <div class="checkout-item">
+                            <span class="checkout-item-name">${item.name} (x${item.quantity})</span>
+                            <span class="checkout-item-price">₱${(item.price * item.quantity).toLocaleString()}</span>
+                        </div>
+                    `;
+                });
+
+                checkoutItemsList.innerHTML = itemsHTML;
+                checkoutTotal.textContent = '₱' + total.toLocaleString();
+
+                shoppingCart.classList.remove('active');
+                modalOverlay.classList.add('active');
+                checkoutModal.style.display = 'block';
+            }
+
+            if (proceedToPaymentBtn) {
+                proceedToPaymentBtn.addEventListener('click', function() {
+                    showPayment();
+                });
+            }
+
+            if (closeCheckoutBtn) {
+                closeCheckoutBtn.addEventListener('click', function() {
+                    closeCheckout();
+                });
+            }
+
+            if (closeCheckoutModal) {
+                closeCheckoutModal.addEventListener('click', function() {
+                    closeCheckout();
+                });
+            }
+
+            function closeCheckout() {
+                modalOverlay.classList.remove('active');
+                checkoutModal.style.display = 'none';
+            }
+
+            // Payment functionality
+            const closePaymentBtn = document.getElementById('closePaymentBtn');
+            const closePaymentModal = document.getElementById('closePaymentModal');
+            const submitPaymentBtn = document.getElementById('submitPaymentBtn');
+
+            function showPayment() {
+                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                document.getElementById('paymentAmount').textContent = '₱' + total.toLocaleString();
+                
+                checkoutModal.style.display = 'none';
+                paymentModal.style.display = 'block';
+            }
+
+            if (closePaymentBtn) {
+                closePaymentBtn.addEventListener('click', function() {
+                    closePayment();
+                });
+            }
+
+            if (closePaymentModal) {
+                closePaymentModal.addEventListener('click', function() {
+                    closePayment();
+                });
+            }
+
+            function closePayment() {
+                modalOverlay.classList.remove('active');
+                paymentModal.style.display = 'none';
+            }
+
+            if (submitPaymentBtn) {
+                submitPaymentBtn.addEventListener('click', function() {
+                    const fileInput = document.getElementById('paymentProofFile');
+                    if (!fileInput.files.length) {
+                        alert('Please upload payment proof');
+                        return;
+                    }
+                    
+                    alert('Payment submitted successfully! Thank you for your order.');
+                    cart = [];
+                    updateCart();
+                    closePayment();
+                    fileInput.value = '';
+                });
+            }
+
+            // Close modals when clicking overlay
+            if (modalOverlay) {
+                modalOverlay.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        if (productDetailModal.style.display !== 'none') {
+                            closeProductDetail();
+                        } else if (checkoutModal.style.display !== 'none') {
+                            closeCheckout();
+                        } else if (paymentModal.style.display !== 'none') {
+                            closePayment();
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

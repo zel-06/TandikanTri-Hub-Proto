@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>Financial & Payment Verification - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan</h1>
+                        <p>Admin Panel</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
+                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
+                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html" class="active"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
+                    <a href="admin_users.html"><span class="nav-icon">👥</span>User Identity Management</a>
+                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
+                    <a href="admin_roles.html"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Quick Insights</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Pending Proofs</span>
+                    <span class="stat-value">12</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">Financial & Payment Verification</p>
+                    <h2>Securely validate transactions and prevent fraudulent payment claims.</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
+                    <button class="btn btn-primary">Review Payments</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid">
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Proof of Payment Queue</h3>
+                            <p>Review the latest user-submitted receipts and reference numbers.</p>
+                        </div>
+                        <span class="status-pill">Queue</span>
+                    </div>
+                    <div class="card-content">
+                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
+                            <li>See uploaded payment screenshots with user order details.</li>
+                            <li>Use timestamps and evidence to confirm the transaction matches the claim.</li>
+                            <li>Quickly mark proofs as verified or rejected.</li>
+                        </ul>
+                    </div>
+                </article>
+
+                <aside class="side-cards">
+                    <article class="card alerts-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Cross-Referencing UI</h3>
+                                <p>Compare user-submitted references side by side with uploaded receipts.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">Display payment details next to the image so verification is fast and accurate.</p>
+                    </article>
+
+                    <article class="card activity-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Approval/Rejection Engine</h3>
+                                <p>Verify payments or request a new upload with a single click.</p>
+                            </div>
+                        </div>
+                        <p style="color:#b3c5df; line-height:1.7;">Approved payments automatically update registration and order status, while rejected claims trigger an email workflow.</p>
+                    </article>
+                </aside>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

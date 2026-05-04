@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>Merchandise Logistics Analytics - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Merch</h1>
+                        <p>Logistics Admin</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="merchandise_logistics_admin.html"><span class="nav-icon">🏠</span>Overview</a>
+                    <a href="merchandise_logistics_analytics.html" class="active"><span class="nav-icon">📊</span>Analytics</a>
+                    <a href="merchandise_logistics_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Insights</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Logistics</span>
+                    <span class="stat-value">Stock View</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <p class="eyebrow">Analytics & Overview Dashboard</p>
+                    <h2>Partial analytics for inventory, logistics status, and order readiness.</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
+                    <button class="btn btn-primary">Refresh</button>
+                </div>
+            </header>
+
+            <section class="kpi-section">
+                <article class="kpi-card">
+                    <p class="kpi-title">Inventory Availability</p>
+                    <h3>178</h3>
+                    <span class="kpi-metric">Units in stock</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Orders Ready</p>
+                    <h3>31</h3>
+                    <span class="kpi-metric">Pending pickup/dispatch</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Low Stock Alerts</p>
+                    <h3>3</h3>
+                    <span class="kpi-metric">Needs restock</span>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
