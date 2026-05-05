@@ -46,60 +46,79 @@
         </div>
     </main>
 
-    <section class="section upcoming-events">
+    <section class="section community-feeds">
         <div class="section-content">
-            <h2 class="section-title">Upcoming Events</h2>
-            <div class="event-grid">
-                <article class="event-card">
-                    <h3>Tri Sprint Challenge</h3>
-                    <p>May 10, 2026 · Riverside Park</p>
-                    <p>Speed, stamina, and excitement for beginner and experienced athletes.</p>
-                    <a href="#" class="btn btn-secondary">Learn More</a>
-                </article>
-                <div class="event-btn">
-                    <a href="events.html">View All Events ></a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section store-section">
+            <section class="section community-feeds">
         <div class="section-content">
-            <h2 class="section-title">Store</h2>
-            <div class="store-grid">
-                <article class="product-card">
-                    <h3>Performance Jersey</h3>
-                    <p>Lightweight and breathable gear built for long races and training days.</p>
-                    <a href="#" class="btn btn-primary">Shop Now</a>
-                </article>
-                <div class="event-btn">
-                    <a href="store.html">View All Items ></a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section class="section feeds-section">
-        <div class="section-content">
-            <h2 class="section-title">Community Feeds</h2>
-            <div class="feeds-grid">
-                <article class="feed-card">
-                    <h3>User Post</h3>
-                    <p class="feed-meta">Jessica · 2 hours ago</p>
-                    <p>Just finished my first triathlon training session! Feeling strong and ready for the next event.</p>
-                </article>
+            <h2 class="section-title" style="text-align: center;">Community Feeds</h2>
+            
+            <!-- Changed to a single column list layout -->
+            <div class="feeds-list">
                 <article class="feed-card announcement-card">
-                    <h3>Admin Announcement</h3>
-                    <p class="feed-meta">Tandikan Tri Team</p>
-                    <ul>
-                        <li>Registration for the Tri Sprint Challenge opens May 1.</li>
-                        <li>New coaching sessions begin June 5.</li>
-                        <li>Volunteer opportunities available for community members.</li>
-                    </ul>
+                    <h3>UpcomingEvent!</h3>
+                    <p class="feed-meta">Tandikan Tri Team · Today</p>
+                    <p>Registration for the IBP Marathon is now open. Early bird slots are available until December 10 2026, so secure your place now.</p>
+                    <a href="event_details.html" class="btn btn-primary merch-btny">View Full Details</a>
+                </article>
+
+                <article class="feed-card merch-card">
+                    <h3>Tandikan Tri Team Jersey (T-Shirt)</h3>
+                    <p class="feed-meta">Check out the new Performance Jersey — lightweight, breathable, and race-ready for every athlete.</p>
+                    <img src="TRI-SHIRT.png" alt="Performance Jersey" class="feed-promo-img">
+                    <img src="tshirtSIDE.png" alt="Performance Jersey" class="feed-promo-img">
+                    <img src="tshirtBACK.png" alt="Performance Jersey" class="feed-promo-img">
+                    <p class="feed-meta">Available now in store!</p>
+                    <button class="btn btn-primary merch-btn" type="button">View Merch Details</button>
+                </article>
+
+                <article class="feed-card gallery-card">
+                    <h3>Duathlon Event</h3>
+                    <p class="feed-meta">Highlights</p>
+                    <p>See the energy from our past races — athletes crossing the finish line, cheering crowds, and memorable community moments.</p>
+                    
+                    <!-- Clickable 5-Photo Grid -->
+                    <div class="fb-gallery-grid">
+                        <img src="1.jpg" alt="Event photo 1" class="expandable-photo">
+                        <img src="2.jpg" alt="Event photo 2" class="expandable-photo">
+                        <img src="3.jpg" alt="Event photo 3" class="expandable-photo">
+                        <img src="4.jpg" alt="Event photo 4" class="expandable-photo">
+                        <img src="5.jpg" alt="Event photo 5" class="expandable-photo">
+                    </div>
+
+                    <!-- Like Button Only -->
+                    <div class="feed-actions">
+                        <button class="action-btn"><img src="heart_react.png" alt="Like"><a href="login.html">Like</a></button>
+                    </div>
                 </article>
             </div>
         </div>
     </section>
+
+    <!-- Photo Expansion Modal with Download Button -->
+    <div id="photoModal" class="photo-modal">
+        <span class="photo-modal-close">&times;</span>
+        <img class="photo-modal-content" id="expandedPhoto" alt="Expanded view">
+        
+        <!-- Download button inside modal -->
+        <a id="modalDownloadBtn" class="modal-download-btn" href="login.html">
+            <img src="download_icon.png" alt="Download"> Download
+        </a>
+    </div>
+    </section>
+
+    <div class="modal-overlay" id="merchModalOverlay">
+        <div class="product-detail-modal" id="merchModal">
+            <span class="product-detail-close" id="closeMerchModal">&times;</span>
+            <h2>Performance Jersey Set</h2>
+            <div class="product-image"><img src="TRI-SHIRT.png" alt="" style="width: 100%; height: 300px; object-fit: contain;"></div>
+            <p class="product-price">Php 850</p>
+            <p>Our Performance Jersey Set includes a moisture-wicking top and matching shorts, designed for comfort, breathability, and better race performance.</p>
+            <div class="product-detail-actions">
+                <button class="btn btn-secondary" type="button" id="closeMerchButton">Close</button>
+                <a href="login.html" class="btn btn-primary">Add To Cart</a>
+            </div>
+        </div>
+    </div>
 
     <footer class="site-footer">
         <p>© 2026 Tandikan Tri Team. All rights reserved.<br><span>"The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the <br> management of triathlon and duathlon events conducted by the Tandikan Tri Team."</span></p>
@@ -139,6 +158,38 @@
                 });
             }
 
+            const merchBtn = document.querySelector('.merch-btn');
+            const merchModalOverlay = document.getElementById('merchModalOverlay');
+            const closeMerchModal = document.getElementById('closeMerchModal');
+            const closeMerchButton = document.getElementById('closeMerchButton');
+
+            if (merchBtn && merchModalOverlay) {
+                merchBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    merchModalOverlay.classList.add('active');
+                });
+            }
+
+            if (closeMerchModal) {
+                closeMerchModal.addEventListener('click', function() {
+                    merchModalOverlay.classList.remove('active');
+                });
+            }
+
+            if (closeMerchButton) {
+                closeMerchButton.addEventListener('click', function() {
+                    merchModalOverlay.classList.remove('active');
+                });
+            }
+
+            if (merchModalOverlay) {
+                merchModalOverlay.addEventListener('click', function(e) {
+                    if (e.target === merchModalOverlay) {
+                        merchModalOverlay.classList.remove('active');
+                    }
+                });
+            }
+
             // Close menus when clicking outside
             document.addEventListener('click', function(e) {
                 if (profileMenu && !profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
@@ -149,6 +200,41 @@
                 }
             });
         });
+
+
+        // Photo Expansion Modal Logic
+            const photoModal = document.getElementById('photoModal');
+            const expandedPhoto = document.getElementById('expandedPhoto');
+            const photoClose = document.querySelector('.photo-modal-close');
+            const clickablePhotos = document.querySelectorAll('.expandable-photo');
+            const modalDownloadBtn = document.getElementById('modalDownloadBtn');
+
+            if (clickablePhotos && photoModal) {
+                // Open modal on image click
+                clickablePhotos.forEach(photo => {
+                    photo.addEventListener('click', function() {
+                        photoModal.style.display = "block";
+                        expandedPhoto.src = this.src;
+                    });
+                });
+
+                // Close modal on 'X' click
+                if (photoClose) {
+                    photoClose.addEventListener('click', function() {
+                        photoModal.style.display = "none";
+                    });
+                }
+
+                // Close modal when clicking on the background overlay
+                photoModal.addEventListener('click', function(e) {
+                    if (e.target === photoModal) {
+                        photoModal.style.display = "none";
+                    }
+                });
+            }
+
+
+
     </script>
 
 </body>

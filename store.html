@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Tandikan Tri-Hub</title>
-
 </head>
 <body>
 
@@ -21,9 +20,11 @@
             <a href="about.html">About</a>
         </nav>
         <div class="nav-actions">
-            <button class="btn-icon btn-notification" title="Notifications">🔔</button>
-            <button class="btn-icon btn-profile" title="Profile & Dashboard">👤</button>
-            <button class="btn-icon btn-cart" title="Shopping Cart">🛒</button>
+            <button class="btn-icon btn-notification" title="Notifications"><img src="notif_icon.png" alt=""></button>
+            <button class="btn-icon btn-profile" id="profile-btn" title="Profile & Dashboard">
+                <img src="profile_settings.png" alt="">
+            </button>
+            <button class="btn-icon btn-cart" title="Shopping Cart"><img src="add-to-cart.png" alt=""></button>
         </div>
     </header>
 
@@ -40,20 +41,16 @@
         </div>
         <div class="profile-menu-body">
             <a href="#" class="menu-item">
-                <span class="menu-icon">⚙️</span>
                 <span>Profile Settings</span>
             </a>
             <a href="#" class="menu-item">
-                <span class="menu-icon">🔧</span>
                 <span>Account Settings</span>
             </a>
             <a href="admin_dashboard.html" class="menu-item">
-                <span class="menu-icon">📊</span>
                 <span>Admin Panel</span>
             </a>
             <div class="menu-divider"></div>
             <a href="unauth_home.html" class="menu-item logout">
-                <span class="menu-icon">🚪</span>
                 <span>Log Out</span>
             </a>
         </div>
@@ -199,12 +196,57 @@
         <div id="productDetailContent"></div>
     </div>
 
-    <!-- Checkout Modal -->
+    <!-- NEW: Delivery Method Selection Modal with Address & Contact -->
+    <div class="checkout-modal" id="deliveryMethodModal" style="max-width: 450px; text-align: center;">
+        <button class="checkout-close" id="closeDeliveryMethodModal">&times;</button>
+        <h2>Order Method</h2>
+        <p style="color: #64748b; margin-bottom: 1.5rem;">How would you like to receive your order?</p>
+        
+        <!-- Address & Contact Section -->
+        <div id="addressSection" style="text-align: left; background: #f8fafc; padding: 1rem; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+                <span style="font-weight: bold; color: #0f172a;">Delivery Details:</span>
+                <button id="btnAddNewAddress" style="background: none; border: none; color: #2563eb; font-size: 0.85rem; cursor: pointer; font-weight: bold;">+ Edit Details</button>
+            </div>
+            <p id="currentAddressDisplay" style="color: #475569; font-size: 0.95rem; line-height: 1.5; margin: 0 0 0.25rem 0;">Zone 1 Abanico Rd, San Pedro, Puerto Princesa City, Palawan, 5300</p>
+            <p id="currentContactDisplay" style="color: #475569; font-size: 0.95rem; line-height: 1.5; margin: 0; font-weight: 600;">Contact: +63 912 345 6789</p>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <button id="btnPickup" style="padding: 1rem; border-radius: 12px; font-size: 1.1rem; font-weight: bold; background: #f8fafc; border: 2px solid #e2e8f0; color: #0f172a; cursor: pointer; transition: 0.2s;">
+                🛍️ Pick-up (Free)
+            </button>
+            <button id="btnDelivery" style="padding: 1rem; border-radius: 12px; font-size: 1.1rem; font-weight: bold; background: linear-gradient(90deg, #42e8f0 0%, #42b0f0 100%); border: none; color: white; cursor: pointer; transition: 0.2s;">
+                🚚 Delivery (+₱50)
+            </button>
+        </div>
+    </div>
+
+    <!-- UPDATED: Checkout Modal with Address, Contact, and Delivery Fee -->
     <div class="checkout-modal" id="checkoutModal">
         <button class="checkout-close" id="closeCheckoutModal">&times;</button>
         <h2>Order Summary</h2>
+        
+        <!-- Order Summary Address Display -->
+        <div id="checkoutAddressContainer" style="background: #f8fafc; padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid #e2e8f0;">
+            <p style="font-weight: bold; margin: 0 0 0.25rem 0; font-size: 0.9rem; color: #0f172a;" id="checkoutAddressLabel">Delivering to:</p>
+            <p style="margin: 0 0 0.25rem 0; color: #475569; font-size: 0.9rem; line-height: 1.4;" id="checkoutAddressText"></p>
+            <p style="margin: 0; color: #475569; font-size: 0.9rem; line-height: 1.4; font-weight: 600;" id="checkoutContactText"></p>
+        </div>
+
         <div id="checkoutItemsList"></div>
+        
         <div class="checkout-summary">
+            <!-- Subtotal and Delivery -->
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #475569;">
+                <span>Subtotal:</span>
+                <span id="checkoutSubtotal">₱0</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; color: #475569; border-bottom: 1px solid #e2e8f0; padding-bottom: 1rem;">
+                <span id="deliveryLabel">Delivery Fee:</span>
+                <span id="checkoutDeliveryFee">₱0</span>
+            </div>
+            
             <div class="checkout-total">
                 <span>Total Amount:</span>
                 <span id="checkoutTotal">₱0</span>
@@ -216,38 +258,44 @@
         </div>
     </div>
 
-    <!-- Payment Modal -->
+   <!-- Payment Modal -->
     <div class="payment-modal" id="paymentModal">
         <button class="btn-close" id="closePaymentModal">&times;</button>
         <h2>Payment Details</h2>
         
-        <div class="payment-method-section">
-            <h3>QR Code Payment</h3>
-            <div class="qr-code-container">
-                <div class="qr-placeholder">📱</div>
-                <p>Scan the QR code to make your payment</p>
-                <p style="font-size: 0.8rem; color: #9ca3af;">GCash / PayMaya</p>
+        <!-- Select Payment Method -->
+        <div style="margin-bottom: 1.5rem; text-align: left;">
+            <label style="display: block; font-weight: bold; margin-bottom: 0.5rem; color: #0f172a;">Select Payment Method:</label>
+            <select id="paymentMethodSelect" style="width: 100%; padding: 0.9rem; border-radius: 12px; border: 1px solid #cbd5e1; font-size: 1rem; color: #0f172a; background-color: #f8fafc; cursor: pointer; outline: none;">
+                <option value="gcash">GCash</option>
+                <option value="palawanpay">PalawanPay</option>
+            </select>
+        </div>
+
+        <!-- PayMongo Dynamic QR Section -->
+        <div class="payment-method-section" id="paymongoSection">
+            <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0; text-align: center; margin-bottom: 1.5rem;">
+                <h3 id="paymentTitle" style="color: #0f172a; margin-top: 0; margin-bottom: 1rem;">GCash via PayMongo</h3>
+                
+                <!-- System Generated QR Placeholder -->
+                <div style="width: 200px; height: 200px; margin: 0 auto 1rem auto; background: #ffffff; border: 2px solid #cbd5e1; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+                    <div style="font-size: 4rem;">📱</div>
+                    <div style="font-size: 0.8rem; color: #64748b; margin-top: 0.5rem; font-weight: 600;">System Generated QR</div>
+                </div>
+
+                <p style="color: #475569; margin: 0; font-size: 0.9rem; line-height: 1.5;">Scan this exact-amount QR code using your app to pay securely. Your payment will be verified automatically.</p>
             </div>
         </div>
 
-        <div class="payment-total">
-            <span class="payment-total-label">Amount to Pay:</span>
-            <span class="payment-total-amount" id="paymentAmount">₱0</span>
-        </div>
-
-        <div class="upload-section">
-            <label>Upload Payment Proof</label>
-            <div class="file-input-wrapper">
-                <input type="file" id="paymentProofFile" accept="image/*">
-                <label for="paymentProofFile" class="file-input-label">
-                    📸 Click to upload screenshot or photo of payment
-                </label>
-            </div>
+        <div class="payment-total" style="display: flex; justify-content: space-between; padding: 1.25rem; background: #eff6ff; border-radius: 12px; margin-bottom: 1.5rem; border: 1px solid #bfdbfe;">
+            <span class="payment-total-label" style="font-weight: bold; color: #1e3a8a;">Amount to Pay:</span>
+            <span class="payment-total-amount" id="paymentAmount" style="font-weight: bold; color: #2563eb; font-size: 1.2rem;">₱0</span>
         </div>
 
         <div class="payment-actions">
-            <button class="btn-primary" id="submitPaymentBtn">Submit Payment</button>
-            <button class="btn-secondary" id="closePaymentBtn">Cancel</button>
+            <!-- Changed button text since user just scans it and waits -->
+            <button class="btn-primary" id="submitPaymentBtn" style="padding: 1rem; border-radius: 12px; font-weight: bold;">Done</button>
+            <button class="btn-secondary" id="closePaymentBtn" style="padding: 1rem; border-radius: 12px; font-weight: bold;">Cancel</button>
         </div>
     </div>
 
@@ -256,85 +304,67 @@
             <h2 class="section-title">Tandikan Official Merchandise</h2>
             <p class="store-intro">Gear up with official Tandikan Tri Team merchandise. Support the team with our quality athletic apparel and accessories.</p>
             <div class="store-grid">
-                <article class="product-card" data-id="1" data-name="Performance Jersey" data-price="1500" data-emoji="🏊‍♂️" data-description="Lightweight and breathable gear built for long races and training days. Features moisture-wicking fabric and UV protection. Perfect for swimmers and endurance athletes.">
+                
+                <article class="product-card" data-id="1" data-name="Race Belt" data-price="250" data-image="store-belt.png" data-description="Adjustable race belt with gel loops. Perfect for securing your race number and nutrition during the run leg.">
                     <div class="product-image">
-                        <div class="image-placeholder">🏊‍♂️</div>
+                        <img src="store-belt.png" alt="Race Belt" style="width: 100%; height: 220px; object-fit: contain; border-radius: 12px;">
                     </div>
-                    <h3>Performance Jersey</h3>
-                    <p>Lightweight and breathable gear built for long races and training days. Features moisture-wicking fabric and UV protection.</p>
-                    <p class="product-price">₱1,500</p>
+                    <h3>Race Bib Holder Belt</h3>
+                    <p>Adjustable race belt with gel loops. Perfect for securing your race number and nutrition.</p>
+                    <p class="product-price">₱250</p>
                     <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
                 </article>
 
-                <article class="product-card" data-id="2" data-name="Triathlon Shorts" data-price="1200" data-emoji="🚴‍♂️" data-description="Comfortable compression shorts designed for optimal performance during swim, bike, and run transitions. Stay comfortable throughout your race.">
+                <article class="product-card" data-id="2" data-name="Team T-Shirt" data-price="350" data-image="store-tshirt.png" data-description="Classic cotton-blend team t-shirt for casual wear and showing your Tandikan pride anywhere you go.">
                     <div class="product-image">
-                        <div class="image-placeholder">🚴‍♂️</div>
+                        <img src="store-tshirt.png" alt="Team T-Shirt" style="width: 100%; height: 220px; object-fit: contain; border-radius: 12px;">
                     </div>
-                    <h3>Triathlon Shorts</h3>
-                    <p>Comfortable compression shorts designed for optimal performance during swim, bike, and run transitions.</p>
-                    <p class="product-price">₱1,200</p>
+                    <h3>T-Shirt</h3>
+                    <p>Classic cotton-blend for casual weare. <br> . <br> . <br></p>
+                    <p class="product-price">₱350</p>
                     <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
                 </article>
 
-                <article class="product-card" data-id="3" data-name="Running Cap" data-price="800" data-emoji="🏃‍♂️" data-description="Adjustable cap with moisture-wicking sweatband, perfect for sunny race days and training sessions. Keep the sun out of your eyes!">
+                <article class="product-card" data-id="3" data-name="Performance T-Shirt" data-price="850" data-image="store-tshirt2.png" data-description="Moisture-wicking performance t-shirt designed for heavy training sessions. Stay cool under pressure.">
                     <div class="product-image">
-                        <div class="image-placeholder">🏃‍♂️</div>
+                        <img src="store-tshirt2.png" alt="Performance T-Shirt" style="width: 100%; height: 220px; object-fit: contain; border-radius: 12px;">
                     </div>
-                    <h3>Running Cap</h3>
-                    <p>Adjustable cap with moisture-wicking sweatband, perfect for sunny race days and training sessions.</p>
-                    <p class="product-price">₱800</p>
+                    <h3>Jersey T-Shirt</h3>
+                    <p>Moisture-wicking performance t-shirt designed for heavy training sessions. <br> .</p>
+                    <p class="product-price">₱850</p>
                     <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
                 </article>
 
-                <article class="product-card" data-id="4" data-name="Hydration Bottle" data-price="600" data-emoji="🥤" data-description="Insulated stainless steel bottle keeps your drinks cold for hours. BPA-free and eco-friendly. Essential hydration companion for every athlete.">
+                <article class="product-card" data-id="4" data-name="Elite Tri-Suit" data-price="2500" data-image="store-tri-suit.png" data-description="Aerodynamic and quick-drying tri-suit built for race day performance across all three disciplines.">
                     <div class="product-image">
-                        <div class="image-placeholder">🥤</div>
+                        <img src="store-tri-suit.png" alt="Elite Tri-Suit" style="width: 100%; height: 220px; object-fit: contain; border-radius: 12px;">
                     </div>
-                    <h3>Hydration Bottle</h3>
-                    <p>Insulated stainless steel bottle keeps your drinks cold for hours. BPA-free and eco-friendly.</p>
-                    <p class="product-price">₱600</p>
+                    <h3>Elite Tri-Suit</h3>
+                    <p>Aerodynamic and quick-drying tri-suit built for race day performance across all three disciplines.</p>
+                    <p class="product-price">₱2,500</p>
                     <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
                 </article>
 
-                <article class="product-card" data-id="5" data-name="Compression Socks" data-price="900" data-emoji="🧦" data-description="High-quality compression socks for improved circulation and reduced fatigue during long training sessions. Recovery essential for every athlete.">
+                <article class="product-card" data-id="5" data-name="Racing Singlet" data-price="599" data-image="store-singlet.png" data-description="Ultra-lightweight racing singlet offering maximum breathability for those hot run legs.">
                     <div class="product-image">
-                        <div class="image-placeholder">🧦</div>
+                        <img src="store-singlet.png" alt="Racing Singlet" style="width: 100%; height: 220px; object-fit: contain; border-radius: 12px;">
+                    </div>
+                    <h3>Singlet</h3>
+                    <p>Ultra-lightweight racing singlet offering maximum breathability for those hot run legs.</p>
+                    <p class="product-price">₱599</p>
+                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
+                </article>
+
+                <article class="product-card" data-id="6" data-name="Compression Socks" data-price="399" data-image="store-socks.png" data-description="High-quality compression socks for improved circulation and reduced fatigue during long training sessions.">
+                    <div class="product-image">
+                        <img src="store-socks.png" alt="Compression Socks" style="width: 100%; height: 220px; object-fit: contain; border-radius: 12px;">
                     </div>
                     <h3>Compression Socks</h3>
-                    <p>High-quality compression socks for improved circulation and reduced fatigue during long training sessions.</p>
-                    <p class="product-price">₱900</p>
+                    <p>High-quality compression socks for improved circulation and reduced fatigue.</p>
+                    <p class="product-price">₱399</p>
                     <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
                 </article>
 
-                <article class="product-card" data-id="6" data-name="Team Hoodie" data-price="2200" data-emoji="🎽" data-description="Cozy hoodie with Tandikan Tri Team logo. Perfect for cool mornings and post-race celebrations. Show your team spirit!">
-                    <div class="product-image">
-                        <div class="image-placeholder">🎽</div>
-                    </div>
-                    <h3>Team Hoodie</h3>
-                    <p>Cozy hoodie with Tandikan Tri Team logo. Perfect for cool mornings and post-race celebrations.</p>
-                    <p class="product-price">₱2,200</p>
-                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
-                </article>
-
-                <article class="product-card" data-id="7" data-name="Sports Sunglasses" data-price="1800" data-emoji="🕶️" data-description="Polarized lenses with UV protection, designed for athletes. Lightweight and comfortable for all activities. Protect your eyes in style.">
-                    <div class="product-image">
-                        <div class="image-placeholder">🕶️</div>
-                    </div>
-                    <h3>Sports Sunglasses</h3>
-                    <p>Polarized lenses with UV protection, designed for athletes. Lightweight and comfortable for all activities.</p>
-                    <p class="product-price">₱1,800</p>
-                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
-                </article>
-
-                <article class="product-card" data-id="8" data-name="Transition Bag" data-price="1000" data-emoji="🎒" data-description="Waterproof transition bag for race day. Keep your gear organized and dry during swim-to-bike transitions. Stay organized, stay focused.">
-                    <div class="product-image">
-                        <div class="image-placeholder">🎒</div>
-                    </div>
-                    <h3>Transition Bag</h3>
-                    <p>Waterproof transition bag for race day. Keep your gear organized and dry during swim-to-bike transitions.</p>
-                    <p class="product-price">₱1,000</p>
-                    <button class="btn btn-primary add-to-cart-btn">Add to Cart</button>
-                </article>
             </div>
         </div>
     </section>
@@ -385,6 +415,17 @@
                 if (notificationMenu && !notificationBtn.contains(e.target) && !notificationMenu.contains(e.target)) {
                     notificationMenu.classList.remove('active');
                 }
+                
+                // Close shopping cart when clicking outside
+                const currentCartBtn = document.querySelector('.btn-cart');
+                const currentShoppingCart = document.querySelector('.shopping-cart');
+                
+                if (currentShoppingCart && currentCartBtn && !currentCartBtn.contains(e.target) && !currentShoppingCart.contains(e.target)) {
+                    // This prevents the cart from closing immediately when you click an "Add to Cart" button outside the cart
+                    if (!e.target.classList.contains('add-to-cart-btn') && !e.target.closest('.product-detail-actions')) {
+                        currentShoppingCart.classList.remove('active');
+                    }
+                }
             });
 
             // Shopping Cart functionality
@@ -394,9 +435,7 @@
             const shoppingCart = document.querySelector('.shopping-cart');
             const modalOverlay = document.getElementById('modalOverlay');
             const productDetailModal = document.getElementById('productDetailModal');
-            const checkoutModal = document.getElementById('checkoutModal');
-            const paymentModal = document.getElementById('paymentModal');
-
+            
             // Toggle shopping cart
             if (cartBtn && shoppingCart) {
                 cartBtn.addEventListener('click', function(e) {
@@ -411,11 +450,15 @@
                 btn.addEventListener('click', function(e) {
                     e.preventDefault();
                     const productCard = this.closest('.product-card');
+                    
+                    // FOOLPROOF: Grabs the working image directly from the card
+                    const imgSrc = productCard.querySelector('.product-image img').getAttribute('src');
+                    
                     const product = {
                         id: productCard.dataset.id,
                         name: productCard.dataset.name,
                         price: parseInt(productCard.dataset.price),
-                        emoji: productCard.dataset.emoji,
+                        image: imgSrc, 
                         description: productCard.dataset.description,
                         quantity: 1
                     };
@@ -437,11 +480,15 @@
             productCards.forEach(card => {
                 card.addEventListener('click', function(e) {
                     if (!e.target.classList.contains('add-to-cart-btn')) {
+                        
+                        // FOOLPROOF: Grabs the working image directly from the card
+                        const imgSrc = this.querySelector('.product-image img').getAttribute('src');
+                        
                         const product = {
                             id: this.dataset.id,
                             name: this.dataset.name,
                             price: this.dataset.price,
-                            emoji: this.dataset.emoji,
+                            image: imgSrc, 
                             description: this.dataset.description
                         };
                         showProductDetail(product);
@@ -468,7 +515,9 @@
                     total += itemTotal;
                     cartHTML += `
                         <div class="cart-item">
-                            <div class="cart-item-image">${item.emoji}</div>
+                            <div class="cart-item-image" style="background: transparent; padding: 0;">
+                                <img src="${item.image}" alt="${item.name}" style="width: 100%; height: 100%; object-fit: contain; border-radius: 8px;">
+                            </div>
                             <div class="cart-item-details">
                                 <h4>${item.name}</h4>
                                 <p>₱${item.price}</p>
@@ -513,12 +562,13 @@
                 content.innerHTML = `
                     <h2>${product.name}</h2>
                     <div class="product-image">
-                        <div class="image-placeholder">${product.emoji}</div>
+                        <!-- This puts the actual image in the popup -->
+                        <img src="${product.image}" alt="${product.name}" style="width: 100%; height: 250px; object-fit: contain; border-radius: 12px; margin-bottom: 1rem;">
                     </div>
                     <p>${product.description}</p>
                     <p class="product-price">₱${product.price}</p>
                     <div class="product-detail-actions">
-                        <button class="btn-primary" onclick="addProductToCart('${product.id}', '${product.name}', ${product.price}, '${product.emoji}', '${product.description}')">Add to Cart</button>
+                        <button class="btn-primary" onclick="addProductToCart('${product.id}', '${product.name}', ${product.price}, '${product.image}', '${product.description}')">Add to Cart</button>
                         <button class="btn-secondary" onclick="closeProductDetail()">Close</button>
                     </div>
                 `;
@@ -526,12 +576,12 @@
                 productDetailModal.style.display = 'block';
             }
 
-            window.addProductToCart = function(id, name, price, emoji, description) {
+            window.addProductToCart = function(id, name, price, image, description) {
                 const product = {
                     id: id,
                     name: name,
                     price: price,
-                    emoji: emoji,
+                    image: image,
                     description: description,
                     quantity: 1
                 };
@@ -553,11 +603,25 @@
                 productDetailModal.style.display = 'none';
             };
 
-            // Checkout functionality
+            // Checkout functionality & Variables
             const checkoutBtn = document.getElementById('checkoutBtn');
             const proceedToPaymentBtn = document.getElementById('proceedToPaymentBtn');
             const closeCheckoutBtn = document.getElementById('closeCheckoutBtn');
             const closeCheckoutModal = document.getElementById('closeCheckoutModal');
+            const checkoutModal = document.getElementById('checkoutModal');
+            
+            // Delivery Modal & Address Variables
+            const deliveryMethodModal = document.getElementById('deliveryMethodModal');
+            const closeDeliveryMethodModal = document.getElementById('closeDeliveryMethodModal');
+            const btnPickup = document.getElementById('btnPickup');
+            const btnDelivery = document.getElementById('btnDelivery');
+            const btnAddNewAddress = document.getElementById('btnAddNewAddress');
+            const currentAddressDisplay = document.getElementById('currentAddressDisplay');
+            const currentContactDisplay = document.getElementById('currentContactDisplay');
+            
+            let currentDeliveryFee = 0;
+            let currentAddress = "Zone 1 Abanico Rd, San Pedro, Puerto Princesa City, Palawan, 5300";
+            let currentContact = "+63 912 345 6789";
 
             if (checkoutBtn) {
                 checkoutBtn.addEventListener('click', function() {
@@ -565,33 +629,106 @@
                         alert('Your cart is empty. Add items to proceed with checkout.');
                         return;
                     }
-                    showCheckout();
+                    shoppingCart.classList.remove('active');
+                    modalOverlay.classList.add('active');
+                    deliveryMethodModal.style.display = 'block';
                 });
             }
 
+            // --- Address & Contact Management ---
+            if (btnAddNewAddress) {
+                btnAddNewAddress.addEventListener('click', function() {
+                    // Ask for Address
+                    const newAddress = prompt("Enter your delivery address:", currentAddress);
+                    if (newAddress && newAddress.trim() !== "") {
+                        // If address is provided, ask for Contact Number
+                        const newContact = prompt("Enter your contact number:", currentContact);
+                        if (newContact && newContact.trim() !== "") {
+                            currentAddress = newAddress.trim();
+                            currentContact = newContact.trim();
+                            
+                            // Update the display in the modal
+                            currentAddressDisplay.textContent = currentAddress;
+                            currentContactDisplay.textContent = "Contact: " + currentContact;
+                        }
+                    }
+                });
+            }
+
+            // --- Delivery Choice Listeners ---
+            if (btnPickup) {
+                btnPickup.addEventListener('click', function() {
+                    currentDeliveryFee = 0; // Free
+                    deliveryMethodModal.style.display = 'none';
+                    showCheckout(); 
+                });
+            }
+
+            if (btnDelivery) {
+                btnDelivery.addEventListener('click', function() {
+                    currentDeliveryFee = 50; // 50 pesos
+                    deliveryMethodModal.style.display = 'none';
+                    showCheckout(); 
+                });
+            }
+
+            if (closeDeliveryMethodModal) {
+                closeDeliveryMethodModal.addEventListener('click', function() {
+                    deliveryMethodModal.style.display = 'none';
+                    modalOverlay.classList.remove('active');
+                });
+            }
+
+            // --- Order Summary Logic ---
             function showCheckout() {
                 const checkoutItemsList = document.getElementById('checkoutItemsList');
+                const checkoutSubtotal = document.getElementById('checkoutSubtotal');
+                const checkoutDeliveryFee = document.getElementById('checkoutDeliveryFee');
+                const deliveryLabel = document.getElementById('deliveryLabel');
                 const checkoutTotal = document.getElementById('checkoutTotal');
                 
+                // Address elements in Order Summary
+                const checkoutAddressContainer = document.getElementById('checkoutAddressContainer');
+                const checkoutAddressLabel = document.getElementById('checkoutAddressLabel');
+                const checkoutAddressText = document.getElementById('checkoutAddressText');
+                const checkoutContactText = document.getElementById('checkoutContactText');
+                
                 let itemsHTML = '';
-                let total = 0;
+                let subtotal = 0;
 
                 cart.forEach(item => {
                     const itemTotal = item.price * item.quantity;
-                    total += itemTotal;
+                    subtotal += itemTotal;
                     itemsHTML += `
-                        <div class="checkout-item">
+                        <div class="checkout-item" style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
                             <span class="checkout-item-name">${item.name} (x${item.quantity})</span>
-                            <span class="checkout-item-price">₱${(item.price * item.quantity).toLocaleString()}</span>
+                            <span class="checkout-item-price" style="font-weight: 600; color: #2563eb;">₱${(item.price * item.quantity).toLocaleString()}</span>
                         </div>
                     `;
                 });
 
-                checkoutItemsList.innerHTML = itemsHTML;
-                checkoutTotal.textContent = '₱' + total.toLocaleString();
+                const finalTotal = subtotal + currentDeliveryFee;
 
-                shoppingCart.classList.remove('active');
-                modalOverlay.classList.add('active');
+                checkoutItemsList.innerHTML = itemsHTML;
+                checkoutSubtotal.textContent = '₱' + subtotal.toLocaleString();
+                
+                // Change Order Summary text based on Delivery vs Pick-up
+                if (currentDeliveryFee > 0) {
+                    deliveryLabel.textContent = 'Delivery Fee:';
+                    checkoutDeliveryFee.textContent = '₱' + currentDeliveryFee.toLocaleString();
+                    checkoutAddressLabel.textContent = 'Delivering to:';
+                    checkoutAddressText.textContent = currentAddress;
+                    checkoutContactText.textContent = "Contact: " + currentContact;
+                    checkoutContactText.style.display = 'block';
+                } else {
+                    deliveryLabel.textContent = 'Pick-up:';
+                    checkoutDeliveryFee.textContent = 'Free';
+                    checkoutAddressLabel.textContent = 'Pick-up Location:';
+                    checkoutAddressText.textContent = 'Tandikan Tri Team HQ, Puerto Princesa City';
+                    checkoutContactText.style.display = 'none'; // Hide contact for pickup
+                }
+
+                checkoutTotal.textContent = '₱' + finalTotal.toLocaleString();
                 checkoutModal.style.display = 'block';
             }
 
@@ -618,14 +755,39 @@
                 checkoutModal.style.display = 'none';
             }
 
-            // Payment functionality
+            // --- Payment functionality ---
             const closePaymentBtn = document.getElementById('closePaymentBtn');
             const closePaymentModal = document.getElementById('closePaymentModal');
             const submitPaymentBtn = document.getElementById('submitPaymentBtn');
+            const paymentModal = document.getElementById('paymentModal');
+            
+            // Payment Elements
+            const paymentMethodSelect = document.getElementById('paymentMethodSelect');
+            const paymentTitle = document.getElementById('paymentTitle');
+
+            // Handle switching between GCash and PalawanPay
+            if (paymentMethodSelect) {
+                paymentMethodSelect.addEventListener('change', function() {
+                    const method = this.value;
+                    if (method === 'gcash') {
+                        paymentTitle.textContent = 'GCash via PayMongo';
+                    } else if (method === 'palawanpay') {
+                        paymentTitle.textContent = 'PalawanPay via PayMongo';
+                    }
+                });
+            }
 
             function showPayment() {
-                const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                document.getElementById('paymentAmount').textContent = '₱' + total.toLocaleString();
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const finalTotal = subtotal + currentDeliveryFee;
+                
+                document.getElementById('paymentAmount').textContent = '₱' + finalTotal.toLocaleString();
+                
+                // Reset dropdown to GCash every time the modal opens
+                if(paymentMethodSelect) {
+                    paymentMethodSelect.value = 'gcash';
+                    paymentMethodSelect.dispatchEvent(new Event('change')); // Triggers the UI update
+                }
                 
                 checkoutModal.style.display = 'none';
                 paymentModal.style.display = 'block';
@@ -650,17 +812,12 @@
 
             if (submitPaymentBtn) {
                 submitPaymentBtn.addEventListener('click', function() {
-                    const fileInput = document.getElementById('paymentProofFile');
-                    if (!fileInput.files.length) {
-                        alert('Please upload payment proof');
-                        return;
-                    }
+                    // Simulating the system checking PayMongo for the transaction success
+                    alert('Checking PayMongo gateway...\n\nPayment verified successfully! Thank you for your order. We will process it shortly.');
                     
-                    alert('Payment submitted successfully! Thank you for your order.');
                     cart = [];
                     updateCart();
                     closePayment();
-                    fileInput.value = '';
                 });
             }
 
@@ -670,6 +827,9 @@
                     if (e.target === this) {
                         if (productDetailModal.style.display !== 'none') {
                             closeProductDetail();
+                        } else if (deliveryMethodModal && deliveryMethodModal.style.display !== 'none') {
+                            deliveryMethodModal.style.display = 'none';
+                            modalOverlay.classList.remove('active');
                         } else if (checkoutModal.style.display !== 'none') {
                             closeCheckout();
                         } else if (paymentModal.style.display !== 'none') {
@@ -680,6 +840,5 @@
             }
         });
     </script>
-
 </body>
 </html>
