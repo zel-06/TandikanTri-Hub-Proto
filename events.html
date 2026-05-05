@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <title>Tandikan Tri-Hub</title>
-
 </head>
 <body>
 
@@ -26,7 +25,6 @@
         </div>
     </header>
 
-    <!-- Profile Slide-out Menu -->
     <div class="profile-menu">
         <div class="profile-menu-header">
             <div class="profile-picture">
@@ -58,7 +56,6 @@
         </div>
     </div>
 
-    <!-- Notification Slide-out Menu -->
     <div class="notification-menu">
         <div class="notification-header">
             <h3>Notifications</h3>
@@ -75,6 +72,7 @@
                     </div>
                 </div>
             </a>
+
             <a href="#" class="notification-item critical">
                 <div class="notification-content">
                     <span class="notification-icon">⚠️</span>
@@ -82,86 +80,6 @@
                         <h4>Payment Verification Pending</h4>
                         <p>Your payment proof for Tandikan Tri 2026 is under review. We'll notify you once verified.</p>
                         <div class="notification-time">1 day ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item unread">
-                <div class="notification-content">
-                    <span class="notification-icon">🏊‍♂️</span>
-                    <div class="notification-text">
-                        <h4>Swim Training Reminder</h4>
-                        <p>Don't forget your swim training session this Saturday at 6:00 AM. Prepare for the big race!</p>
-                        <div class="notification-time">3 days ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item">
-                <div class="notification-content">
-                    <span class="notification-icon">📅</span>
-                    <div class="notification-text">
-                        <h4>Event Schedule Updated</h4>
-                        <p>The race schedule for Tandikan Tri 2026 has been updated. Check the latest timings.</p>
-                        <div class="notification-time">5 days ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item unread">
-                <div class="notification-content">
-                    <span class="notification-icon">🏆</span>
-                    <div class="notification-text">
-                        <h4>Congratulations!</h4>
-                        <p>You've earned the "Early Bird" badge for registering early. Great job!</p>
-                        <div class="notification-time">1 week ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item">
-                <div class="notification-content">
-                    <span class="notification-icon">📊</span>
-                    <div class="notification-text">
-                        <h4>Training Progress Report</h4>
-                        <p>Your weekly training summary is ready. You've improved 15% in swim times!</p>
-                        <div class="notification-time">1 week ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item unread">
-                <div class="notification-content">
-                    <span class="notification-icon">👥</span>
-                    <div class="notification-text">
-                        <h4>New Team Member</h4>
-                        <p>Sarah Johnson has joined your training group. Say hello in the next session!</p>
-                        <div class="notification-time">2 weeks ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item">
-                <div class="notification-content">
-                    <span class="notification-icon">📰</span>
-                    <div class="notification-text">
-                        <h4>Event Newsletter</h4>
-                        <p>Read the latest Tandikan Tri Team newsletter with race tips and athlete stories.</p>
-                        <div class="notification-time">2 weeks ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item critical">
-                <div class="notification-content">
-                    <span class="notification-icon">🚨</span>
-                    <div class="notification-text">
-                        <h4>Weather Alert</h4>
-                        <p>Heavy rain expected on race day. Check for any schedule changes or safety updates.</p>
-                        <div class="notification-time">3 weeks ago</div>
-                    </div>
-                </div>
-            </a>
-            <a href="#" class="notification-item">
-                <div class="notification-content">
-                    <span class="notification-icon">🎯</span>
-                    <div class="notification-text">
-                        <h4>Personal Best Challenge</h4>
-                        <p>Beat your personal best time and earn exclusive Tandikan Tri Team merchandise!</p>
-                        <div class="notification-time">3 weeks ago</div>
                     </div>
                 </div>
             </a>
@@ -175,37 +93,46 @@
                     <p class="eyebrow">Events Directory</p>
                     <h2>Find your next race</h2>
                 </div>
+
                 <div class="events-actions">
                     <div class="search-box">
                         <span class="search-icon">🔍</span>
                         <input type="search" placeholder="Search events...">
                     </div>
+
                     <div class="filter-select">
                         <select aria-label="Filter event type">
                             <option>All Types</option>
                             <option>Triathlon</option>
                             <option>Duathlon</option>
+                            <option>Running Events</option>
                         </select>
                     </div>
                 </div>
             </div>
 
             <div class="events-list">
+
                 <article class="event-card">
                     <div class="event-card-left">
                         <span class="event-label">Triathlon</span>
                         <h3>Tandikan Tri 2026</h3>
                         <p class="event-meta">8/15/2026 · Palawan</p>
                     </div>
+
                     <div class="event-card-right">
                         <div class="event-tags">
                             <span class="event-pill event-pill-blue">Olympic Distance</span>
                             <span class="event-pill event-pill-green">120 slots left</span>
                         </div>
-                        <p class="event-description">Annual triathlon event featuring a beautiful coastal swim, challenging bike course, and scenic run.</p>
+
+                        <p class="event-description">
+                            Annual triathlon event featuring a beautiful coastal swim, challenging bike course, and scenic run.
+                        </p>
+
                         <div class="event-card-footer">
-                            <p class="event-categories">Categories: <strong>4 available</strong></p>
-                            <a href="event_details.html" class="btn btn-primary">View Details</a>
+                            <p class="event-categories">Race Format: <strong>Solo, Relay</strong></p>
+                            <a href="EventDetails_Tri.html" class="btn btn-primary">View Details</a>
                         </div>
                     </div>
                 </article>
@@ -216,65 +143,102 @@
                         <h3>Palawan Duathlon Sprint</h3>
                         <p class="event-meta">9/10/2026 · Palawan</p>
                     </div>
+
                     <div class="event-card-right">
                         <div class="event-tags">
                             <span class="event-pill event-pill-blue">Sprint Distance</span>
                             <span class="event-pill event-pill-green">50 slots left</span>
                         </div>
-                        <p class="event-description">Fast-paced duathlon perfect for beginners and seasoned athletes alike.</p>
+
+                        <p class="event-description">
+                            Fast-paced duathlon perfect for beginners and seasoned athletes alike.
+                        </p>
+
                         <div class="event-card-footer">
-                            <p class="event-categories">Categories: <strong>2 available</strong></p>
+                            <p class="event-categories">Race Format: <strong>Solo, Relay</strong></p>
+                            <a href="EventDetails_Dua.html" class="btn btn-primary">View Details</a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="event-card">
+                    <div class="event-card-left">
+                        <span class="event-label">Marathon</span>
+                        <h3>IBP Marathon</h3>
+                        <p class="event-meta">12/12/2026</p>
+                    </div>
+
+                    <div class="event-card-right">
+                        <div class="event-tags">
+                            <span class="event-pill event-pill-blue">Running Event</span>
+                            <span class="event-pill event-pill-green">Open slots</span>
+                        </div>
+
+                        <p class="event-description">
+                            A running event featuring multiple race distances for beginner, intermediate, and advanced runners.
+                        </p>
+
+                        <div class="event-card-footer">
+                            <p class="event-categories">Categories: <strong>3km, 5km, 10km, 21km, 42km</strong></p>
                             <a href="event_details.html" class="btn btn-primary">View Details</a>
                         </div>
                     </div>
                 </article>
+
             </div>
         </div>
     </section>
 
     <footer class="site-footer">
-        <p>© 2026 Tandikan Tri Team. All rights reserved.<br><span>"The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the <br> management of triathlon and duathlon events conducted by the Tandikan Tri Team."</span></p>
+        <p>
+            © 2026 Tandikan Tri Team. All rights reserved.
+            <br>
+            <span>
+                "The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the
+                <br>
+                management of triathlon and duathlon events conducted by the Tandikan Tri Team."
+            </span>
+        </p>
     </footer>
 
     <script>
-        // Profile and Notification menu toggle functionality
         document.addEventListener('DOMContentLoaded', function() {
-            // Profile menu functionality
             const profileBtn = document.querySelector('.btn-profile');
             const profileMenu = document.querySelector('.profile-menu');
 
             if (profileBtn && profileMenu) {
                 profileBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Close notification menu if open
+
                     const notificationMenu = document.querySelector('.notification-menu');
                     if (notificationMenu && notificationMenu.classList.contains('active')) {
                         notificationMenu.classList.remove('active');
                     }
+
                     profileMenu.classList.toggle('active');
                 });
             }
 
-            // Notification menu functionality
             const notificationBtn = document.querySelector('.btn-notification');
             const notificationMenu = document.querySelector('.notification-menu');
 
             if (notificationBtn && notificationMenu) {
                 notificationBtn.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Close profile menu if open
+
                     if (profileMenu && profileMenu.classList.contains('active')) {
                         profileMenu.classList.remove('active');
                     }
+
                     notificationMenu.classList.toggle('active');
                 });
             }
 
-            // Close menus when clicking outside
             document.addEventListener('click', function(e) {
                 if (profileMenu && !profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
                     profileMenu.classList.remove('active');
                 }
+
                 if (notificationMenu && !notificationBtn.contains(e.target) && !notificationMenu.contains(e.target)) {
                     notificationMenu.classList.remove('active');
                 }
