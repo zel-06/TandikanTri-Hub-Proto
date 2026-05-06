@@ -592,6 +592,10 @@ a {
     display: block; /* Changed from flex to block */
 }
 
+.modal-overlay.active .product-detail-modal {
+    display: block;
+}
+
 /* Product Detail Modal */
 .product-detail-modal {
     /* --- NEW POSITIONING --- */
@@ -1323,7 +1327,8 @@ a {
 
 .event-grid,
 .store-grid,
-.feeds-grid {
+.feeds-grid,
+.community-grid {
     display: grid;
     gap: 1.5rem;
     grid-template-columns: repeat(3, minmax(220px, 1fr));
@@ -1338,6 +1343,56 @@ a {
     padding: 1.8rem;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
     text-align: left;
+}
+
+.merch-card {
+    background: rgba(66, 232, 240, 0.12);
+    border-color: rgba(66, 232, 240, 0.28);
+}
+
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.gallery-grid img {
+    width: 100%;
+    height: 110px;
+    border-radius: 16px;
+    object-fit: cover;
+    display: block;
+}
+
+.product-detail-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.4rem;
+    cursor: pointer;
+    color: #6b7280;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f3f4f6;
+    border-radius: 0.5rem;
+    transition: all 0.2s;
+}
+
+.product-detail-close:hover {
+    background: #e5e7eb;
+}
+
+@media (max-width: 900px) {
+    .event-grid,
+    .store-grid,
+    .feeds-grid,
+    .community-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 .event-card h3,
@@ -2247,6 +2302,240 @@ a {
     font-size: 0.8rem;
     color: #777777;
 }
+
+
+/* --- Facebook-Style Feed Updates --- */
+
+/* Update the section background to a sky blue and violet gradient */
+.section.community-feeds {
+    background: linear-gradient(135deg, #87CEEB 0%, #b39ddb 100%);
+    padding: 4rem 2rem;
+}
+
+/* Widen the feed list to fill the empty space */
+.feeds-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+    max-width: 950px; /* Increased width to fill space */
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* Make card backgrounds light and adjust text colors for readability */
+.feeds-list .feed-card {
+    width: 100%;
+    background-color: #ffffff; /* Light background */
+    color: #1e293b; /* Dark text */
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 16px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.feeds-list .feed-card h3 {
+    color: #0f172a; /* Darker heading */
+}
+
+.feeds-list .feed-card p {
+    color: #334155; /* Dark gray body text */
+}
+
+.feeds-list .feed-meta {
+    color: #64748b; /* Muted gray for meta text */
+}
+
+/* Update the action buttons for the light background */
+.action-btn {
+    background: transparent;
+    border: none;
+    color: #475569; /* Darker text for buttons */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.action-btn a{
+    background: transparent;
+    border: none;
+    color: #475569; /* Darker text for buttons */
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.action-btn:hover a{
+    color: #2563eb; /* Blue hover state */
+}
+
+/* If your original icons are white, this filter will make them dark so they show up on the light background */
+.action-btn img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    filter: invert(0.6) sepia(1) saturate(0) hue-rotate(0deg); 
+}
+
+/* Merchandise Promo Image */
+.feed-promo-img {
+    width: clamp(18rem, 40vw, 10rem);
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 1rem 0;
+    object-fit: cover;
+}
+
+/* 5-Photo Mosaic Grid */
+.fb-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 4px;
+    margin: 1rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.fb-gallery-grid img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.fb-gallery-grid img:hover {
+    opacity: 0.85;
+}
+
+/* Top 2 photos take up half the width */
+.fb-gallery-grid img:nth-child(1),
+.fb-gallery-grid img:nth-child(2) {
+    grid-column: span 3;
+}
+
+/* Bottom 3 photos take up a third of the width */
+.fb-gallery-grid img:nth-child(n+3) {
+    grid-column: span 2;
+    height: 150px;
+}
+
+/* Interaction Buttons (Like & Download) */
+.feed-actions {
+    display: flex;
+    gap: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 1rem;
+}
+
+.action-btn {
+    background: transparent;
+    border: none;
+    color: #b1b8d3;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.action-btn:hover {
+    color: #ffffff;
+}
+
+.action-btn img {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+}
+
+/* Photo Expansion Modal */
+.photo-modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    padding-top: 5vh;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+.photo-modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.photo-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: #f1f1f1;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.photo-modal-close:hover {
+    color: #42e8f0;
+}
+
+
+
+
+/* --- Modal Download Button --- */
+.modal-download-btn {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, #42e8f0 0%, #42b0f0 100%);
+    color: #09101d; /* Dark text for contrast */
+    padding: 12px 28px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, filter 0.2s ease;
+    z-index: 2001;
+}
+
+.modal-download-btn:hover {
+    transform: translateX(-50%) translateY(-2px);
+    filter: brightness(1.1);
+}
+
+.modal-download-btn img {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+    filter: invert(1); /* Inverts icon color to dark to match text */
+}
+
+
+
+
+
 
 @media (max-width: 1024px) {
     .event-grid,
