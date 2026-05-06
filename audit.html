@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security & Audit Trail - Tandikan Tri-Hub</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="admin_panel.css">
+    <style>
+        /* Applies the modern font to the entire page */
+        body {
+            font-family: 'Inter', sans-serif !important;
+        }
+        
+        /* Centers sidebar navigation and removes underlines */
+        .sidebar-nav a {
+            text-decoration: none !important;
+            justify-content: center; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Operations Manager</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="overview.html">
+                        Analytics & Overview
+                    </a>
+                    <a href="users.html">
+                        User Management
+                        <span class="badge">8</span>
+                    </a>
+                    <a href="audit.html" class="active">
+                        Security & Audit Trail
+                    </a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Action Center</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Pending Verifications</span>
+                    <span class="stat-value">8</span>
+                </div>
+                <div class="sidebar-stat" style="margin-top: 10px;">
+                    <span class="stat-label">Sanction Reviews</span>
+                    <span class="stat-value" style="color: #ff6d79;">3</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <span class="eyebrow">Security</span>
+                    <h2>System Audit Trail</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary">Download Logs (CSV)</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid" style="grid-template-columns: 1fr;">
+                <article class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Live Admin Activity Logs</h3>
+                            <p>Real-time feed of actions performed by administrators across the Finance, Event, and Merch modules.</p>
+                        </div>
+                        <span class="status-pill">Monitoring Active</span>
+                    </div>
+                    
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div>
+                                <h4 class="activity-title">Finance Admin: Maria S.</h4>
+                                <p class="activity-meta">Approved payment proof for Registration Order #1042.</p>
+                            </div>
+                            <span>May 6, 2026 13:15 PST</span>
+                        </div>
+
+                        <div class="activity-item">
+                            <div>
+                                <h4 class="activity-title">Event Admin: Carlos D.</h4>
+                                <p class="activity-meta">Updated the official route map asset for Tandikan Tri 2026.</p>
+                            </div>
+                            <span>May 6, 2026 12:45 PST</span>
+                        </div>
+
+                        <div class="activity-item">
+                            <div>
+                                <h4 class="activity-title">Merch Admin: Leo T.</h4>
+                                <p class="activity-meta">Adjusted warehouse stock levels for Performance Jersey (Large).</p>
+                            </div>
+                            <span>May 6, 2026 11:30 PST</span>
+                        </div>
+
+                        <div class="activity-item" style="border-left: 4px solid #ffb86c;">
+                            <div>
+                                <h4 class="activity-title">System Alert: Security</h4>
+                                <p class="activity-meta">Automatically flagged 5 failed consecutive login attempts for User ID: USR-0992.</p>
+                            </div>
+                            <span style="color: #ffb86c;">May 6, 2026 10:12 PST</span>
+                        </div>
+                        
+                        <div class="activity-item">
+                            <div>
+                                <h4 class="activity-title">Operations: System</h4>
+                                <p class="activity-meta">Automated daily backup sequence completed successfully.</p>
+                            </div>
+                            <span>May 6, 2026 02:00 PST</span>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

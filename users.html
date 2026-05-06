@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Tandikan Tri-Hub</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="admin_panel.css">
+    <style>
+        /* Applies the modern font to the entire page */
+        body {
+            font-family: 'Inter', sans-serif !important;
+        }
+        
+        /* Centers sidebar navigation and removes underlines */
+        .sidebar-nav a {
+            text-decoration: none !important;
+            justify-content: center; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Operations Manager</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="overview.html">
+                        Analytics & Overview
+                    </a>
+                    <a href="users.html" class="active">
+                        User Management
+                        <span class="badge">8</span>
+                    </a>
+                    <a href="audit.html">
+                        Security & Audit Trail
+                    </a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Action Center</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Pending Verifications</span>
+                    <span class="stat-value">8</span>
+                </div>
+                <div class="sidebar-stat" style="margin-top: 10px;">
+                    <span class="stat-label">Sanction Reviews</span>
+                    <span class="stat-value" style="color: #ff6d79;">3</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <span class="eyebrow">Database</span>
+                    <h2>User Management</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary">Export Users</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid" style="grid-template-columns: 1fr;">
+                <article class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Pending Account Registrations</h3>
+                            <p>Review submitted ID documents to allow account generation.</p>
+                        </div>
+                        <span class="status-pill">Verify</span>
+                    </div>
+                    
+                    <div class="alert-list">
+                        <div class="alert-item warning">
+                            <div class="alert-info">
+                                <span class="alert-badge">ID</span>
+                                <div>
+                                    <p class="alert-title">Juan Dela Cruz</p>
+                                    <p class="alert-meta">juan.dc@example.com | Government ID Uploaded</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Review Application</button>
+                        </div>
+                        <div class="alert-item warning">
+                            <div class="alert-info">
+                                <span class="alert-badge">ID</span>
+                                <div>
+                                    <p class="alert-title">Maria Santos</p>
+                                    <p class="alert-meta">msantos99@example.com | Passport Uploaded</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.85rem;">Review Application</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card alerts-card">
+                    <div class="card-header">
+                        <div>
+                            <h3 style="color: #ff6d79;">Sanction Reviews</h3>
+                            <p>Accounts flagged for severe rule violations requiring Operations Manager intervention.</p>
+                        </div>
+                        <span class="status-pill" style="color: #ff6d79; background: rgba(255, 109, 121, 0.16);">Action Required</span>
+                    </div>
+                    <div class="alert-list">
+                        <div class="alert-item critical">
+                            <div class="alert-info">
+                                <span class="alert-badge">X</span>
+                                <div>
+                                    <p class="alert-title">Carlos Gomez (USR-0755)</p>
+                                    <p class="alert-meta">Flagged Reason: Multiple suspicious chargeback attempts on Merch order.</p>
+                                </div>
+                            </div>
+                            <button class="btn btn-primary" style="background: #ff6d79; color: #fff; padding: 0.5rem 1rem; font-size: 0.85rem;">Suspend Account</button>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>
