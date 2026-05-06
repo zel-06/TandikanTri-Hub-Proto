@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>Finance Officer Analytics - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Finance and Revenue Manager</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="finance_officer.html">Analytics and Overview Dashboard
+                    <a href="finance_officer_ecommerce.html">E-Commerce and Fulfillment</a>
+                    <a href="finance_officer_finance.html" class="active">Finance & Revenue Management</a>
+
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Reports</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Total Collected</span>
+                    <span class="stat-value">₱46,700</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <h2>FInance & Revenue Management</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
+                    <button class="btn btn-primary">Export Report</button>
+                </div>
+            </header>
+
+            <section class="kpi-section">
+                <article class="kpi-card">
+                    <p class="kpi-title">Total Revenue Collected</p>
+                    <h3>₱46,700</h3>
+                    <span class="kpi-metric">From all sources combined</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Registration Revenue</p>
+                    <h3>₱38,200</h3>
+                    <span class="kpi-metric">Race fees and entry</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Merchandise Revenue</p>
+                    <h3>₱8,500</h3>
+                    <span class="kpi-metric">Apparel and accessories</span>
+                </article>
+            </section>
+
+            <section class="dashboard-grid">
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Financial Report & Export</h3>
+                            <p>Generate and export comprehensive financial reports.</p>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <p style="color:#b3c5df; line-height:1.7;">Generate detailed financial reports by event, time period, and revenue source. Export data in multiple formats (PDF, CSV, Excel) for accounting reconciliation and audits. Create custom reports with specific date ranges and transaction filters.</p>
+                        <button class="btn btn-secondary" style="margin-top: 12px;">Generate & Export</button>
+                    </div>
+                </article>
+
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Visual Graphs & Metrics</h3>
+                            <p>Monitor total collected money with visual analytics.</p>
+                        </div>
+
+                    </div>
+                    <div class="card-content">
+                        <p style="color:#b3c5df; line-height:1.7;">View interactive dashboards displaying revenue trends over time, breakdown by event type, and revenue sources. Monitor daily/weekly/monthly collection targets and performance against projections. Identify revenue patterns and growth metrics.</p>
+                        <button class="btn btn-secondary" style="margin-top: 12px;">View Analytics</button>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

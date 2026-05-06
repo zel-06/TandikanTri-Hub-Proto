@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+    <title>Finance Officer - E-Commerce & Fulfillment - Tandikan Tri-Hub</title>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Finance and Merchandise Manager</p>
+                    </div>
+                </div>
+                <nav class="sidebar-nav">
+                    <a href="finance_officer.html">Analytics and Overview Dashboard</a>
+                    <a href="finance_officer_ecommerce.html" class="active">E-Commerce and Fulfillment</a>
+                    <a href="finance_officer_finance.html">Finance & Revenue Management</a>
+
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>Operations</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">Fulfillment</span>
+                    <span class="stat-value">Order Tracking</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <h2>E-Commerce & Fulfillment</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
+                    <button class="btn btn-primary">Refresh Status</button>
+                </div>
+            </header>
+
+            <section class="kpi-section">
+                <article class="kpi-card">
+                    <p class="kpi-title">Stock Inventory</p>
+                    <h3>342 Units</h3>
+                    <span class="kpi-metric">Available for fulfillment</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Pending Orders</p>
+                    <h3>18</h3>
+                    <span class="kpi-metric">Awaiting fulfillment</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Ready for Pickup</p>
+                    <h3>12</h3>
+                    <span class="kpi-metric">Awaiting local rider handover</span>
+                </article>
+            </section>
+
+            <section class="dashboard-grid">
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Merchandise Stock Management</h3>
+                            <p>Update and monitor inventory levels.</p>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h4>Current Inventory Status</h4>
+                        <div style="margin: 15px 0;">
+                            <table style="width: 100%; border-collapse: collapse; color: #b3c5df;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid #3a4a5c;">
+                                        <th style="text-align: left; padding: 8px;">Merchandise</th>
+                                        <th style="text-align: center; padding: 8px;">Current Stock</th>
+                                        <th style="text-align: center; padding: 8px;">Status</th>
+                                        <th style="text-align: center; padding: 8px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #2a3a4c;">
+                                        <td style="padding: 8px;">Triathlon Jersey</td>
+                                        <td style="text-align: center; padding: 8px;">45</td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #4ade80;">In Stock</span></td>
+                                        <td style="text-align: center; padding: 8px;"><button class="btn btn-secondary" style="font-size: 12px; padding: 4px 8px;">Update Stock</button></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #2a3a4c;">
+                                        <td style="padding: 8px;">Race Bib Numbers</td>
+                                        <td style="text-align: center; padding: 8px;">12</td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #fbbf24;">Low Stock</span></td>
+                                        <td style="text-align: center; padding: 8px;"><button class="btn btn-secondary" style="font-size: 12px; padding: 4px 8px;">Update Stock</button></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #2a3a4c;">
+                                        <td style="padding: 8px;">Finish Line Medals</td>
+                                        <td style="text-align: center; padding: 8px;">0</td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #ef4444;">Out of Stock</span></td>
+                                        <td style="text-align: center; padding: 8px;"><button class="btn btn-secondary" style="font-size: 12px; padding: 4px 8px;">Update Stock</button></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #2a3a4c;">
+                                        <td style="padding: 8px;">Compression Apparel</td>
+                                        <td style="text-align: center; padding: 8px;">28</td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #4ade80;">In Stock</span></td>
+                                        <td style="text-align: center; padding: 8px;"><button class="btn btn-secondary" style="font-size: 12px; padding: 4px 8px;">Update Stock</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>Stock Update Panel</h4>
+                        <div style="background: #1a2332; padding: 15px; border-radius: 8px; margin: 10px 0;">
+                            <div style="margin-bottom: 10px;">
+                                <label style="color: #b3c5df; display: block; margin-bottom: 5px;">Selected Item: Triathlon Jersey</label>
+                                <label style="color: #b3c5df; display: block; margin-bottom: 5px;">Current Quantity: 45 units</label>
+                            </div>
+
+                            <div style="margin-bottom: 10px;">
+                                <label style="color: #b3c5df; display: block; margin-bottom: 5px;">Update Action:</label>
+                                <div style="display: flex; gap: 10px;">
+                                    <button class="btn btn-secondary" id="add-stock-btn" style="font-size: 12px; padding: 6px 12px;">➕ Add Stock</button>
+                                    <button class="btn btn-secondary" id="deduct-stock-btn" style="font-size: 12px; padding: 6px 12px;">➖ Deduct Stock</button>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 10px;">
+                                <label style="color: #b3c5df; display: block; margin-bottom: 5px;">Quantity:</label>
+                                <input type="number" min="0" id="quantity-input" style="background: #2a3a4c; border: 1px solid #3a4a5c; color: #b3c5df; padding: 8px; border-radius: 4px; width: 100px;" placeholder="0">
+                            </div>
+
+                            <button class="btn btn-primary" id="confirm-update-btn" style="font-size: 12px; padding: 8px 16px;">Confirm Update</button>
+                        </div>
+
+                        <div style="background: #1a2332; padding: 10px; border-radius: 4px; margin-top: 10px; display: none;" id="update-notification">
+                            <span style="color: #4ade80;">✓ Inventory updated successfully - New stock level: 67 units</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Add Merchandise Product</h3>
+                            <p>Add a new product with image, name, details, and price.</p>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <p style="color:#b3c5df; line-height:1.7;">Create new merchandise listings so finance and fulfillment teams can track stock, pricing, and product details.</p>
+                        <form id="add-product-form" style="display: grid; gap: 12px; margin-top: 12px;">
+                            <label style="color: #b3c5df; display: block;">
+                                Product Image
+                                <input type="file" id="product-image-input" accept="image/*" style="margin-top: 6px; width: 100%; padding: 8px; border-radius: 6px; background: #242f42; border: 1px solid #3a4a5c; color: #b3c5df;" />
+                            </label>
+                            <div id="image-preview" style="display: none; background: #15202f; border: 1px solid #3a4a5c; padding: 10px; border-radius: 8px; text-align: center;">
+                                <img id="image-preview-img" src="" alt="Preview" style="max-width: 100%; max-height: 140px; border-radius: 6px;" />
+                            </div>
+                            <label style="color: #b3c5df; display: block;">
+                                Merchandise Name
+                                <input type="text" id="product-name-input" placeholder="Enter product name" style="margin-top: 6px; width: 100%; padding: 8px; border-radius: 6px; background: #242f42; border: 1px solid #3a4a5c; color: #b3c5df;" />
+                            </label>
+                            <label style="color: #b3c5df; display: block;">
+                                Product Details
+                                <textarea id="product-details-input" rows="3" placeholder="Enter product description" style="margin-top: 6px; width: 100%; padding: 8px; border-radius: 6px; background: #242f42; border: 1px solid #3a4a5c; color: #b3c5df;"></textarea>
+                            </label>
+                            <label style="color: #b3c5df; display: block;">
+                                Price
+                                <input type="number" id="product-price-input" min="0" step="0.01" placeholder="0.00" style="margin-top: 6px; width: 100%; padding: 8px; border-radius: 6px; background: #242f42; border: 1px solid #3a4a5c; color: #b3c5df;" />
+                            </label>
+                            <button type="submit" class="btn btn-primary" style="font-size: 12px; padding: 8px 16px; width: fit-content;">Add Product</button>
+                        </form>
+                        <div style="background: #1a2332; padding: 10px; border-radius: 4px; margin-top: 10px; display: none;" id="product-added-notification">
+                            <span style="color: #4ade80;">✓ New merchandise product added successfully.</span>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Order Status</h3>
+                            <p>Orders Management</p>
+                        </div>
+                    </div>
+                    <div class="card-content">
+                        <h4>Confirmed Orders Queue</h4>
+                        <div style="margin: 15px 0;">
+                            <table style="width: 100%; border-collapse: collapse; color: #b3c5df;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid #3a4a5c;">
+                                        <th style="text-align: left; padding: 8px;">Order ID</th>
+                                        <th style="text-align: left; padding: 8px;">Customer</th>
+                                        <th style="text-align: left; padding: 8px;">Items</th>
+                                        <th style="text-align: center; padding: 8px;">Status</th>
+                                        <th style="text-align: center; padding: 8px;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid #2a3a4c;">
+                                        <td style="padding: 8px;">ORD-2026-001</td>
+                                        <td style="padding: 8px;">Juan Dela Cruz</td>
+                                        <td style="padding: 8px;">Triathlon Jersey, Race Bib</td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #fbbf24;">Pending</span></td>
+                                        <td style="text-align: center; padding: 8px;"><button class="btn btn-secondary" style="font-size: 12px; padding: 4px 8px;">Confirm Dispatch</button></td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #2a3a4c;">
+                                        <td style="padding: 8px;">ORD-2026-002</td>
+                                        <td style="padding: 8px;">Maria Santos</td>
+                                        <td style="padding: 8px;">Compression Apparel</td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #3b82f6;">Assigned</span></td>
+                                        <td style="text-align: center; padding: 8px;"><button class="btn btn-secondary" style="font-size: 12px; padding: 4px 8px;">Confirm Delivery</button></td>
+                                    </tr>
+          
+                                    <tr style="border-bottom: 1px solid #2a3a4c;">
+                                        <td style="padding: 8px;">ORD-2026-003</td>
+                                        <td style="padding: 8px;">Ana Garcia</td>
+                                        <td style="padding: 8px;">Race Bib Numbers (x2)</td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #4ade80;">Completed</span></td>
+                                        <td style="text-align: center; padding: 8px;"><span style="color: #6b7280; font-size: 12px;">Delivered</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div style="background: #1a2332; padding: 10px; border-radius: 4px; margin-top: 10px; display: none;" id="dispatch-notification">
+                            <span style="color: #4ade80;">✓ Order ORD-2024-001 assigned to Rider A. Rider notified of pickup details.</span>
+                        </div>
+                    </div>
+                </article>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Stock Management Functionality
+        const addStockBtn = document.getElementById('add-stock-btn');
+        const deductStockBtn = document.getElementById('deduct-stock-btn');
+        const quantityInput = document.getElementById('quantity-input');
+        const confirmUpdateBtn = document.getElementById('confirm-update-btn');
+        const updateNotification = document.getElementById('update-notification');
+
+        let selectedAction = null;
+
+        // Add Stock
+        addStockBtn.addEventListener('click', function() {
+            selectedAction = 'add';
+            confirmUpdateBtn.textContent = 'Confirm Add Stock';
+            quantityInput.focus();
+        });
+
+        // Deduct Stock
+        deductStockBtn.addEventListener('click', function() {
+            selectedAction = 'deduct';
+            confirmUpdateBtn.textContent = 'Confirm Deduct Stock';
+            quantityInput.focus();
+        });
+
+        // Confirm Update
+        confirmUpdateBtn.addEventListener('click', function() {
+            const quantity = quantityInput.value;
+
+            if (quantity === '' || quantity < 0) {
+                alert('Please enter a valid quantity (0 or greater)');
+                return;
+            }
+
+            let message = '';
+            if (selectedAction === 'add') {
+                message = `✓ Stock added successfully - ${quantity} units added to Triathlon Jersey`;
+            } else if (selectedAction === 'deduct') {
+                message = `✓ Stock deducted successfully - ${quantity} units removed from Triathlon Jersey`;
+            }
+
+            updateNotification.textContent = message;
+            updateNotification.style.display = 'block';
+
+            // Reset form
+            selectedAction = null;
+            confirmUpdateBtn.textContent = 'Confirm Update';
+            quantityInput.value = '';
+        });
+
+        // Add Merchandise Product Functionality
+        const productForm = document.getElementById('add-product-form');
+        const imageInput = document.getElementById('product-image-input');
+        const imagePreview = document.getElementById('image-preview');
+        const imagePreviewImg = document.getElementById('image-preview-img');
+        const productNameInput = document.getElementById('product-name-input');
+        const productDetailsInput = document.getElementById('product-details-input');
+        const productPriceInput = document.getElementById('product-price-input');
+        const productAddedNotification = document.getElementById('product-added-notification');
+
+        imageInput.addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                imagePreview.style.display = 'none';
+                imagePreviewImg.src = '';
+                return;
+            }
+            const url = URL.createObjectURL(file);
+            imagePreviewImg.src = url;
+            imagePreview.style.display = 'block';
+        });
+
+        productForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = productNameInput.value.trim();
+            const details = productDetailsInput.value.trim();
+            const price = productPriceInput.value.trim();
+
+            if (!imageInput.files.length) {
+                alert('Please select a product image.');
+                return;
+            }
+            if (!name || !details || price === '' || parseFloat(price) < 0) {
+                alert('Please complete all product fields with valid values.');
+                return;
+            }
+
+            productAddedNotification.textContent = `✓ New merchandise product "${name}" added successfully.`;
+            productAddedNotification.style.display = 'block';
+
+            productForm.reset();
+            imagePreview.style.display = 'none';
+            imagePreviewImg.src = '';
+        });
+    </script>
+</body>
+</html>
