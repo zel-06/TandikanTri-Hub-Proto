@@ -3,37 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Super Admin - Tandikan Tri-Hub</title>
+    
+    <!-- Google Fonts: Inter (From overview.html) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin_panel.css">
-    <title>Admin Dashboard - Tandikan Tri-Hub</title>
-
+    <style>
+        body {
+            font-family: 'Inter', sans-serif !important;
+        }
+        /* Grid adjustments for Super Admin scale */
+        .super-admin-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .sidebar-nav a {
+            text-decoration: none !important;
+        }
+        .kpi-section {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+    </style>
 </head>
 <body>
     <div class="admin-panel">
+        <!-- Sidebar: Consolidated Navigation from all Admins -->
         <aside class="sidebar">
             <div>
                 <div class="brand">
                     <img src="logo.png" alt="Tandikan Logo">
                     <div>
-                        <h1>Tandikan</h1>
-                        <p>Admin Panel</p>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Super Admin</p>
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a href="admin_dashboard.html" class="active"><span class="nav-icon">🏠</span>Analytics & Overview</a>
-                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
-                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
-                    <a href="admin_payments.html"><span class="nav-icon">💳</span>Financial & Payment Verification<span class="badge">12</span></a>
-                    <a href="admin_users.html"><span class="nav-icon">👥</span>User Identity Management</a>
-                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
-                    <a href="admin_roles.html"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                    <a href="admin_dashboard.html" class="active">Analytics & Overview</a>
+                    <a href="admin_events.html">Event Management</a>
+                    <a href="admin_ecommerce.html">E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html">Finance & Revenue Management</a>
+                    <a href="admin_users.html">User Management</a>
+                    <a href="admin_audit.html">Security & Audit Trail</a>
+                    <a href="admin_roles.html">System Access & Role Management</a>
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <p>Quick Insights</p>
+                <p>System Overview</p>
                 <div class="sidebar-stat">
-                    <span class="stat-label">Pending Issues</span>
-                    <span class="stat-value">4</span>
+                    <span class="stat-label">Pending Actions</span>
+                    <span class="stat-value">11</span> <!-- 8 Verifications + 3 Sanctions -->
+                </div>
+                <div class="sidebar-stat" style="margin-top: 10px;">
+                    <span class="stat-label">System Health</span>
+                    <span class="stat-value" style="color: #2be7b6;">Optimal</span>
                 </div>
             </div>
         </aside>
@@ -41,154 +69,163 @@
         <main class="dashboard-main">
             <header class="dashboard-header">
                 <div>
-                    <p class="eyebrow">Analytics & Overview Dashboard</p>
-                    <h2>Platform health at a glance with the highest-priority admin actions surfaced immediately.</h2>
+                    <span class="eyebrow">Master Control</span>
+                    <h2>Super Admin Analytics & Overview</h2>
                 </div>
                 <div class="top-actions">
-                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
-                    <button class="btn btn-primary">Generate Report</button>
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
+                    <button class="btn btn-primary">Download Master Report</button>
                 </div>
             </header>
 
+            <!-- Consolidated KPI Section -->
             <section class="kpi-section">
+                <!-- User Metrics -->
                 <article class="kpi-card">
-                    <p class="kpi-title">Total Active Athletes</p>
+                    <p class="kpi-title">Active Users</p>
                     <h3>1,248</h3>
-                    <span class="kpi-metric">+8.2% in last 24h</span>
+                    <span class="kpi-metric" style="color: #2be7b6;">+8.2% Growth</span>
                 </article>
+                <!-- Finance Metrics -->
                 <article class="kpi-card">
-                    <p class="kpi-title">Merchandise Revenue</p>
+                    <p class="kpi-title">Total Revenue</p>
                     <h3>₱46,700</h3>
-                    <span class="kpi-metric">+4.6% vs yesterday</span>
+                    <span class="kpi-metric">Verified Sales</span>
                 </article>
+                <!-- Registration Metrics (Aggregated) -->
                 <article class="kpi-card">
-                    <p class="kpi-title">Active Events</p>
-                    <h3>6</h3>
-                    <span class="kpi-metric">2 new events live</span>
+                    <p class="kpi-title">Race Registrations</p>
+                    <h3>715</h3>
+                    <span class="kpi-metric">Across 3 Events</span>
+                </article>
+                <!-- Logistics Metrics -->
+                <article class="kpi-card">
+                    <p class="kpi-title">Open Orders</p>
+                    <h3>28</h3>
+                    <span class="kpi-metric">In Fulfillment</span>
                 </article>
             </section>
 
-            <section class="dashboard-grid">
-                <article class="card overview-card">
-                    <div class="card-header">
-                        <div>
-                            <h3>Registration Trend (Last 24 Hours)</h3>
-                            <p>Live snapshot of recent event adoption and payment activity.</p>
-                        </div>
-                        <span class="status-pill">Real-time</span>
-                    </div>
-                    <div class="chart-hero">
-                        <div class="chart-legend">
-                            <span class="legend-dot active"></span>
-                            <small>Registrations</small>
-                            <span class="legend-dot revenue"></span>
-                            <small>Revenue</small>
-                        </div>
-                        <div class="chart-plot">
-                            <div class="chart-grid"></div>
-                            <div class="sparkline">
-                                <div class="sparkline-line"></div>
-                                <div class="sparkline-dot dot-1"></div>
-                                <div class="sparkline-dot dot-2"></div>
-                                <div class="sparkline-dot dot-3"></div>
-                                <div class="sparkline-dot dot-4"></div>
-                                <div class="sparkline-dot dot-5"></div>
-                                <div class="sparkline-dot dot-6"></div>
-                            </div>
-                        </div>
-                        <div class="chart-footer">
-                            <span>Mon</span>
-                            <span>Tue</span>
-                            <span>Wed</span>
-                            <span>Thu</span>
-                            <span>Fri</span>
-                            <span>Sat</span>
-                            <span>Sun</span>
-                        </div>
-                    </div>
-                </article>
-
-                <aside class="side-cards">
-                    <article class="card alerts-card">
+            <!-- Main Layout Grid -->
+            <div class="super-admin-grid">
+                
+                <!-- Left Column: Engagement and Predictive Analytics -->
+                <div class="main-col">
+                    <!-- User Engagement Chart (from overview.html) -->
+                    
+                    <!-- Event Analytics Table (from event_director.html) -->
+                    <article class="card">
                         <div class="card-header">
                             <div>
-                                <h3>Actionable Alerts</h3>
-                                <p>Tasks that need your attention now.</p>
+                                <h3>Event Performance & Predictive Analytics</h3>
+                                <p>High-capacity categories requiring resource focus.</p>
                             </div>
+                            <span class="status-pill" style="background: rgba(43, 231, 182, 0.16); color: #2be7b6;">Live Capacity</span>
+                        </div>
+                        <div class="card-content">
+                            <table style="width: 100%; text-align: left; border-collapse: collapse; color: #d8e4ff; font-size: 0.9rem;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8;">Event</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8;">Category</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8;">Fill Rate</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8;">Participants</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td style="padding: 1rem 0.5rem; font-weight: 700;">Tandikan Tri 2026</td>
+                                        <td>Relay</td>
+                                        <td style="color: #ff6d79; font-weight: 700;">100%</td>
+                                        <td>350/350</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td style="padding: 1rem 0.5rem; font-weight: 700;">IBP Marathon</td>
+                                        <td>3k</td>
+                                        <td style="color: #2be7b6; font-weight: 700;">98%</td>
+                                        <td>245/250</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </article>
+                    <!-- Prioritization Suggestion Block -->
+                        <div style="background: rgba(79, 150, 255, 0.08); border: 1px solid rgba(79, 150, 255, 0.2); padding: 1.5rem; border-radius: 20px; margin-bottom: 2.5rem;">
+                            <h4 style="margin: 0 0 0.75rem 0; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>💡</span> Suggested Event Priority
+                            </h4>
+                            <p style="margin: 0; color: #b8c8e5; line-height: 1.6; font-size: 0.95rem;">
+                                <strong style="color: #4f96ff;">Event:</strong> Tandikan Tri 2026 - Relay<br>
+                                <strong style="color: #4f96ff;">-----</strong> This category achieved a 100% fill rate faster than any other event, representing our most consistent high-yield demographic.<br>
+                            </p>
+                        </div>
+                </div>
+                
+
+                <!-- Right Column: Priority Alerts & Role Focus (from overview and finance) -->
+                <div class="side-col">
+                    <!-- Priority Alerts (from overview.html) -->
+                    <article class="card alerts-card" style="margin-bottom: 1.5rem;">
+                        <div class="card-header">
+                            <h3>Priority Alerts</h3>
+                            <span class="status-pill">2 Critical</span>
                         </div>
                         <div class="alert-list">
-                            <div class="alert-item critical">
-                                <div class="alert-info">
-                                    <span class="alert-badge">12</span>
-                                    <div>
-                                        <p class="alert-title">Pending Payments to Verify</p>
-                                        <p class="alert-meta">Review uploaded proofs and approve or reject payments.</p>
-                                    </div>
-                                </div>
-                                <span class="alert-status">Urgent</span>
-                            </div>
                             <div class="alert-item warning">
                                 <div class="alert-info">
-                                    <span class="alert-badge">3</span>
+                                    <span class="alert-badge">?</span>
                                     <div>
-                                        <p class="alert-title">Low Stock Items</p>
-                                        <p class="alert-meta">Some merch SKUs need restocking before the next event.</p>
+                                        <p class="alert-title">8 Pending IDs</p>
+                                        <p class="alert-meta">User verification backlog.</p>
                                     </div>
                                 </div>
-                                <span class="alert-status">Stock</span>
                             </div>
-                            <div class="alert-item info">
+                            <div class="alert-item critical">
                                 <div class="alert-info">
-                                    <span class="alert-badge">5</span>
+                                    <span class="alert-badge">!</span>
                                     <div>
-                                        <p class="alert-title">New Registration Reviews</p>
-                                        <p class="alert-meta">Check recent signups and confirm participant eligibility.</p>
+                                        <p class="alert-title">Login Flag</p>
+                                        <p class="alert-meta">Suspicious activity: USR-0992.</p>
                                     </div>
                                 </div>
-                                <span class="alert-status">Review</span>
                             </div>
                         </div>
                     </article>
 
-                    <article class="card activity-card">
+                    <!-- Inventory & Logistics Summary (from finance_officer.html) -->
+                    <article class="card" style="background: rgba(255, 255, 255, 0.02);">
                         <div class="card-header">
-                            <div>
-                                <h3>Recent Activity</h3>
-                                <p>Most recent transactions and registrations from the last 24 hours.</p>
-                            </div>
+                            <h3>Operations Summary</h3>
                         </div>
-                        <div class="activity-list">
-                            <div class="activity-item">
-                                <div>
-                                    <p class="activity-title">Juan Dela Cruz registered</p>
-                                    <p class="activity-meta">Tandikan Tri 2026 · Pending payment verification</p>
-                                </div>
-                                <span>2h ago</span>
-                            </div>
-                            <div class="activity-item">
-                                <div>
-                                    <p class="activity-title">Merch order completed</p>
-                                    <p class="activity-meta">Performance Jersey order #1945 · ₱2,450 collected</p>
-                                </div>
-                                <span>4h ago</span>
-                            </div>
-                            <div class="activity-item">
-                                <div>
-                                    <p class="activity-title">New event published</p>
-                                    <p class="activity-meta">Tandikan Relay Series now live for registration</p>
-                                </div>
-                                <span>7h ago</span>
-                            </div>
-                            <div class="activity-item">
-                                <div>
-                                    <p class="activity-title">Verification completed</p>
-                                    <p class="activity-meta">4 payment proofs approved in the last hour</p>
-                                </div>
-                                <span>9h ago</span>
+                        <div class="card-content" style="font-size: 0.85rem; color: #b3c5df;">
+                            <div style="margin-bottom: 1rem;">
+                                <strong style="color: #fff; display: block;">Inventory</strong>
+                                <span>342 Units in stock</span>
                             </div>
                         </div>
                     </article>
-                </aside>
+                </div>
+            </div>
+
+            <!-- Bottom Section: Yearly Projections (from event_director.html) -->
+            <section class="card">
+                <div class="card-header">
+                    <h3>Strategic Growth Projections</h3>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; padding: 1rem;">
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1.25rem; border-radius: 16px;">
+                        <p style="margin: 0; font-size: 0.75rem; color: #9cb3d8;">2026 ACTUAL</p>
+                        <h3 style="margin: 0; color: #2be7b6;">715 / 800</h3>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1.25rem; border-radius: 16px;">
+                        <p style="margin: 0; font-size: 0.75rem; color: #9cb3d8;">2027 PROJECTED</p>
+                        <h3 style="margin: 0; color: #fff;">745</h3>
+                    </div>
+                    <div style="background: rgba(255, 255, 255, 0.03); padding: 1.25rem; border-radius: 16px;">
+                        <p style="margin: 0; font-size: 0.75rem; color: #9cb3d8;">2028 PROJECTED</p>
+                        <h3 style="margin: 0; color: #fff;">780</h3>
+                    </div>
+                </div>
             </section>
         </main>
     </div>

@@ -3,9 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management - Tandikan Tri-Hub</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin_panel.css">
-    <title>User Identity Management - Tandikan Tri-Hub</title>
+    
+    <style>
+        /* Shared Form & UI Styles from admin_events.html */
+        body { font-family: 'Inter', sans-serif !important; }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.9rem; color: #9cb3d8; margin-bottom: 0.4rem; font-weight: 600; }
+        .form-control { width: 100%; padding: 0.85rem 1rem; border-radius: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box;}
+        .form-control:focus { border-color: #4f96ff; outline: none; }
+        
+        /* Table Action Buttons */
+        .action-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; margin-right: 0.25rem;}
+        .action-btn:hover { background: rgba(255,255,255,0.2); }
+        .btn-edit { color: #2be7b6; }
+        .btn-delete { color: #ff6d79; }
+        .btn-view { color: #4f96ff; background: rgba(79, 150, 255, 0.15); }
+        .btn-view:hover { background: rgba(79, 150, 255, 0.3); }
+
+        /* Sidebar Nav adjustment to match events */
+        .sidebar-nav a { text-decoration: none !important; }
+    </style>
 </head>
 <body>
     <div class="admin-panel">
@@ -14,25 +41,29 @@
                 <div class="brand">
                     <img src="logo.png" alt="Tandikan Logo">
                     <div>
-                        <h1>Tandikan</h1>
-                        <p>Admin Panel</p>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Super Admin</p>
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
-                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
-                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
-                    <a href="admin_payments.html"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
-                    <a href="admin_users.html" class="active"><span class="nav-icon">👥</span>User Identity Management</a>
-                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
-                    <a href="admin_roles.html"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                    <a href="admin_dashboard.html">Analytics & Overview</a>
+                    <a href="admin_events.html">Event Management</a>
+                    <a href="admin_ecommerce.html">E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html">Finance & Revenue Management</a>
+                    <a href="admin_users.html" class="active">User Management</a>
+                    <a href="admin_audit.html">Security & Audit Trail</a>
+                    <a href="admin_roles.html">System Access & Role Management</a>
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <p>Quick Insights</p>
+                <p>Action Center</p>
                 <div class="sidebar-stat">
-                    <span class="stat-label">New Signups</span>
+                    <span class="stat-label">Pending Verifications</span>
                     <span class="stat-value">8</span>
+                </div>
+                <div class="sidebar-stat" style="margin-top: 10px;">
+                    <span class="stat-label">Sanction Reviews</span>
+                    <span class="stat-value" style="color: #ff6d79;">3</span>
                 </div>
             </div>
         </aside>
@@ -40,54 +71,127 @@
         <main class="dashboard-main">
             <header class="dashboard-header">
                 <div>
-                    <p class="eyebrow">User Identity Management</p>
-                    <h2>Ensure every account is genuine, verified, and trusted on the platform.</h2>
+                    <h2>User Management</h2>
                 </div>
                 <div class="top-actions">
-                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
-                    <button class="btn btn-primary">Review Registrations</button>
+                    <button class="btn btn-secondary">Export User Base</button>
                 </div>
             </header>
 
-            <section class="dashboard-grid">
+            <section class="dashboard-grid" style="grid-template-columns: 1fr; gap: 2rem;">
+                
+                <!-- Pending Verifications Section (Alert Style) -->
                 <article class="card overview-card">
                     <div class="card-header">
                         <div>
-                            <h3>Registration Verification</h3>
-                            <p>Approve new sign-ups and grant full platform access.</p>
+                            <h3>Pending Account Verifications</h3>
+                            <p>Verify identity documents for new registrants.</p>
                         </div>
-                        <span class="status-pill">Verify</span>
                     </div>
                     <div class="card-content">
-                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
-                            <li>Review applicant details, documents, and event eligibility.</li>
-                            <li>Grant verified users access to feeds, checkout, and events.</li>
-                            <li>Reject or request additional info for suspicious registrations.</li>
-                        </ul>
+                        <div class="alert-list">
+                            <!-- User Item 1 -->
+                            <div class="alert-item warning">
+                                <div class="alert-info">
+                                    <span class="alert-badge">ID</span>
+                                    <div>
+                                        <p class="alert-title">Juan Dela Cruz</p>
+                                        <p class="alert-meta">juan.dc@example.com | Government ID Uploaded</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn btn-view">Review ID</button>
+                            </div>
+                            <!-- User Item 2 -->
+                            <div class="alert-item warning">
+                                <div class="alert-info">
+                                    <span class="alert-badge">ID</span>
+                                    <div>
+                                        <p class="alert-title">Maria Santos</p>
+                                        <p class="alert-meta">msantos99@example.com | Passport Uploaded</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn btn-view">Review ID</button>
+                            </div>
+                        </div>
                     </div>
                 </article>
 
-                <aside class="side-cards">
-                    <article class="card alerts-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Profile Management</h3>
-                                <p>Inspect athlete profiles, contact info, and emergency details.</p>
-                            </div>
+                <!-- User Database Table Section -->
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>User Profiles & Activity</h3>
+                            <p>Search and manage the central user database.</p>
                         </div>
-                        <p style="color:#b3c5df; line-height:1.7;">See full participant details in one place so you can make verification and safety decisions confidently.</p>
-                    </article>
+                    </div>
+                    <div class="card-content">
+                        <!-- Search Bar Row -->
+                        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+                            <input type="text" class="form-control" style="flex: 1;" placeholder="Search by name, email, or User ID...">
+                            <button class="btn btn-primary">Search</button>
+                        </div>
 
-                    <article class="card activity-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Activity Logs & Sanctions</h3>
-                                <p>Search user histories and apply account actions when needed.</p>
+                        <!-- User Table -->
+                        <div style="overflow-x: auto;">
+                            <table style="width: 100%; text-align: left; border-collapse: collapse; color: #d8e4ff; font-size: 0.95rem;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">User Name</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">User ID</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Status</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Database Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td style="padding: 1rem 0.5rem; font-weight: 700;">Miguel Reyes</td>
+                                        <td style="padding: 1rem 0.5rem;">USR-1042</td>
+                                        <td style="padding: 1rem 0.5rem;"><span style="color: #2be7b6;">Active</span></td>
+                                        <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                            <button class="action-btn btn-edit">Manage Profile</button>
+                                            <button class="action-btn btn-view">Activity Log</button>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td style="padding: 1rem 0.5rem; font-weight: 700;">Elena Vizconde</td>
+                                        <td style="padding: 1rem 0.5rem;">USR-1043</td>
+                                        <td style="padding: 1rem 0.5rem;"><span style="color: #2be7b6;">Active</span></td>
+                                        <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                            <button class="action-btn btn-edit">Manage Profile</button>
+                                            <button class="action-btn btn-view">Activity Log</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Sanction Reviews Section -->
+                <article class="card alerts-card">
+                    <div class="card-header">
+                        <div>
+                            <h3 style="color: #ff6d79;">Sanction Reviews</h3>
+                            <p>Accounts flagged for rule violations.</p>
+                        </div>
+                        <span class="status-pill" style="color: #ff6d79; background: rgba(255, 109, 121, 0.16);">Action Required</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="alert-list">
+                            <div class="alert-item critical">
+                                <div class="alert-info">
+                                    <span class="alert-badge">X</span>
+                                    <div>
+                                        <p class="alert-title">Carlos Gomez (USR-0755)</p>
+                                        <p class="alert-meta">Reason: Multiple suspicious chargeback attempts.</p>
+                                    </div>
+                                </div>
+                                <button class="action-btn btn-delete">Suspend Account</button>
                             </div>
                         </div>
-                        <p style="color:#b3c5df; line-height:1.7;">Review event participation, orders, and login activity. Suspend or ban accounts as policy requires.</p>
-                    </article>
-                </aside>
+                    </div>
+                </article>
+
             </section>
         </main>
     </div>

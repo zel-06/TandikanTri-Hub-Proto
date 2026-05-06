@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin_panel.css">
-    <title>Financial & Payment Verification - Tandikan Tri-Hub</title>
+    <title>Finance Officer Analytics - Tandikan Tri-Hub</title>
 </head>
 <body>
     <div class="admin-panel">
@@ -14,25 +14,25 @@
                 <div class="brand">
                     <img src="logo.png" alt="Tandikan Logo">
                     <div>
-                        <h1>Tandikan</h1>
-                        <p>Admin Panel</p>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Super Admin</p>
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
-                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
-                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
-                    <a href="admin_payments.html" class="active"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
-                    <a href="admin_users.html"><span class="nav-icon">👥</span>User Identity Management</a>
-                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
-                    <a href="admin_roles.html"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                    <a href="admin_dashboard.html">Analytics & Overview</a>
+                    <a href="admin_events.html">Event Management</a>
+                    <a href="admin_ecommerce.html">E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html" class="active">Finance & Revenue Management</a>
+                    <a href="admin_users.html">User Management</a>
+                    <a href="admin_audit.html">Security & Audit Trail</a>
+                    <a href="admin_roles.html">System Access & Role Management</a>
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <p>Quick Insights</p>
+                <p>Reports</p>
                 <div class="sidebar-stat">
-                    <span class="stat-label">Pending Proofs</span>
-                    <span class="stat-value">12</span>
+                    <span class="stat-label">Total Collected</span>
+                    <span class="stat-value">₱46,700</span>
                 </div>
             </div>
         </aside>
@@ -40,54 +40,59 @@
         <main class="dashboard-main">
             <header class="dashboard-header">
                 <div>
-                    <p class="eyebrow">Financial & Payment Verification</p>
-                    <h2>Securely validate transactions and prevent fraudulent payment claims.</h2>
+                    <h2>Finance & Revenue Management</h2>
                 </div>
                 <div class="top-actions">
-                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
-                    <button class="btn btn-primary">Review Payments</button>
+                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
+                    <button class="btn btn-primary">Export Report</button>
                 </div>
             </header>
+
+            <section class="kpi-section">
+                <article class="kpi-card">
+                    <p class="kpi-title">Total Revenue Collected</p>
+                    <h3>₱46,700</h3>
+                    <span class="kpi-metric">From all sources combined</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Registration Revenue</p>
+                    <h3>₱38,200</h3>
+                    <span class="kpi-metric">Race fees and entry</span>
+                </article>
+                <article class="kpi-card">
+                    <p class="kpi-title">Merchandise Revenue</p>
+                    <h3>₱8,500</h3>
+                    <span class="kpi-metric">Apparel and accessories</span>
+                </article>
+            </section>
 
             <section class="dashboard-grid">
                 <article class="card overview-card">
                     <div class="card-header">
                         <div>
-                            <h3>Proof of Payment Queue</h3>
-                            <p>Review the latest user-submitted receipts and reference numbers.</p>
+                            <h3>Financial Report & Export</h3>
+                            <p>Generate and export comprehensive financial reports.</p>
                         </div>
-                        <span class="status-pill">Queue</span>
                     </div>
                     <div class="card-content">
-                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
-                            <li>See uploaded payment screenshots with user order details.</li>
-                            <li>Use timestamps and evidence to confirm the transaction matches the claim.</li>
-                            <li>Quickly mark proofs as verified or rejected.</li>
-                        </ul>
+                        <p style="color:#b3c5df; line-height:1.7;">Generate detailed financial reports by event, time period, and revenue source. Export data in multiple formats (PDF, CSV, Excel) for accounting reconciliation and audits. Create custom reports with specific date ranges and transaction filters.</p>
+                        <button class="btn btn-secondary" style="margin-top: 12px;">Generate & Export</button>
                     </div>
                 </article>
 
-                <aside class="side-cards">
-                    <article class="card alerts-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Cross-Referencing UI</h3>
-                                <p>Compare user-submitted references side by side with uploaded receipts.</p>
-                            </div>
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Visual Graphs & Metrics</h3>
+                            <p>Monitor total collected money with visual analytics.</p>
                         </div>
-                        <p style="color:#b3c5df; line-height:1.7;">Display payment details next to the image so verification is fast and accurate.</p>
-                    </article>
 
-                    <article class="card activity-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Approval/Rejection Engine</h3>
-                                <p>Verify payments or request a new upload with a single click.</p>
-                            </div>
-                        </div>
-                        <p style="color:#b3c5df; line-height:1.7;">Approved payments automatically update registration and order status, while rejected claims trigger an email workflow.</p>
-                    </article>
-                </aside>
+                    </div>
+                    <div class="card-content">
+                        <p style="color:#b3c5df; line-height:1.7;">View interactive dashboards displaying revenue trends over time, breakdown by event type, and revenue sources. Monitor daily/weekly/monthly collection targets and performance against projections. Identify revenue patterns and growth metrics.</p>
+                        <button class="btn btn-secondary" style="margin-top: 12px;">View Analytics</button>
+                    </div>
+                </article>
             </section>
         </main>
     </div>

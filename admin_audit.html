@@ -6,6 +6,22 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin_panel.css">
     <title>Security & Audit Trail - Tandikan Tri-Hub</title>
+    <style>
+        /* Shared Styles from admin_events */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-control { width: 100%; padding: 0.85rem 1rem; border-radius: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box;}
+        .form-control:focus { border-color: #4f96ff; outline: none; }
+        
+        /* Table Action Buttons */
+        .action-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; }
+        .action-btn:hover { background: rgba(255,255,255,0.2); }
+        .btn-view { color: #4f96ff; }
+
+        /* Status Colors */
+        .text-warning { color: #ffb86c; }
+        .text-danger { color: #ff6d79; }
+        .text-success { color: #2be7b6; }
+    </style>
 </head>
 <body>
     <div class="admin-panel">
@@ -14,25 +30,25 @@
                 <div class="brand">
                     <img src="logo.png" alt="Tandikan Logo">
                     <div>
-                        <h1>Tandikan</h1>
-                        <p>Admin Panel</p>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Super Admin</p>
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
-                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
-                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
-                    <a href="admin_payments.html"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
-                    <a href="admin_users.html"><span class="nav-icon">👥</span>User Identity Management</a>
-                    <a href="admin_audit.html" class="active"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
-                    <a href="admin_roles.html"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                    <a href="admin_dashboard.html">Analytics & Overview</a>
+                    <a href="admin_events.html">Event Management</a>
+                    <a href="admin_ecommerce.html">E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html">Finance & Revenue Management</a>
+                    <a href="admin_users.html">User Management</a>
+                    <a href="admin_audit.html" class="active">Security & Audit Trail</a>
+                    <a href="admin_roles.html">System Access & Role Management</a>
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <p>Quick Insights</p>
+                <p>Action Center</p>
                 <div class="sidebar-stat">
-                    <span class="stat-label">Audit Logs</span>
-                    <span class="stat-value">1,243</span>
+                    <span class="stat-label">Pending Verifications</span>
+                    <span class="stat-value">8</span>
                 </div>
             </div>
         </aside>
@@ -40,54 +56,87 @@
         <main class="dashboard-main">
             <header class="dashboard-header">
                 <div>
-                    <p class="eyebrow">Security & Audit Trail</p>
-                    <h2>Track every critical admin action with accountability and defense-ready export tools.</h2>
+                    <h2>Security & Audit Trail</h2>
                 </div>
                 <div class="top-actions">
-                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
-                    <button class="btn btn-primary">Export Logs</button>
+                    <button class="btn btn-secondary" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.6rem 1.2rem; border-radius: 12px; cursor: pointer;">
+                        📄 Download Logs (CSV)
+                    </button>
                 </div>
             </header>
 
-            <section class="dashboard-grid">
+            <section class="dashboard-grid" style="grid-template-columns: 1fr; gap: 2rem;">
+                
+                <!-- Activity Filter Bar (Same flow as Participants Search) -->
                 <article class="card overview-card">
-                    <div class="card-header">
-                        <div>
-                            <h3>Immutable Action Ledger</h3>
-                            <p>Record every change made by admins across the platform.</p>
-                        </div>
-                        <span class="status-pill">Audit</span>
-                    </div>
                     <div class="card-content">
-                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
-                            <li>Capture who changed what, when, and where.</li>
-                            <li>Keep tamper-proof records for security reviews and investigations.</li>
-                            <li>Expose audit data only to authorized super admins.</li>
-                        </ul>
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+
+                            <div style="flex: 1;">
+                                <select class="form-control">
+                                    <option value="">All Modules</option>
+                                    <option value="finance">Finance</option>
+                                    <option value="events">Events</option>
+                                    <option value="security">Security</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-primary" style="padding: 0.85rem 1.5rem;">Filter Results</button>
+                        </div>
                     </div>
                 </article>
 
-                <aside class="side-cards">
-                    <article class="card alerts-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Advanced Filtering</h3>
-                                <p>Search logs by date, admin, or action type.</p>
-                            </div>
+                <!-- Audit Logs Table -->
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Live Admin Activity Logs</h3>
+                            <p>Real-time record of system-wide administrative actions</p>
                         </div>
-                        <p style="color:#b3c5df; line-height:1.7;">Zero in on deleted orders, credential changes, or permission updates with trusted filters.</p>
-                    </article>
-
-                    <article class="card activity-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Export for Defense</h3>
-                                <p>Download logs to verify system integrity externally.</p>
-                            </div>
-                        </div>
-                        <p style="color:#b3c5df; line-height:1.7;">Create export packages for audits, compliance checks, and dispute resolution.</p>
-                    </article>
-                </aside>
+                    </div>
+                    <div class="card-content" style="overflow-x: auto;">
+                        <table style="width: 100%; text-align: left; border-collapse: collapse; color: #d8e4ff; font-size: 0.95rem;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Administrator</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Module</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Action Performed</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Timestamp</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Maria S.</td>
+                                    <td style="padding: 1rem 0.5rem;"><span style="background: rgba(79, 150, 255, 0.1); color: #4f96ff; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">FINANCE</span></td>
+                                    <td style="padding: 1rem 0.5rem;">Approved payment proof for Order #1042</td>
+                                    <td style="padding: 1rem 0.5rem;">May 6, 2026 13:15</td>
+                                    <td style="padding: 1rem 0.5rem;"><button class="action-btn btn-view">View</button></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Carlos D.</td>
+                                    <td style="padding: 1rem 0.5rem;"><span style="background: rgba(43, 231, 182, 0.1); color: #2be7b6; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">EVENTS</span></td>
+                                    <td style="padding: 1rem 0.5rem;">Updated official route map asset</td>
+                                    <td style="padding: 1rem 0.5rem;">May 6, 2026 12:45</td>
+                                    <td style="padding: 1rem 0.5rem;"><button class="action-btn btn-view">View</button></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;" class="text-warning">System Alert</td>
+                                    <td style="padding: 1rem 0.5rem;"><span style="background: rgba(255, 184, 108, 0.1); color: #ffb86c; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">SECURITY</span></td>
+                                    <td style="padding: 1rem 0.5rem;" class="text-warning">5 failed login attempts - User ID: USR-0992</td>
+                                    <td style="padding: 1rem 0.5rem;">May 6, 2026 10:12</td>
+                                    <td style="padding: 1rem 0.5rem;"><button class="action-btn btn-view">Investigate</button></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Leo T.</td>
+                                    <td style="padding: 1rem 0.5rem;"><span style="background: rgba(255, 109, 121, 0.1); color: #ff6d79; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">MERCH</span></td>
+                                    <td style="padding: 1rem 0.5rem;">Adjusted stock levels: Jersey (Large)</td>
+                                    <td style="padding: 1rem 0.5rem;">May 6, 2026 11:30</td>
+                                    <td style="padding: 1rem 0.5rem;"><button class="action-btn btn-view">View</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
             </section>
         </main>
     </div>

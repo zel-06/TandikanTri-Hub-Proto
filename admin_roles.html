@@ -6,6 +6,28 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin_panel.css">
     <title>System Access & Role Management - Tandikan Tri-Hub</title>
+    <style>
+        /* Shared Styles from admin_events */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.9rem; color: #9cb3d8; margin-bottom: 0.4rem; font-weight: 600; }
+        .form-control { width: 100%; padding: 0.85rem 1rem; border-radius: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box;}
+        .form-control:focus { border-color: #4f96ff; outline: none; }
+        select.form-control option { background: #081025; color: #fff; }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+        /* Table Action Buttons */
+        .action-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; margin-right: 0.25rem;}
+        .action-btn:hover { background: rgba(255,255,255,0.2); }
+        .btn-edit { color: #2be7b6; }
+        .btn-delete { color: #ff6d79; }
+        .btn-view { color: #4f96ff; }
+
+        /* Status Pills (Inline with Table) */
+        .status-badge { padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .status-active { background: rgba(43, 231, 182, 0.1); color: #2be7b6; }
+        .status-deactivated { background: rgba(255, 109, 121, 0.1); color: #ff6d79; }
+    </style>
 </head>
 <body>
     <div class="admin-panel">
@@ -14,25 +36,25 @@
                 <div class="brand">
                     <img src="logo.png" alt="Tandikan Logo">
                     <div>
-                        <h1>Tandikan</h1>
-                        <p>Admin Panel</p>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Super Admin</p>
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a href="admin_dashboard.html"><span class="nav-icon">🏠</span>Analytics & Overview</a>
-                    <a href="admin_events.html"><span class="nav-icon">📅</span>Event Management</a>
-                    <a href="admin_ecommerce.html"><span class="nav-icon">🛍️</span>E-Commerce & Fulfillment</a>
-                    <a href="admin_payments.html"><span class="nav-icon">💳</span>Financial & Payment Verification</a>
-                    <a href="admin_users.html"><span class="nav-icon">👥</span>User Identity Management</a>
-                    <a href="admin_audit.html"><span class="nav-icon">🛡️</span>Security & Audit Trail</a>
-                    <a href="admin_roles.html" class="active"><span class="nav-icon">🔐</span>System Access & Role Management</a>
+                    <a href="admin_dashboard.html">Analytics & Overview</a>
+                    <a href="admin_events.html">Event Management</a>
+                    <a href="admin_ecommerce.html">E-Commerce & Fulfillment</a>
+                    <a href="admin_payments.html">Finance & Revenue Management</a>
+                    <a href="admin_users.html">User Management</a>
+                    <a href="admin_audit.html">Security & Audit Trail</a>
+                    <a href="admin_roles.html" class="active">System Access & Role Management</a>
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <p>Quick Insights</p>
+                <p>System Details</p>
                 <div class="sidebar-stat">
-                    <span class="stat-label">Active Roles</span>
-                    <span class="stat-value">5</span>
+                    <span class="stat-label">System Admins</span>
+                    <span class="stat-value">4 Active</span>
                 </div>
             </div>
         </aside>
@@ -40,54 +62,121 @@
         <main class="dashboard-main">
             <header class="dashboard-header">
                 <div>
-                    <p class="eyebrow">System Access & Role Management</p>
-                    <h2>Control access levels and ensure officers only see the modules they need.</h2>
+                    <h2>Role & Access Control</h2>
                 </div>
-                <div class="top-actions">
-                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Website</a></button>
-                    <button class="btn btn-primary">Create Admin Account</button>
-                </div>
+                
             </header>
 
-            <section class="dashboard-grid">
+            <section class="dashboard-grid" style="grid-template-columns: 1fr; gap: 2rem;">
+                
+                <!-- Create Admin Form (Same flow as Create Event) -->
                 <article class="card overview-card">
                     <div class="card-header">
                         <div>
-                            <h3>Account Generation</h3>
-                            <p>Create secure backend access for officers and assign them a role.</p>
+                            <h3>Create Specialized Admin</h3>
+                            <p>Provision new administrative accounts with specific module access.</p>
                         </div>
-                        <span class="status-pill">RBAC</span>
                     </div>
                     <div class="card-content">
-                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
-                            <li>Issue new login credentials for organizers, finance officers, and support staff.</li>
-                            <li>Set strict permissions so each officer only sees allowed modules.</li>
-                            <li>Use role templates for faster setup.</li>
-                        </ul>
+                        <form id="createAdminForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Email Address</label>
+                                    <input type="email" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Assigned Role</label>
+                                    <select class="form-control">
+                                        <option value="">-- Select Role --</option>
+                                        <option value="event">Event Manager</option>
+                                        <option value="finance">Finance Admin</option>
+                                        <option value="merch">Merch Admin</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Temporary Password</label>
+                                    <input type="password" class="form-control" placeholder="••••••••">
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 1rem;">
+                                <button type="button" class="btn btn-primary">Create Admin Account</button>
+                            </div>
+                        </form>
                     </div>
                 </article>
 
-                <aside class="side-cards">
-                    <article class="card alerts-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Account Deactivation</h3>
-                                <p>Immediately remove access without deleting historical records.</p>
-                            </div>
+                <!-- Admin Directory Table (Replacing the "Bouncing" List) -->
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Active Administrator Directory</h3>
+                            <p>Manage permissions, reset credentials, or revoke access.</p>
                         </div>
-                        <p style="color:#b3c5df; line-height:1.7;">Suspend outgoing officers instantly while preserving their audit trail.</p>
-                    </article>
+                    </div>
+                    <div class="card-content" style="overflow-x: auto;">
+                        <table style="width: 100%; text-align: left; border-collapse: collapse; color: #d8e4ff; font-size: 0.95rem;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Administrator</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Role</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Modules</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Status</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Karl N. (You)</td>
+                                    <td style="padding: 1rem 0.5rem;">Super Admin</td>
+                                    <td style="padding: 1rem 0.5rem;">Full Access</td>
+                                    <td style="padding: 1rem 0.5rem;"><span class="status-badge status-active">Online</span></td>
+                                    <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                        <button class="action-btn btn-view">Edit Profile</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Carlos D.</td>
+                                    <td style="padding: 1rem 0.5rem;">Operations Manager</td>
+                                    <td style="padding: 1rem 0.5rem;">User Management, Audit, Analytics</td>
+                                    <td style="padding: 1rem 0.5rem;"><span class="status-badge status-active">Active</span></td>
+                                    <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                        <button class="action-btn btn-view">Reset Pass</button>
+                                        <button class="action-btn btn-delete">Revoke</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Maria S.</td>
+                                    <td style="padding: 1rem 0.5rem;">Event Manager</td>
+                                    <td style="padding: 1rem 0.5rem;">Event Management, Analytics</td>
+                                    <td style="padding: 1rem 0.5rem;"><span class="status-badge status-active">Active</span></td>
+                                    <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                        <button class="action-btn btn-view">Reset Pass</button>
+                                        <button class="action-btn btn-delete">Revoke</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Leo T.</td>
+                                    <td style="padding: 1rem 0.5rem;">Finance and Merchandise Manager</td>
+                                    <td style="padding: 1rem 0.5rem;">E-Commerce, Finance</td>
+                                    <td style="padding: 1rem 0.5rem;"><span class="status-badge status-deactivated">Disabled</span></td>
+                                    <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                        <button class="action-btn btn-edit">Reactivate</button>
+                                        <button class="action-btn btn-delete">Delete</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
 
-                    <article class="card activity-card">
-                        <div class="card-header">
-                            <div>
-                                <h3>Security Overrides</h3>
-                                <p>Force password resets and manage compromised accounts.</p>
-                            </div>
-                        </div>
-                        <p style="color:#b3c5df; line-height:1.7;">Use powerful controls to secure the admin network after suspicious activity.</p>
-                    </article>
-                </aside>
             </section>
         </main>
     </div>
