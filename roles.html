@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Access & Role Management - Tandikan Tri-Hub</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="admin_panel.css">
+    
+    <style>
+        /* Applies the modern font and centers sidebar links */
+        body { font-family: 'Inter', sans-serif !important; }
+        .sidebar-nav a {
+            text-decoration: none !important;
+            justify-content: center; 
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-panel">
+        <aside class="sidebar">
+            <div>
+                <div class="brand">
+                    <img src="logo.png" alt="Tandikan Logo">
+                    <div>
+                        <h1>Tandikan Tri Team</h1>
+                        <p style="color: #68c5ff; font-weight: 700;">Super Admin</p>
+                    </div>
+                </div>
+                
+                <nav class="sidebar-nav">
+                    <a href="overview.html">Analytics & Overview</a>
+                    <a href="events.html">Event Management</a>
+                    <a href="ecommerce.html">E-Commerce & Fulfillment</a>
+                    <a href="finance.html">Finance & Revenue</a>
+                    <a href="users.html">User Management</a>
+                    <a href="audit.html">Security & Audit Trail</a>
+                    <a href="roles.html" class="active">System Access & Roles</a>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+                <p>System Details</p>
+                <div class="sidebar-stat">
+                    <span class="stat-label">System Admins</span>
+                    <span class="stat-value">4 Active</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="dashboard-main">
+            <header class="dashboard-header">
+                <div>
+                    <span class="eyebrow" style="color: #ff6d79;">Super Admin Exclusive</span>
+                    <h2>System Access & Role Management</h2>
+                </div>
+                <div class="top-actions">
+                    <button class="btn btn-secondary">Export Admin List</button>
+                    <button class="btn btn-primary">+ Create Specialized Admin</button>
+                </div>
+            </header>
+
+            <section class="dashboard-grid">
+                
+                <!-- Main Admin Directory -->
+                <article class="card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Active Administrator Directory</h3>
+                            <p>Control overall admin access. Reset passwords, deactivate, or delete accounts.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="activity-list" style="margin-top: 1rem;">
+                        <!-- Super Admin -->
+                        <div class="activity-item" style="align-items: center;">
+                            <div>
+                                <p class="activity-title">Super Admin (You) <span class="status-pill" style="margin-left: 8px;">Full Access</span></p>
+                                <p class="activity-meta">All Modules · Status: <strong style="color: #2be7b6;">Online</strong></p>
+                            </div>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Edit Profile</button>
+                            </div>
+                        </div>
+
+                        <!-- Event Manager -->
+                        <div class="activity-item" style="align-items: center;">
+                            <div>
+                                <p class="activity-title">Carlos D. <span class="status-pill" style="margin-left: 8px; background: rgba(23, 162, 184, 0.16); color: #48cce3;">Event Manager</span></p>
+                                <p class="activity-meta">Modules: Events, Analytics · Status: Active</p>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Reset Pass</button>
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-color: rgba(255, 184, 108, 0.4); color: #ffb86c;">Deactivate</button>
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-color: rgba(255, 109, 121, 0.4); color: #ff6d79;">Delete</button>
+                            </div>
+                        </div>
+
+                        <!-- Finance Admin -->
+                        <div class="activity-item" style="align-items: center;">
+                            <div>
+                                <p class="activity-title">Maria S. <span class="status-pill" style="margin-left: 8px; background: rgba(40, 167, 69, 0.16); color: #5ddc7b;">Finance Admin</span></p>
+                                <p class="activity-meta">Modules: Finance, Revenue · Status: Active</p>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem;">Reset Pass</button>
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-color: rgba(255, 184, 108, 0.4); color: #ffb86c;">Deactivate</button>
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-color: rgba(255, 109, 121, 0.4); color: #ff6d79;">Delete</button>
+                            </div>
+                        </div>
+
+                        <!-- Merch Admin -->
+                        <div class="activity-item" style="align-items: center;">
+                            <div>
+                                <p class="activity-title" style="color: #7c95bf;">Leo T. <span class="status-pill" style="margin-left: 8px; background: rgba(253, 126, 20, 0.16); color: #ffa256;">Merch Admin</span></p>
+                                <p class="activity-meta">Modules: E-Commerce · Status: <strong style="color: #ffb86c;">Deactivated</strong></p>
+                            </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end;">
+                                <button class="btn btn-primary" style="padding: 0.5rem 1rem; font-size: 0.8rem; background: rgba(43, 231, 182, 0.15); color: #2be7b6; box-shadow: none;">Reactivate</button>
+                                <button class="btn btn-secondary" style="padding: 0.5rem 1rem; font-size: 0.8rem; border-color: rgba(255, 109, 121, 0.4); color: #ff6d79;">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Side Panel for Roles and Capabilities -->
+                <div class="side-cards">
+                    <article class="card alerts-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Role Architecture</h3>
+                                <p>Reference for assigned read/write capabilities.</p>
+                            </div>
+                        </div>
+                        <div class="alert-list">
+                            <div class="alert-item info">
+                                <div class="alert-info">
+                                    <span class="alert-badge" style="background: #48cce3; color: #071025;">E</span>
+                                    <div>
+                                        <p class="alert-title">Event Manager</p>
+                                        <p class="alert-meta">CRUD operations for activities and event modules.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="alert-item warning" style="background: rgba(40, 167, 69, 0.1); border-color: rgba(40, 167, 69, 0.18);">
+                                <div class="alert-info">
+                                    <span class="alert-badge" style="background: #5ddc7b; color: #071025;">F</span>
+                                    <div>
+                                        <p class="alert-title">Finance Admin</p>
+                                        <p class="alert-meta">Track automated revenue and payment verification.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="alert-item warning">
+                                <div class="alert-info">
+                                    <span class="alert-badge" style="background: #ffa256; color: #071025;">M</span>
+                                    <div>
+                                        <p class="alert-title">Merch Admin</p>
+                                        <p class="alert-meta">E-commerce fulfillment tracker and manage merchandise.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    
+                    <article class="card">
+                        <div class="card-header" style="margin-bottom: 0;">
+                            <div>
+                                <h3>Security Controls</h3>
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 15px;">
+                            <button class="btn btn-secondary" style="width: 100%; text-align: left;">Force Global Logout</button>
+                            <button class="btn btn-secondary" style="width: 100%; text-align: left; border-color: rgba(255, 109, 121, 0.3); color: #ff6d79;">Emergency Lockout</button>
+                        </div>
+                    </article>
+                </div>
+
+            </section>
+        </main>
+    </div>
+</body>
+</html>
