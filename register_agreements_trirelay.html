@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tandikan Tri-Hub | Registration Agreements</title>
+    <style>
+        /* Tandikan Brand Colors & Agreement Layout */
+        :root {
+            --tandikan-green: #0f2247;
+            --tandikan-dark: #1a1a1a;
+        }
+
+        .agreement-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .agreement-box {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .agreement-box:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .agreement-header {
+            background-color: var(--tandikan-green);
+            color: #ffffff; /* Dark text for high contrast on neon green */
+            padding: 18px;
+            font-weight: 800;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+        }
+
+        .agreement-content {
+            padding: 25px;
+            border-top: 1px solid #eee;
+        }
+
+        .scroll-text {
+            max-height: 220px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            padding-right: 15px;
+            color: #333;
+            text-align: justify;
+        }
+
+        .scroll-text strong {
+            color: #000;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #555;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .checkbox-label input {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--tandikan-green);
+        }
+
+        /* UI Elements */
+        .icon-info {
+            background: #000;
+            color: var(--tandikan-green);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        details summary::-webkit-details-marker { display: none; }
+        details[open] .arrow { transform: rotate(180deg); }
+        .arrow { transition: transform 0.3s ease; display: inline-block; }
+
+        .btn-continue {
+            background-color: var(--tandikan-green);
+            border: none;
+            padding: 18px 80px;
+            color: #f3f3f3;
+            font-weight: 900;
+            border-radius: 4px;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: transform 0.2s;
+        }
+
+        .btn-continue:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="home.html"><img src="logo.png" alt="Tandikan Tri Team Logo"></a>
+            <span class="logo-text">Tandikan Tri-Hub</span>
+        </div>
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="store.html">Store</a>
+            <a href="about.html">About</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="btn-icon btn-notification">🔔</button>
+            <button class="btn-icon btn-profile">👤</button>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-content event-register-main">
+            <div class="register-header">
+                <a href="register_personaldetails_trirelay.html" class="event-btn">← Back</a>
+                <div>
+                    <h1>Event Participation Agreements</h1>
+                    <p class="subtitle text-green">Step 2 of 4</p>
+                </div>
+            </div>
+
+            <div class="register-steps">
+                <div class="step complete"><span>✓</span><p>Registration</p></div>
+                <div class="step active"><span>2</span><p>Agreements</p></div>
+                <div class="step"><span>3</span><p>Payment</p></div>
+                <div class="step"><span>4</span><p>Done</p></div>
+            </div>
+
+            <div class="agreement-container">
+                
+                <details open class="agreement-box">
+                    <summary class="agreement-header">
+                        <span>Data Privacy Agreement</span>
+                        <div><span class="icon-info">!</span> <span class="arrow">▼</span></div>
+                    </summary>
+                    <div class="agreement-content">
+                        <div class="scroll-text">
+                            <strong>Compliance with Republic Act No. 10173:</strong> By proceeding with this registration for Tandikan Tri Team events, I authorize <strong>Tandikan Tri-Hub</strong> to collect and process my personal data, including medical history and emergency contacts. This information is used solely for race timing, medical safety, and event logistics in Puerto Princesa City. We will not share your data with third parties without consent, except for official race results publication.
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            <span>I consent to the collection and processing of my data for the Tandikan Tri Event.</span>
+                        </label>
+                    </div>
+                </details>
+
+                <details class="agreement-box">
+                    <summary class="agreement-header">
+                        <span>Refund & Local Cancellation Policy</span>
+                        <div><span class="icon-info">!</span> <span class="arrow">▼</span></div>
+                    </summary>
+                    <div class="agreement-content">
+                        <div class="scroll-text">
+                            <strong>No-Refund Policy:</strong> All registration fees for Tandikan Tri events are non-refundable. <br><br>
+                            <strong>Force Majeure:</strong> In the event of extreme weather in Palawan, tropical cyclones, or local government mandates that prevent the race from occurring on the scheduled date, Tandikan Tri Team organizers reserve the right to postpone the event. No refunds will be issued for postponements; slots will be automatically carried over to the new date.
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            <span>I acknowledge the non-refundable nature of the registration fee.</span>
+                        </label>
+                    </div>
+                </details>
+
+                <details class="agreement-box">
+                    <summary class="agreement-header">
+                        <span>Tandikan Tri Team Waiver of Liability</span>
+                        <div><span class="icon-info">!</span> <span class="arrow">▼</span></div>
+                    </summary>
+                    <div class="agreement-content">
+                        <div class="scroll-text">
+                            <strong>ASSUMPTION OF RISK:</strong> I am aware that participating in a triathlon (swimming, cycling, running) involves significant risks, including but not limited to: open water hazards, road traffic accidents on Palawan highways, dehydration, and physical exhaustion. <br><br>
+                            <strong>RELEASE:</strong> I hereby release Tandikan Tri Team, its sponsors, and the City Government of Puerto Princesa from any and all liability for injuries, death, or property damage resulting from my participation in this event. I certify that I am physically fit and have sufficiently trained for this competition.
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            <span>I assume all risks and release the organizers from any liability.</span>
+                        </label>
+                    </div>
+                </details>
+
+                <details class="agreement-box">
+                    <summary class="agreement-header">
+                        <span>Race Kit Policy</span>
+                        <div><span class="icon-info">!</span> <span class="arrow">▼</span></div>
+                    </summary>
+                    <div class="agreement-content">
+                        <div class="scroll-text">
+                            <strong>Claiming:</strong> Race kits must be claimed during the designated kit claiming dates in Puerto Princesa. No kits will be issued on race morning. <br><br>
+                            <strong>Responsibility:</strong> Once the kit is handed over, Tandikan Tri Team is not responsible for loss or damage. 
+                        </div>
+                        <label class="checkbox-label">
+                            <input type="checkbox" required>
+                            <span>I agree to the race kit claiming policy.</span>
+                        </label>
+                    </div>
+                </details>
+
+                <div class="button-row" style="margin-top: 40px; display: flex; justify-content: center;">
+                    <a href="register_payment_trirelay.html" class="btn-continue">Proceed to Payment</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 Tandikan Tri Team. All rights reserved.<br>
+        <span style="font-size: 0.7rem; opacity: 0.7;">The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the management of triathlon and duathlon events conducted by the Tandikan Tri Team.</span></p>
+    </footer>
+
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tandikan Tri-Hub | Solo Registration</title>
+    <style>
+        /* Specific override for the primary button background */
+        .btn-primary.register-now {
+            background-color: #0f2247 !important;
+            color: #ffffff !important;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary.register-now:hover {
+            background-color: #162f61 !important;
+        }
+
+        .category-highlight {
+            background-color: #fff3cd;
+            color: #9a6b00;
+            padding: 0.15em 0.4em;
+            border-radius: 0.35rem;
+            font-weight: 700;
+        }
+
+        /* Read-only styling for age display */
+        .age-display {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            font-weight: bold;
+            color: #495057;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="home.html"><img src="logo.png" alt="Tandikan Tri Team Logo"></a>
+            <span class="logo-text">Tandikan Tri-Hub</span>
+        </div>
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="store.html">Store</a>
+            <a href="about.html">About</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="btn-icon btn-notification" title="Notifications">🔔</button>
+            <button class="btn-icon btn-profile" title="Profile & Dashboard">👤</button>
+        </div>
+    </header>
+     
+    <section class="section">
+        <div class="section-content event-register-main">
+            <div class="register-header">
+                <a href="event_detailsduath.html" class="event-btn">← Back</a>
+                <div>
+                    <h1>Register for Palawan Duathlon Sprint (<span class="category-highlight">SOLO CATEGORY</span>)</h1>
+                    <p class="subtitle">Step 1 of 4</p>
+                </div>
+            </div>
+
+            <div class="register-steps">
+                <div class="step active"><span>1</span><p>Registration form</p></div>
+                <div class="step"><span>2</span><p>Agreements</p></div>
+                <div class="step"><span>3</span><p>Payment</p></div>
+                <div class="step"><span>4</span><p>Done</p></div>
+            </div>
+
+            <article class="event-register-card">
+                <div class="card-heading">
+                    <h2>Personal Details</h2>
+                </div>
+                <form class="register-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="full-name">Full Name *</label>
+                            <input id="full-name" type="text" placeholder="Enter your full name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input id="email" type="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile">Mobile Number *</label>
+                            <input id="mobile" type="tel" placeholder="Enter your mobile number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Date of Birth *</label>
+                            <input id="dob" type="date" onchange="calculateAge(this, 'age')" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input id="age" type="text" class="age-display" placeholder="Age" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender *</label>
+                            <select id="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nationality">Nationality *</label>
+                            <input id="nationality" type="text" placeholder="e.g. Filipino" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="finisher-shirt">Finisher Shirt Size *</label>
+                            <select id="finisher-shirt" required>
+                                <option value="">Select Size</option>
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="2XL">2XL</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label for="address">Address</label>
+                            <input id="address" type="text" placeholder="Enter your address">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-name">Emergency Contact Name</label>
+                            <input id="emergency-name" type="text" placeholder="Enter contact name">
+                        </div>
+                        <div class="form-group">
+                            <label for="emergency-phone">Emergency Contact Phone</label>
+                            <input id="emergency-phone" type="tel" placeholder="Enter contact phone">
+                        </div>
+                    </div>
+                    <div class="button-row">
+                        <a href="register_agreementsduathsolo.html" class="btn btn-primary register-now">Next Step →</a>
+                    </div>
+                </form>
+            </article>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 Tandikan Tri Team. All rights reserved.</p>
+        <span style="font-size: 0.7rem; opacity: 0.7;">The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the management of triathlon and duathlon events conducted by the Tandikan Tri Team.</span></p>
+    </footer>
+
+    <script>
+        function calculateAge(dobElement, targetId) {
+            const dobValue = dobElement.value;
+            if (!dobValue) return;
+
+            const dob = new Date(dobValue);
+            const today = new Date();
+            
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+
+            document.getElementById(targetId).value = age >= 0 ? age : 0;
+        }
+    </script>
+
+</body>
+</html>

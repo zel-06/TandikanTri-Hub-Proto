@@ -1549,10 +1549,10 @@ a {
 }
 
 .btn-primary {
-    background: linear-gradient(90deg, #42e8f0 0%, #42b0f0 100%);
+    background-color: #0f2247;
     color: white;
     border: none;
-    box-shadow: 0 8px 24px rgba(66, 232, 240, 0.25);
+    box-shadow: 0 8px 24px rgba(15, 34, 71, 0.25);
 }
 
 

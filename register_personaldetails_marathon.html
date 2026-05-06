@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tandikan Tri-Hub | Marathon Registration</title>
+    <style>
+        .btn-primary.register-now {
+            background-color: #0f2247 !important;
+            color: #ffffff !important;
+            border: none;
+            padding: 12px 30px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border-radius: 4px;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .category-highlight {
+            background-color: #e3f2fd;
+            color: #0d47a1;
+            padding: 0.15em 0.4em;
+            border-radius: 0.35rem;
+            font-weight: 700;
+        }
+
+        .age-display {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .price-tag {
+            font-size: 1.2rem;
+            color: #d32f2f;
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="home.html"><img src="logo.png" alt="Tandikan Tri Team Logo"></a>
+            <span class="logo-text">Tandikan Tri-Hub</span>
+        </div>
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="store.html">Store</a>
+            <a href="about.html">About</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="btn-icon btn-notification">🔔</button>
+            <button class="btn-icon btn-profile">👤</button>
+        </div>
+    </header>
+
+    <section class="section">
+        <div class="section-content event-register-main">
+            <div class="register-header">
+                <a href="event_details_marathon.html" class="event-btn">← Back</a>
+                <div>
+                    <h1>Marathon 2026 Registration</h1>
+                    <p class="subtitle">Step 1 of 5</p>
+                </div>
+            </div>
+
+            <div class="register-steps">
+                <div class="step active"><span>1</span><p>Registration form</p></div>
+                <div class="step"><span>2</span><p>Agreements</p></div>
+                <div class="step"><span>3</span><p>Payment</p></div>
+                <div class="step"><span>4</span><p>Proof of Payment</p></div>
+                <div class="step"><span>5</span><p>Confirmation</p></div>
+            </div>
+
+            <article class="event-register-card">
+                <form class="register-form">
+                    
+                    <div class="card-heading">
+                        <h2>Select Race Category</h2>
+                    </div>
+                    <div class="form-grid" style="margin-bottom: 20px;">
+                        <div class="form-group full-width">
+                            <label for="race-category">Distance Category *</label>
+                            <select id="race-category" onchange="updatePrice()" required>
+                                <option value="">-- Choose Distance --</option>
+                                <option value="42k">Full Marathon (42K)</option>
+                                <option value="21k">Half Marathon (21K)</option>
+                                <option value="10k">10K Run</option>
+                                <option value="5k">5K Fun Run</option>
+                                <option value="3k">3K Kids/Beginner Run</option>
+                            </select>
+                            <span id="price-display" class="price-tag">Amount: PHP 0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="card-heading">
+                        <h2>Runner Details</h2>
+                    </div>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="full-name">Full Name *</label>
+                            <input id="full-name" type="text" placeholder="First Name, Last Name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input id="email" type="email" placeholder="example@mail.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Date of Birth *</label>
+                            <input id="dob" type="date" onchange="calculateAge(this, 'age')" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input id="age" type="text" class="age-display" placeholder="Age" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender *</label>
+                            <select id="gender" required>
+                                <option value="">Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="nationality">Nationality *</label>
+                            <input id="nationality" type="text" placeholder="e.g. Filipino" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="finisher-shirt">Finisher Shirt Size *</label>
+                            <select id="finisher-shirt" required>
+                                <option value="">Select Size</option>
+                                <option value="XS">XS</option>
+                                <option value="S">S</option>
+                                <option value="M">M</option>
+                                <option value="L">L</option>
+                                <option value="XL">XL</option>
+                                <option value="2XL">2XL</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="mobile">Mobile Number *</label>
+                            <input id="mobile" type="tel" placeholder="09XXXXXXXXX" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="address">Full Address *</label>
+                            <input id="address" type="text" placeholder="Street, City, Province" required>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <a href="register_agreements_marathon.html" class="btn btn-primary register-now">Next Step →</a>
+                    </div>
+                </form>
+            </article>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 Tandikan Tri Team. All rights reserved.</p>
+        <span>"The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the management of triathlon and duathlon events conducted by the Tandikan Tri Team."</span></p>
+
+    </footer>
+
+    <script>
+        // Automatic Age Calculation
+        function calculateAge(dobElement, targetId) {
+            const dobValue = dobElement.value;
+            if (!dobValue) return;
+            const dob = new Date(dobValue);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+                age--;
+            }
+            document.getElementById(targetId).value = age >= 0 ? age : 0;
+        }
+
+        // Update Price based on distance
+        function updatePrice() {
+            const category = document.getElementById('race-category').value;
+            const priceDisplay = document.getElementById('price-display');
+            let price = "0.00";
+
+            switch(category) {
+                case '42k': price = "2,500.00"; break;
+                case '21k': price = "1,800.00"; break;
+                case '10k': price = "1,000.00"; break;
+                case '5k':  price = "750.00"; break;
+                case '3k':  price = "500.00"; break;
+                default:    price = "0.00";
+            }
+            priceDisplay.innerHTML = "Amount: PHP " + price;
+        }
+    </script>
+
+</body>
+</html>

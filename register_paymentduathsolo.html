@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Tandikan Tri-Hub</title>
+    <style>
+        /* CSS to ensure the QR code image looks clean */
+        .qr-box img {
+            width: 100%;
+            max-width: 250px; /* Adjust based on your layout */
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .qr-box {
+            padding: 15px;
+            background: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <div class="logo-container">
+            <a href="home.html"><img src="logo.png" alt="Tandikan Tri Team Logo"></a>
+            <span class="logo-text">Tandikan Tri-Hub</span>
+        </div>
+        <nav class="nav-links">
+            <a href="home.html">Home</a>
+            <a href="events.html">Events</a>
+            <a href="store.html">Store</a>
+            <a href="about.html">About</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="btn-icon btn-notification" title="Notifications">🔔</button>
+            <button class="btn-icon btn-profile" title="Profile & Dashboard">👤</button>
+        </div>
+    </header>
+
+    <div class="profile-menu">
+        <div class="profile-menu-header">
+            <div class="profile-picture">
+                <img src="logo.png" alt="Profile Picture">
+            </div>
+            <div class="profile-info">
+                <h4>John Doe</h4>
+                <p>john.doe@email.com</p>
+            </div>
+        </div>
+        <div class="profile-menu-body">
+            <a href="#" class="menu-item">
+                <span class="menu-icon">⚙️</span>
+                <span>Profile Settings</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">🔧</span>
+                <span>Account Settings</span>
+            </a>
+            <a href="#" class="menu-item">
+                <span class="menu-icon">📊</span>
+                <span>Dashboard</span>
+            </a>
+            <div class="menu-divider"></div>
+            <a href="login.html" class="menu-item logout">
+                <span class="menu-icon">🚪</span>
+                <span>Log Out</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="notification-menu">
+        <div class="notification-header">
+            <h3>Notifications</h3>
+            <p>Stay updated with your events</p>
+        </div>
+        <div class="notification-body">
+            <a href="#" class="notification-item unread">
+                <div class="notification-content">
+                    <span class="notification-icon">✅</span>
+                    <div class="notification-text">
+                        <h4>Registration Confirmed</h4>
+                        <p>Your registration for Tandikan Tri 2026 has been successfully confirmed. Welcome to the event!</p>
+                        <div class="notification-time">2 hours ago</div>
+                    </div>
+                </div>
+            </a>
+            </div>
+    </div>
+
+    <section class="section">
+        <div class="section-content event-register-main">
+            <div class="register-header">
+                <a href="register_agreementsduathsolo.html" class="event-btn">← Back</a>
+                <div>
+                    <h1>Register for Palawan Duathlon Sprint</h1>
+                    <p class="subtitle">Step 3 of 4</p>
+                </div>
+            </div>
+
+            <div class="register-steps">
+                <div class="step complete"><span>✓</span><p>Registration form</p></div>
+                <div class="step complete"><span>✓</span><p>Agreements</p></div>
+                <div class="step active"><span>3</span><p>Payment</p></div>
+                <div class="step"><span>4</span><p>Confirmation</p></div>
+            </div>
+
+            <article class="event-register-card">
+                <div class="card-heading">
+                    <h2>Payment Selection</h2>
+                </div>
+                <div class="payment-callout">
+                    <p><strong>Please select your preferred payment method.</strong> You will be provided with a generated Instapay QR code and the fixed registration amount. Scan the QR code with GCASH, PalawanPay, or any online banking app to complete payment.</p>
+                </div>
+
+                <form class="register-form">
+                    <div class="payment-grid">
+                        <div>
+                            <p class="payment-label">Payment Method *</p>
+                            <div class="payment-methods">
+                                <label class="payment-method">
+                                    <input type="radio" name="payment-method" value="gcash" checked />
+                                    <span>GCash</span>
+                                </label>
+                                <label class="payment-method">
+                                    <input type="radio" name="payment-method" value="palawanpay" />
+                                    <span>PalawanPay</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="qr-card">
+                            <div class="qr-header">Instapay QR Code</div>
+                            <div class="qr-box">
+                                <img src="qr.jfif" alt="Instapay QR Code">
+                            </div>
+                            <div class="qr-amount">Amount to pay: <strong>PHP 16,000</strong></div>
+                            <p class="qr-note">Scan this code with GCASH, PalawanPay, or any online banking app. The amount is fixed and will be applied automatically once you complete payment.</p>
+                        </div>
+                    </div>
+
+                    <div class="button-row">
+                        <a href="register_confirmationduathsolo.html" class="btn btn-primary register-now">Next Step →</a>
+                    </div>
+                </form>
+            </article>
+        </div>
+    </section>
+
+    <footer class="site-footer">
+        <p>© 2026 Tandikan Tri Team. All rights reserved.<br><span>The purpose of this study is to develop Tandikan Tri-Hub, a centralized web-based system designed to improve the management of triathlon and duathlon events conducted by the Tandikan Tri Team.</span></p>
+    </footer>
+
+    <script>
+        // Menu toggle functionality logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const profileBtn = document.querySelector('.btn-profile');
+            const profileMenu = document.querySelector('.profile-menu');
+            const notificationBtn = document.querySelector('.btn-notification');
+            const notificationMenu = document.querySelector('.notification-menu');
+
+            if (profileBtn && profileMenu) {
+                profileBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (notificationMenu) notificationMenu.classList.remove('active');
+                    profileMenu.classList.toggle('active');
+                });
+            }
+
+            if (notificationBtn && notificationMenu) {
+                notificationBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    if (profileMenu) profileMenu.classList.remove('active');
+                    notificationMenu.classList.toggle('active');
+                });
+            }
+
+            document.addEventListener('click', function(e) {
+                if (profileMenu && !profileBtn.contains(e.target) && !profileMenu.contains(e.target)) {
+                    profileMenu.classList.remove('active');
+                }
+                if (notificationMenu && !notificationBtn.contains(e.target) && !notificationMenu.contains(e.target)) {
+                    notificationMenu.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>
