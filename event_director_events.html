@@ -5,7 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin_panel.css">
-    <title>Event Director Event Management - Tandikan Tri-Hub</title>
+    <title>Event Management - Tandikan Tri-Hub</title>
+    <style>
+        /* Form Specific Styles */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.9rem; color: #9cb3d8; margin-bottom: 0.4rem; font-weight: 600; }
+        .form-control { width: 100%; padding: 0.85rem 1rem; border-radius: 14px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: #fff; font-size: 0.95rem; font-family: inherit; transition: border-color 0.2s; box-sizing: border-box;}
+        .form-control:focus { border-color: #4f96ff; outline: none; }
+        select.form-control option { background: #081025; color: #fff; }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        
+        /* Distance Dynamic Row Styles */
+        .distance-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 0.5rem; }
+        .distance-row input[type="checkbox"] { width: 18px; height: 18px; accent-color: #4f96ff; }
+        .distance-row label { margin: 0; min-width: 100px; color: #fff; font-weight: 600; font-size: 0.9rem;}
+        .distance-inputs { display: flex; gap: 0.5rem; flex: 1; }
+        .distance-inputs input { flex: 1; padding: 0.5rem; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; }
+
+        /* Modal Styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(5, 10, 25, 0.85); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-content { background: linear-gradient(180deg, #0a1630, #070e1d); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2rem; width: 90%; max-width: 600px; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .modal-header h3 { margin: 0; color: #fff; }
+        .close-btn { background: none; border: none; color: #9cb3d8; font-size: 1.5rem; cursor: pointer; transition: color 0.2s; }
+        .close-btn:hover { color: #ff6d79; }
+
+        /* Table Action Buttons */
+        .action-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: background 0.2s; margin-right: 0.25rem;}
+        .action-btn:hover { background: rgba(255,255,255,0.2); }
+        .btn-edit { color: #2be7b6; }
+        .btn-delete { color: #ff6d79; }
+        .btn-participants { color: #4f96ff; background: rgba(79, 150, 255, 0.15); }
+        .btn-participants:hover { background: rgba(79, 150, 255, 0.3); }
+
+        textarea { resize: vertical; min-height: 100px; }
+    </style>
 </head>
 <body>
     <div class="admin-panel">
@@ -14,21 +49,20 @@
                 <div class="brand">
                     <img src="logo.png" alt="Tandikan Logo">
                     <div>
-                        <h1>Event</h1>
-                        <p>Director</p>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Event Manager</p>
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a href="event_director.html"><span class="nav-icon">🏠</span>Overview</a>
-                    <a href="event_director_analytics.html"><span class="nav-icon">📊</span>Analytics</a>
-                    <a href="event_director_events.html" class="active"><span class="nav-icon">📅</span>Event Management</a>
+                    <a href="event_director.html">Overview</a>
+                    <a href="event_director_events.html" class="active">Event Management</a>
                 </nav>
             </div>
             <div class="sidebar-footer">
-                <p>Insights</p>
+                <p>Role Focus</p>
                 <div class="sidebar-stat">
-                    <span class="stat-label">Rosters</span>
-                    <span class="stat-value">Race Day Ready</span>
+                    <span class="stat-label">Operations</span>
+                    <span class="stat-value">Event Success</span>
                 </div>
             </div>
         </aside>
@@ -36,34 +70,226 @@
         <main class="dashboard-main">
             <header class="dashboard-header">
                 <div>
-                    <p class="eyebrow">Event Management Module</p>
-                    <h2>Full event control for creating, scheduling, and preparing athlete rosters.</h2>
-                </div>
-                <div class="top-actions">
-                    <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
-                    <button class="btn btn-primary">Create Event</button>
+                    <h2>Event Management</h2>
                 </div>
             </header>
 
-            <section class="dashboard-grid">
+            <section class="dashboard-grid" style="grid-template-columns: 1fr; gap: 2rem;">
+                
+                <!-- Create Event Form -->
                 <article class="card overview-card">
                     <div class="card-header">
                         <div>
-                            <h3>Event CRUD Operations</h3>
-                            <p>Create, update, and delete races with full scheduling control.</p>
+                            <h3>Create Upcoming Event</h3>
+                            <p></p>
                         </div>
-                        <span class="status-pill">Full Control</span>
                     </div>
                     <div class="card-content">
-                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
-                            <li>Set event title, venue, date, fees, and slot capacity.</li>
-                            <li>Automated registration closure when capacity is reached.</li>
-                            <li>Generate and export athlete rosters for race day.</li>
-                        </ul>
+                        <form id="createEventForm">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Event Title</label>
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                                <div class="form-group">
+                                    <label>Venue / Location</label>
+                                    <input type="text" class="form-control" placeholder="">
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Event Date</label>
+                                    <input type="date" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label>Event Category</label>
+                                    <select class="form-control" id="eventCategory">
+                                        <option value="">-- Select Category --</option>
+                                        <option value="marathon">Marathon</option>
+                                        <option value="duathlon">Duathlon</option>
+                                        <option value="triathlon">Triathlon</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control" placeholder="Details about the event..."></textarea>
+                            </div>
+
+                            <!-- Dynamic Distances Container -->
+                            <div id="dynamicDistancesContainer" style="display: none; margin-bottom: 1.5rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                                <label style="display:block; margin-bottom: 1rem; color: #9cb3d8; font-weight:600;">Distances & Fees</label>
+                                <div id="distanceOptions"></div>
+                            </div>
+
+                            <div style="margin-top: 1.5rem;">
+                                <button type="button" class="btn btn-secondary" onclick="openModal('regFormModal')">Create Registration Form</button>
+                                <button type="button" class="btn btn-primary" style="margin-left: 0.5rem;">Publish Event</button>
+                            </div>
+                        </form>
+                    </div>
+                </article>
+
+                <!-- Existing Events Table -->
+                <article class="card overview-card">
+                    <div class="card-header">
+                        <div>
+                            <h3>Existing Events</h3>
+                            <p>Manage currently active</p>
+                        </div>
+                    </div>
+                    <div class="card-content" style="overflow-x: auto;">
+                        <table style="width: 100%; text-align: left; border-collapse: collapse; color: #d8e4ff; font-size: 0.95rem;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Title</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Venue</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Date</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Slots (Filled / Total)</th>
+                                    <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Tandikan Tri 2026</td>
+                                    <td style="padding: 1rem 0.5rem;">Puerto Princesa</td>
+                                    <td style="padding: 1rem 0.5rem;">Oct 12, 2026</td>
+                                    <td style="padding: 1rem 0.5rem;">1,450 / 1,500</td>
+                                    <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                        <button class="action-btn btn-edit">Edit</button>
+                                        <button class="action-btn btn-delete">Delete</button>
+                                        <button class="action-btn btn-participants" onclick="openModal('participantsModal')">Participants List</button>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td style="padding: 1rem 0.5rem; font-weight: 700;">Palawan Duathlon Sprint</td>
+                                    <td style="padding: 1rem 0.5rem;">Puerto Princesa</td>
+                                    <td style="padding: 1rem 0.5rem;">December 12, 2026</td>
+                                    <td style="padding: 1rem 0.5rem;">850 / 950</td>
+                                    <td style="padding: 1rem 0.5rem; white-space: nowrap;">
+                                        <button class="action-btn btn-edit">Edit</button>
+                                        <button class="action-btn btn-delete">Delete</button>
+                                        <button class="action-btn btn-participants" onclick="openModal('participantsModal')">Participants List</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </article>
             </section>
         </main>
     </div>
+
+    <!-- Modal: Create Registration Form -->
+    <div class="modal-overlay" id="regFormModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Custom Registration Form</h3>
+                <button class="close-btn" onclick="closeModal('regFormModal')">&times;</button>
+            </div>
+            <div style="color: #b8c8e5; margin-bottom: 1rem; font-size: 0.9rem;">Select the fields you want participants to fill out during registration:</div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem;">
+                <label for="">A checkbox type for admin to check if the field is needed in the new registration form</label>
+            </div>
+            
+            <div style="text-align: right;">
+                <button class="btn btn-secondary" onclick="closeModal('regFormModal')">Cancel</button>
+                <button class="btn btn-primary" style="margin-left: 0.5rem;" onclick="closeModal('regFormModal')">Save Form</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Participants List -->
+    <div class="modal-overlay" id="participantsModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h3>Participants List - Tandikan Tri 2026</h3>
+                <button class="close-btn" onclick="closeModal('participantsModal')">&times;</button>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; align-items: center;">
+                <input type="text" class="form-control" style="max-width: 300px;" placeholder="Search participant...">
+                <button class="btn btn-secondary" style="background: rgba(255, 87, 87, 0.1); color: #ff6d79; border-color: rgba(255, 87, 87, 0.2);">📄 Export to PDF</button>
+            </div>
+
+            <table style="width: 100%; text-align: left; border-collapse: collapse; color: #d8e4ff; font-size: 0.9rem;">
+                <thead>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.05);">
+                        <th style="padding: 0.8rem; color: #9cb3d8;">Bib #</th>
+                        <th style="padding: 0.8rem; color: #9cb3d8;">Name</th>
+                        <th style="padding: 0.8rem; color: #9cb3d8;">Category / Distance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 0.8rem;">1001</td>
+                        <td style="padding: 0.8rem; font-weight: 600;">Juan Dela Cruz</td>
+                        <td style="padding: 0.8rem;">10k</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 0.8rem;">1002</td>
+                        <td style="padding: 0.8rem; font-weight: 600;">Maria Clara</td>
+                        <td style="padding: 0.8rem;">5k</td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td style="padding: 0.8rem;">1003</td>
+                        <td style="padding: 0.8rem; font-weight: 600;">Carlos Yulo</td>
+                        <td style="padding: 0.8rem;">3k</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Interactive Scripts -->
+    <script>
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'flex';
+        }
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Dynamic Categories Logic
+        const distancesData = {
+            marathon: ["3k", "5K", "10K", "21K (Half Marathon)", "42K (Full Marathon)"],
+            duathlon: ["Relay", "Solo"],
+            triathlon: ["Relay", "Solo"]
+        };
+
+        const categorySelect = document.getElementById('eventCategory');
+        const dynamicContainer = document.getElementById('dynamicDistancesContainer');
+        const distanceOptions = document.getElementById('distanceOptions');
+
+        categorySelect.addEventListener('change', function() {
+            const selected = this.value;
+            distanceOptions.innerHTML = ''; // Clear previous options
+
+            if (selected && distancesData[selected]) {
+                dynamicContainer.style.display = 'block';
+                
+                distancesData[selected].forEach(distance => {
+                    const row = document.createElement('div');
+                    row.className = 'distance-row';
+                    
+                    row.innerHTML = `
+                        <input type="checkbox" id="${distance}">
+                        <label for="${distance}">${distance}</label>
+                        <div class="distance-inputs">
+                            <input type="number" placeholder="Reg. Fee (₱)" min="0">
+                            <input type="number" placeholder="Total Slots" min="1">
+                        </div>
+                    `;
+                    distanceOptions.appendChild(row);
+                });
+            } else {
+                dynamicContainer.style.display = 'none';
+            }
+        });
+    </script>
 </body>
 </html>

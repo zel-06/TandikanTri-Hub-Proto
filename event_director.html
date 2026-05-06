@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="admin_panel.css">
-    <title>Event Director - Tandikan Tri-Hub</title>
+    <title>Admin - Tandikan Tri-Hub</title>
 </head>
 <body>
     <div class="admin-panel">
@@ -14,19 +14,19 @@
                 <div class="brand">
                     <img src="logo.png" alt="Tandikan Logo">
                     <div>
-                        <h1>Event</h1>
-                        <p>Director</p>
+                        <h1>Tandikan Tri Team</h1>
+                        <p>Event Manager</p>
                     </div>
                 </div>
                 <nav class="sidebar-nav">
-                    <a href="event_director.html" class="active"><span class="nav-icon">🏠</span>Overview</a>
-                    <a href="event_director_events.html"><span class="nav-icon">📅</span>Event Management</a>
+                    <a href="event_director.html" class="active">Analytics and Overview Dashboard</a>
+                    <a href="event_director_events.html">Event Management</a>
                 </nav>
             </div>
             <div class="sidebar-footer">
                 <p>Role Focus</p>
                 <div class="sidebar-stat">
-                    <span class="stat-label">Athletes</span>
+                    <span class="stat-label">Operations</span>
                     <span class="stat-value">Event Success</span>
                 </div>
             </div>
@@ -34,49 +34,124 @@
 
         <main class="dashboard-main">
             <header class="dashboard-header">
-                <div>
-                    <p class="eyebrow">Event Director</p>
-                    <h2>Manage athletes and races with focused event operations controls.</h2>
+                <div>   
+                    <h2>Analytics and Overview</h2>
                 </div>
                 <div class="top-actions">
                     <button class="btn btn-secondary"><a href="home.html" style="color: inherit; text-decoration: none;">View Site</a></button>
-                    <button class="btn btn-primary">Manage Events</button>
+                    <button class="btn btn-primary">Refresh Status</button>
                 </div>
             </header>
 
+            <!-- KPI Section: Event Totals (Scaled to <800 total) -->
             <section class="kpi-section">
                 <article class="kpi-card">
-                    <p class="kpi-title">Active Athletes</p>
-                    <h3>1,248</h3>
-                    <span class="kpi-metric">Athlete-focused metrics</span>
+                    <p class="kpi-title">Tandikan Tri 2026</p>
+                    <h3>350</h3>
+                    <span class="kpi-metric">Total Registered Participants</span>
                 </article>
                 <article class="kpi-card">
-                    <p class="kpi-title">Registered Participants</p>
-                    <h3>4,385</h3>
-                    <span class="kpi-metric">Current event engagement</span>
+                    <p class="kpi-title">Palawan Duathlon Sprint</p>
+                    <h3>120</h3>
+                    <span class="kpi-metric">Total Registered Participants</span>
                 </article>
                 <article class="kpi-card">
-                    <p class="kpi-title">Event Capacity</p>
-                    <h3>92%</h3>
-                    <span class="kpi-metric">Current fill rate</span>
+                    <p class="kpi-title">IBP Marathon</p>
+                    <h3>245</h3>
+                    <span class="kpi-metric">Total Registered Participants</span>
                 </article>
             </section>
 
-            <section class="dashboard-grid">
+            <section class="dashboard-grid" style="grid-template-columns: 1fr;">
                 <article class="card overview-card">
                     <div class="card-header">
                         <div>
-                            <h3>Athlete & Event Health</h3>
-                            <p>Partial analytics and overview for race-focused decision making.</p>
+                            <h3>Predictive Analytics & Overview</h3>
+                            <p>Displaying top-performing categories (exceeding 95% capacity) for critical resource allocation.</p>
                         </div>
-                        <span class="status-pill">Partial View</span>
+                        <span class="status-pill" style="background: rgba(43, 231, 182, 0.16); color: #2be7b6;">Live Data</span>
                     </div>
                     <div class="card-content">
-                        <ul style="color:#d8e4ff; padding-left:1.1rem; line-height:1.7;">
-                            <li>Track athlete participation and registration momentum.</li>
-                            <li>Monitor capacity status to keep events on target.</li>
-                            <li>Access event creation controls and roster exports.</li>
-                        </ul>
+                        
+                        <!-- Event & Category Analytics Table (Filtered > 95%) -->
+                        <div style="overflow-x: auto; margin-bottom: 2rem;">
+                            <table style="width: 100%; text-align: left; border-collapse: collapse; color: #d8e4ff; font-size: 0.95rem;">
+                                <thead>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Event Name</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Category</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Slot Fill Rate</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Participants</th>
+                                        <th style="padding: 1rem 0.5rem; color: #9cb3d8; font-weight: 600;">Est. Revenue</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05); background: rgba(255,255,255,0.01);">
+                                        <td style="padding: 1rem 0.5rem; font-weight: 700;">Tandikan Tri 2026</td>
+                                        <td style="padding: 1rem 0.5rem;">Relay</td>
+                                        <td style="padding: 1rem 0.5rem; color: #ff6d79; font-weight: 700;">100%</td>
+                                        <td style="padding: 1rem 0.5rem;">350 / 350</td>
+                                        <td style="padding: 1rem 0.5rem;">₱ 2,100,000</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                        <td style="padding: 1rem 0.5rem; font-weight: 700;">Palawan Duathlon Sprint</td>
+                                        <td style="padding: 1rem 0.5rem;">Relay</td>
+                                        <td style="padding: 1rem 0.5rem; color: #ff6d79; font-weight: 700;">100%</td>
+                                        <td style="padding: 1rem 0.5rem;">120 / 120</td>
+                                        <td style="padding: 1rem 0.5rem;">₱ 360,000</td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.01);">
+                                        <td style="padding: 1rem 0.5rem; font-weight: 700;">IBP Marathon</td>
+                                        <td style="padding: 1rem 0.5rem;">3k</td>
+                                        <td style="padding: 1rem 0.5rem; color: #2be7b6; font-weight: 700;">98%</td>
+                                        <td style="padding: 1rem 0.5rem;">245 / 250</td>
+                                        <td style="padding: 1rem 0.5rem;">₱ 367,500</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Prioritization Suggestion Block -->
+                        <div style="background: rgba(79, 150, 255, 0.08); border: 1px solid rgba(79, 150, 255, 0.2); padding: 1.5rem; border-radius: 20px; margin-bottom: 2.5rem;">
+                            <h4 style="margin: 0 0 0.75rem 0; color: #ffffff; display: flex; align-items: center; gap: 0.5rem;">
+                                <span>💡</span> Suggested Event Prioritization
+                            </h4>
+                            <p style="margin: 0; color: #b8c8e5; line-height: 1.6; font-size: 0.95rem;">
+                                <strong style="color: #4f96ff;">Target Focus:</strong> Tandikan Tri 2026 - Half Iron Category<br>
+                                <strong style="color: #4f96ff;">Rationale:</strong> Capped securely at 350 participants, this category achieved a 100% fill rate faster than any other event, representing our most consistent high-yield demographic.<br>
+                                <strong style="color: #4f96ff;">Action Item:</strong> Lock in current logistical constraints to ensure a premium experience. Avoid expanding capacity to maintain exclusivity and operational safety within the 800 total participant limit.
+                            </p>
+                        </div>
+
+                        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.08); margin: 2rem 0;">
+
+                        <!-- Total Overall Participants Metrics (Yearly: 2026-2028) -->
+                        <div>
+                            <h4 style="margin: 0 0 1.25rem 0; color: #ffffff; font-size: 1.15rem;">Yearly Participant Overview (Strict <800 Cap)</h4>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem;">
+                                
+                                <div style="background: rgba(255, 255, 255, 0.03); padding: 1.25rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <p style="margin: 0 0 0.5rem; font-size: 0.85rem; color: #9cb3d8; text-transform: uppercase; letter-spacing: 0.05em;">2026 Actual</p>
+                                    <h3 style="margin: 0; font-size: 2rem; color: #2be7b6;">715</h3>
+                                    <p style="margin: 0.25rem 0 0; font-size: 0.75rem; color: #68c5ff;">Current Year Total</p>
+                                </div>
+                                
+                                <div style="background: rgba(255, 255, 255, 0.03); padding: 1.25rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <p style="margin: 0 0 0.5rem; font-size: 0.85rem; color: #9cb3d8; text-transform: uppercase; letter-spacing: 0.05em;">2027 Projected</p>
+                                    <h3 style="margin: 0; font-size: 2rem; color: #ffffff;">745</h3>
+                                    <p style="margin: 0.25rem 0 0; font-size: 0.75rem; color: #7c95bf;">+4.1% Growth</p>
+                                </div>
+                                
+                                <div style="background: rgba(255, 255, 255, 0.03); padding: 1.25rem; border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                                    <p style="margin: 0 0 0.5rem; font-size: 0.85rem; color: #9cb3d8; text-transform: uppercase; letter-spacing: 0.05em;">2028 Projected</p>
+                                    <h3 style="margin: 0; font-size: 2rem; color: #ffffff;">780</h3>
+                                    <p style="margin: 0.25rem 0 0; font-size: 0.75rem; color: #7c95bf;">+4.6% Growth</p>
+                                </div>
+                            
+
+                            </div>
+                        </div>
+
                     </div>
                 </article>
             </section>
