@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-export const API_BASE_URL = 'http://127.0.0.1:8000/api';
+// Locally, Vite (5173) and Django (8000) run on different ports, so we need an
+// absolute URL. In production, vercel.json rewrites /api/* to the backend service
+// on the same domain, so a relative path keeps everything same-origin (no CORS needed).
+export const API_BASE_URL = import.meta.env.DEV ? 'http://127.0.0.1:8000/api' : '/api';
 
 const client = axios.create({ baseURL: API_BASE_URL });
 
