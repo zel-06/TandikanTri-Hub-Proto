@@ -1,0 +1,95 @@
+/* Small additions on top of the ported prototype stylesheets, for real-data states
+   the static prototype never needed (validation errors, loading/empty states),
+   plus a light-theme base for the .form-control family. */
+
+.field-error {
+  color: #ff6d79;
+  font-size: 0.85rem;
+  margin: -0.5rem 0 0.75rem;
+}
+
+.form-error-banner {
+  background: rgba(255, 87, 87, 0.1);
+  border: 1px solid rgba(255, 87, 87, 0.3);
+  color: #ff6d79;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  color: #7c95bf;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.loading-state {
+  color: #7c95bf;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* .form-control/.form-row/.form-group only exist (from admin_events.html's
+   page-local styles) scoped dark for .admin-panel in dashboard-forms.css.
+   Everywhere else that reuses them (the registration flow's Details/Payment
+   steps, Profile.jsx) sits on a light background, so give them a light-theme
+   base here; the .admin-panel rules override it there via specificity. */
+.form-group { margin-bottom: 1.25rem; }
+.form-group label { display: block; font-size: 0.9rem; color: #4a5568; margin-bottom: 0.4rem; font-weight: 600; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+.form-control {
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: #f7f9fc;
+  border: 1px solid #d7dee8;
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+.form-control:focus { border-color: #1476ff; outline: none; }
+textarea.form-control { resize: vertical; min-height: 100px; }
+@media (max-width: 700px) {
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* body{color:white} (style.css) is the dark-theme default. These light-background
+   containers only override specific known descendants (h1, .login-info-title, ...) in
+   the original prototype, so any new element without its own color inherits white
+   on white. Set a dark default here - it only changes the *inherited* fallback, so
+   every explicit rule from style.css (equal or higher specificity) still wins. */
+.section, .login-card, .create-account-card {
+  color: #1e293b;
+}
+
+/* .card/.card-header (admin_events.html) is likewise dark-themed by default;
+   Profile.jsx reuses it on the light .section background. */
+.section .card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+.section .card-header h3 { color: #0f172a; }
+.section .card-header p { color: #4a5568; }
+.section .card-content { color: #1e293b; }
+.section .card-content table { color: #1e293b; }
+.section .card-content th { color: #64748b; }
+
+/* .btn-secondary (style.css) is a white-on-glass style meant for the hero's
+   colorful background. Re-theme it wherever it lands on a plain white card. */
+.section .btn-secondary,
+.login-card .btn-secondary,
+.create-account-card .btn-secondary {
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+.section .btn-secondary:hover,
+.login-card .btn-secondary:hover,
+.create-account-card .btn-secondary:hover {
+  background: #e5e7eb;
+}
