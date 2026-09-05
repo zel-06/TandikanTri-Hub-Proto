@@ -92,7 +92,9 @@ def event_participants(request, event_id):
 
     participants = Participant.objects.filter(
         registration__event_category__event_id=event_id
-    ).select_related('registration', 'registration__event_category').order_by('registration__bib_number')
+    ).select_related(
+        'registration', 'registration__event_category', 'registration__event_category__event'
+    ).order_by('registration__bib_number')
     return Response(ParticipantSerializer(participants, many=True).data)
 
 
@@ -105,15 +107,30 @@ def export_participants_csv(request, event_id):
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = f'attachment; filename="{event.title}-participants.csv"'
     writer = csv.writer(response)
-    writer.writerow(['Bib #', 'Name', 'Category', 'Role'])
+    writer.writerow([
+        'Bib #', 'Name', 'Category', 'Distance', 'Role', 'Team', 'Status',
+        'Gender', 'Date of Birth', 'Nationality', 'Shirt Size', 'Email', 'Mobile Number',
+    ])
     participants = Participant.objects.filter(
         registration__event_category__event_id=event_id
-    ).select_related('registration', 'registration__event_category').order_by('registration__bib_number')
+    ).select_related(
+        'registration', 'registration__event_category', 'registration__event_category__event'
+    ).order_by('registration__bib_number')
     for participant in participants:
+        registration = participant.registration
         writer.writerow([
-            participant.registration.bib_number or '',
+            registration.bib_number or '',
             participant.full_name,
-            participant.registration.event_category.name,
+            registration.event_category.name,
+            registration.event_category.event.distance or '',
             participant.role or '',
+            registration.team_name or '',
+            registration.get_status_display(),
+            participant.get_gender_display(),
+            participant.date_of_birth.isoformat(),
+            participant.nationality,
+            participant.shirt_size,
+            registration.email,
+            registration.mobile_number,
         ])
     return response

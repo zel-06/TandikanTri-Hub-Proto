@@ -1,13 +1,8 @@
 import { Link } from 'react-router-dom';
 import AuthNavbar from '../../components/AuthNavbar';
-import PhotoGallery from '../../components/PhotoGallery';
+import CommunityFeed from '../../components/CommunityFeed';
 import Footer from '../../components/Footer';
 import logo from '../../assets/images/logo.png';
-import photo1 from '../../assets/images/1.jpg';
-import photo2 from '../../assets/images/2.jpg';
-import photo3 from '../../assets/images/3.jpg';
-import photo4 from '../../assets/images/4.jpg';
-import photo5 from '../../assets/images/5.jpg';
 
 export default function Home() {
   return (
@@ -32,36 +27,7 @@ export default function Home() {
         </div>
       </main>
 
-      <section className="section community-feeds">
-        <div className="section-content">
-          <h2 className="section-title" style={{ textAlign: 'center' }}>Community Feeds</h2>
-
-          <div className="feeds-list">
-            <article className="feed-card announcement-card">
-              <h3>Upcoming Event!</h3>
-              <p className="feed-meta">Tandikan Tri Team · Today</p>
-              <p>
-                Registration for the IBP Marathon is now open. Early bird slots are available
-                until December 10 2026, so secure your place now.
-              </p>
-              <Link to="/events" className="btn btn-primary merch-btny">View Full Details</Link>
-            </article>
-
-            <article className="feed-card gallery-card">
-              <h3>Duathlon Event</h3>
-              <p className="feed-meta">Highlights</p>
-              <p>
-                See the energy from our past races — athletes crossing the finish line, cheering
-                crowds, and memorable community moments.
-              </p>
-              <PhotoGallery photos={[photo1, photo2, photo3, photo4, photo5]} />
-              <div className="feed-actions">
-                <button className="action-btn" type="button">❤ Like</button>
-              </div>
-            </article>
-          </div>
-        </div>
-      </section>
+      <CommunityFeed />
 
       <Footer />
     </>

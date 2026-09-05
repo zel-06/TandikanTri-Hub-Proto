@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import DashboardLayout from '../../components/DashboardLayout';
+import ConfirmDialog from '../../components/ConfirmDialog';
 import * as accountsApi from '../../api/accounts';
 import { ROLE_LABELS, ROLES } from '../../roles';
 
@@ -16,6 +17,7 @@ export default function Roles() {
   const [error, setError] = useState('');
   const [tempPasswordResult, setTempPasswordResult] = useState(null);
   const [busyId, setBusyId] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
 
   function loadStaff() {
     accountsApi.listStaffAccounts().then(setStaff).catch(() => setStaff([]));
@@ -62,8 +64,9 @@ export default function Roles() {
     }
   }
 
-  async function handleDelete(staffId) {
-    if (!window.confirm('Permanently delete this admin account?')) return;
+  async function confirmDelete() {
+    const staffId = deleteTarget;
+    setDeleteTarget(null);
     setBusyId(staffId);
     try {
       await accountsApi.deleteStaffAccount(staffId);
@@ -149,7 +152,7 @@ export default function Roles() {
                         <span className="status-pill">{account.account_status}</span>
                       </td>
                       <td style={{ padding: '1rem 0.5rem', whiteSpace: 'nowrap' }}>
-                        <button className="action-btn" disabled={busyId === account.id}
+                        <button className="action-btn btn-reset" disabled={busyId === account.id}
                           onClick={() => handleResetPassword(account.id)}>Reset Pass</button>
                         {account.account_status === 'active'
                           ? <button className="action-btn btn-delete" disabled={busyId === account.id}
@@ -157,7 +160,7 @@ export default function Roles() {
                           : <button className="action-btn btn-edit" disabled={busyId === account.id}
                               onClick={() => handleStatus(account.id, 'active')}>Reactivate</button>}
                         <button className="action-btn btn-delete" disabled={busyId === account.id}
-                          onClick={() => handleDelete(account.id)}>Delete</button>
+                          onClick={() => setDeleteTarget(account.id)}>Delete</button>
                       </td>
                     </tr>
                   ))}
@@ -173,6 +176,15 @@ export default function Roles() {
           </div>
         </article>
       </section>
+
+      <ConfirmDialog
+        open={deleteTarget !== null}
+        title="Delete admin account"
+        message="Permanently delete this admin account? This cannot be undone."
+        confirmLabel="Delete"
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </DashboardLayout>
   );
 }

@@ -84,11 +84,19 @@ def verify_payment(request, pk):
     log_action(
         request.user, AuditLogEntry.Module.FINANCE, f'Payment {decision}', target_description=str(registration),
     )
-    notify(
-        registration.user, Notification.Kind.PAYMENT,
-        'Payment Verified' if decision == 'verified' else 'Payment Rejected',
-        f'Your payment for {registration.event_category.event.title} has been {decision}.',
-    )
+    event_title = registration.event_category.event.title
+    if decision == 'verified':
+        notify(
+            registration.user, Notification.Kind.PAYMENT, 'Payment Verified',
+            f'Your payment for {event_title} has been verified and your registration is confirmed. '
+            f'Your bib number is {registration.bib_number}.',
+        )
+    else:
+        notify(
+            registration.user, Notification.Kind.PAYMENT, 'Payment Rejected',
+            f'Your payment for {event_title} was rejected and your registration has been cancelled. '
+            'Please contact us or submit a new registration with valid proof of payment.',
+        )
     return Response(RegistrationSerializer(registration).data)
 
 

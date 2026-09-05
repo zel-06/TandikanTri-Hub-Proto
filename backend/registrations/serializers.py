@@ -8,9 +8,20 @@ from .models import Participant, Payment, Registration
 
 
 class ParticipantSerializer(serializers.ModelSerializer):
+    bib_number = serializers.CharField(source='registration.bib_number', read_only=True)
+    status = serializers.CharField(source='registration.get_status_display', read_only=True)
+    category = serializers.CharField(source='registration.event_category.name', read_only=True)
+    distance = serializers.CharField(source='registration.event_category.event.distance', read_only=True)
+    team_name = serializers.CharField(source='registration.team_name', read_only=True)
+    email = serializers.EmailField(source='registration.email', read_only=True)
+    mobile_number = serializers.CharField(source='registration.mobile_number', read_only=True)
+
     class Meta:
         model = Participant
-        fields = ['id', 'role', 'full_name', 'date_of_birth', 'gender', 'nationality', 'shirt_size']
+        fields = [
+            'id', 'role', 'full_name', 'date_of_birth', 'gender', 'nationality', 'shirt_size',
+            'bib_number', 'status', 'category', 'distance', 'team_name', 'email', 'mobile_number',
+        ]
 
 
 class PaymentSerializer(serializers.ModelSerializer):
