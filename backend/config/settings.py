@@ -79,7 +79,10 @@ DATABASES = {
         'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT', default='5432'),
         'OPTIONS': {'sslmode': 'require'},
-        'CONN_MAX_AGE': 60,  
+        # Serverless (Vercel) functions are short-lived per-request processes, so holding a
+        # connection open between requests just hogs a pooler slot instead of freeing it back
+        # up. Only reuse connections on a persistent server (local dev / traditional hosting).
+        'CONN_MAX_AGE': 0 if env.bool('VERCEL', default=False) else 60,
     }
 }
 
