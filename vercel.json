@@ -1,7 +1,7 @@
 {
   "services": {
     "frontend": { "root": "frontend/", "framework": "vite" },
-    "backend": { "root": "backend/", "entrypoint": "wsgi:app" }
+    "backend": { "root": "backend/", "entrypoint": "config/wsgi.py" }
   },
   "rewrites": [
     { "source": "/api/(.*)", "destination": { "service": "backend" } },
