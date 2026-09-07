@@ -68,7 +68,9 @@ class Participant(models.Model):
 class Payment(models.Model):
     class Method(models.TextChoices):
         GCASH = 'gcash', 'GCash'
-        PALAWANPAY = 'palawanpay', 'PalawanPay'
+        CARD = 'card', 'Card'
+        PAYMAYA = 'paymaya', 'Maya'
+        PALAWANPAY = 'palawanpay', 'PalawanPay'  # kept for older manually-recorded rows
 
     class Status(models.TextChoices):
         PENDING = 'pending', 'Pending'
@@ -76,11 +78,13 @@ class Payment(models.Model):
         REJECTED = 'rejected', 'Rejected'
 
     registration = models.OneToOneField(Registration, on_delete=models.CASCADE, related_name='payment')
-    method = models.CharField(max_length=20, choices=Method.choices)
+    # Blank until PayMongo's webhook reports which method the athlete actually used at checkout.
+    method = models.CharField(max_length=20, choices=Method.choices, blank=True)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     proof_of_payment = models.ImageField(
         upload_to='payment_proofs/', storage=PrivateIDStorage(), blank=True, null=True
     )
+    paymongo_checkout_id = models.CharField(max_length=100, blank=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
     verified_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='verified_payments'

@@ -51,8 +51,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
 class RegistrationCreateSerializer(serializers.ModelSerializer):
     participants = ParticipantSerializer(many=True)
-    payment_method = serializers.ChoiceField(choices=Payment.Method.choices, write_only=True)
-    proof_of_payment = serializers.ImageField(required=False, allow_null=True, write_only=True)
 
     class Meta:
         model = Registration
@@ -60,7 +58,7 @@ class RegistrationCreateSerializer(serializers.ModelSerializer):
             'event_category', 'team_name', 'email', 'mobile_number', 'address',
             'emergency_contact_name', 'emergency_contact_phone',
             'data_privacy_accepted', 'refund_policy_accepted', 'waiver_accepted', 'race_kit_policy_accepted',
-            'participants', 'payment_method', 'proof_of_payment',
+            'participants',
         ]
 
     def validate(self, attrs):
@@ -87,8 +85,6 @@ class RegistrationCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         participants_data = validated_data.pop('participants')
-        payment_method = validated_data.pop('payment_method')
-        proof_of_payment = validated_data.pop('proof_of_payment', None)
         category = validated_data['event_category']
 
         registration = Registration.objects.create(
@@ -99,10 +95,6 @@ class RegistrationCreateSerializer(serializers.ModelSerializer):
         Participant.objects.bulk_create([
             Participant(registration=registration, **participant) for participant in participants_data
         ])
-        Payment.objects.create(
-            registration=registration,
-            method=payment_method,
-            amount=category.fee,
-            proof_of_payment=proof_of_payment,
-        )
+        # method is left blank — PayMongo's webhook fills it in once the athlete actually pays.
+        Payment.objects.create(registration=registration, amount=category.fee)
         return registration

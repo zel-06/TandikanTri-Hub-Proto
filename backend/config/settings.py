@@ -137,6 +137,25 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
     r'^https://.*\.vercel\.app$',
 ]
 
+FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
+
+#Email — falls back to printing to the console until real SMTP credentials are supplied
+EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = env('EMAIL_HOST', default='smtp.gmail.com')
+    EMAIL_PORT = env.int('EMAIL_PORT', default=587)
+    EMAIL_USE_TLS = True
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Tandikan Tri-Hub <no-reply@tandikantrihub.com>')
+
+#PayMongo payment gateway
+PAYMONGO_SECRET_KEY = env('PAYMONGO_SECRET_KEY')
+PAYMONGO_PUBLIC_KEY = env('PAYMONGO_PUBLIC_KEY')
+PAYMONGO_WEBHOOK_SECRET = env('PAYMONGO_WEBHOOK_SECRET')
+
 #storage settings for AWS S3
 AWS_ACCESS_KEY_ID = env('SUPABASE_S3_ACCESS_KEY')
 AWS_SECRET_ACCESS_KEY = env('SUPABASE_S3_SECRET_KEY')

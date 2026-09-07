@@ -4,25 +4,16 @@ import * as registrationsApi from '../../api/registrations';
 
 export default function Finance() {
   const [report, setReport] = useState(null);
-  const [queue, setQueue] = useState(null);
-  const [busyId, setBusyId] = useState(null);
+  const [recentPayments, setRecentPayments] = useState(null);
+  const [pendingCount, setPendingCount] = useState(null);
 
   function loadAll() {
     registrationsApi.getFinanceReport().then(setReport).catch(() => {});
-    registrationsApi.listPaymentQueue('pending').then(setQueue).catch(() => {});
+    registrationsApi.listPaymentQueue('verified').then(setRecentPayments).catch(() => {});
+    registrationsApi.listPaymentQueue('pending').then((rows) => setPendingCount(rows.length)).catch(() => {});
   }
 
   useEffect(loadAll, []);
-
-  async function handleDecision(paymentId, decision) {
-    setBusyId(paymentId);
-    try {
-      await registrationsApi.verifyPayment(paymentId, decision);
-      loadAll();
-    } finally {
-      setBusyId(null);
-    }
-  }
 
   return (
     <DashboardLayout
@@ -45,59 +36,40 @@ export default function Finance() {
           <span className="kpi-metric">{report?.verified_payment_count || 0} confirmed</span>
         </article>
         <article className="kpi-card">
-          <p className="kpi-title">Pending Verification</p>
-          <h3>{queue?.length ?? '—'}</h3>
-          <span className="kpi-metric" style={{ color: '#ff6d79' }}>Needs review</span>
+          <p className="kpi-title">Awaiting Payment</p>
+          <h3>{pendingCount ?? '—'}</h3>
+          <span className="kpi-metric">Registered, not yet paid</span>
         </article>
       </section>
 
       <article className="card overview-card">
         <div className="card-header">
           <div>
-            <h3>Payment Verification Queue</h3>
-            <p>Approve or reject submitted proofs of payment.</p>
+            <h3>Recent Payments</h3>
+            <p>All payments are verified automatically by PayMongo — no manual action needed.</p>
           </div>
         </div>
         <div className="card-content" style={{ overflowX: 'auto' }}>
-          {!queue && <p className="loading-state">Loading…</p>}
-          {queue && queue.length === 0 && <p className="empty-state">No pending payments.</p>}
-          {queue && queue.length > 0 && (
+          {!recentPayments && <p className="loading-state">Loading…</p>}
+          {recentPayments && recentPayments.length === 0 && <p className="empty-state">No payments yet.</p>}
+          {recentPayments && recentPayments.length > 0 && (
             <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', color: '#d8e4ff', fontSize: '0.9rem' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                   <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Registration</th>
                   <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Method</th>
                   <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Amount</th>
-                  <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Proof</th>
-                  <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Actions</th>
+                  <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Verified At</th>
                 </tr>
               </thead>
               <tbody>
-                {queue.map((payment) => (
+                {recentPayments.map((payment) => (
                   <tr key={payment.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                     <td style={{ padding: '1rem 0.5rem', fontWeight: 700 }}>#{payment.id}</td>
-                    <td style={{ padding: '1rem 0.5rem' }}>{payment.method}</td>
+                    <td style={{ padding: '1rem 0.5rem', textTransform: 'capitalize' }}>{payment.method || '—'}</td>
                     <td style={{ padding: '1rem 0.5rem' }}>₱{Number(payment.amount).toLocaleString()}</td>
                     <td style={{ padding: '1rem 0.5rem' }}>
-                      {payment.proof_of_payment
-                        ? <a href={payment.proof_of_payment} target="_blank" rel="noreferrer">View</a>
-                        : '—'}
-                    </td>
-                    <td style={{ padding: '1rem 0.5rem', whiteSpace: 'nowrap' }}>
-                      <button
-                        className="action-btn btn-edit"
-                        disabled={busyId === payment.id}
-                        onClick={() => handleDecision(payment.id, 'verified')}
-                      >
-                        Verify
-                      </button>
-                      <button
-                        className="action-btn btn-delete"
-                        disabled={busyId === payment.id}
-                        onClick={() => handleDecision(payment.id, 'rejected')}
-                      >
-                        Reject
-                      </button>
+                      {payment.verified_at ? new Date(payment.verified_at).toLocaleString() : '—'}
                     </td>
                   </tr>
                 ))}

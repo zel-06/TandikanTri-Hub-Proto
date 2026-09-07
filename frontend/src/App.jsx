@@ -14,6 +14,7 @@ import Events from './pages/app/Events';
 import EventDetail from './pages/app/EventDetail';
 import Profile from './pages/app/Profile';
 import RegistrationFlow from './pages/app/registerFlow/RegistrationFlow';
+import PaymentResult from './pages/app/PaymentResult';
 
 import Overview from './pages/dashboard/Overview';
 import EventManagement from './pages/dashboard/EventManagement';
@@ -39,6 +40,7 @@ export default function App() {
             <Route path="/events" element={<Events />} />
             <Route path="/events/:id" element={<EventDetail />} />
             <Route path="/events/:eventId/register/:categoryId" element={<RegistrationFlow />} />
+            <Route path="/payment-result" element={<PaymentResult />} />
             <Route path="/profile" element={<Profile />} />
 
             <Route path="/dashboard" element={<Navigate to="/dashboard/overview" replace />} />

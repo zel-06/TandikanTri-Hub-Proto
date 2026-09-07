@@ -7,11 +7,13 @@ export const submitRegistration = (formData) =>
 
 export const listMyRegistrations = () => client.get('/registrations/mine/').then((r) => r.data);
 
+export const getRegistration = (id) => client.get(`/registrations/${id}/`).then((r) => r.data);
+
+export const createCheckout = (registrationId) =>
+  client.post(`/registrations/${registrationId}/checkout/`).then((r) => r.data);
+
 export const listPaymentQueue = (status) =>
   client.get('/registrations/payments/', { params: status ? { status } : {} }).then((r) => r.data);
-
-export const verifyPayment = (paymentId, decision) =>
-  client.post(`/registrations/payments/${paymentId}/verify/`, { decision }).then((r) => r.data);
 
 export const getFinanceReport = (params) =>
   client.get('/registrations/finance/report/', { params }).then((r) => r.data);

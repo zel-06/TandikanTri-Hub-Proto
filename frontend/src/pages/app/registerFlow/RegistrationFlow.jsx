@@ -8,7 +8,6 @@ import RegistrationSteps from './RegistrationSteps';
 import StepDetails from './StepDetails';
 import StepAgreements from './StepAgreements';
 import StepPayment from './StepPayment';
-import StepConfirmation from './StepConfirmation';
 
 function blankParticipant(role = '') {
   return { role, full_name: '', date_of_birth: '', gender: '', nationality: 'Filipino', shirt_size: '' };
@@ -27,8 +26,6 @@ function buildFormData(form, categoryId) {
   data.append('refund_policy_accepted', form.refund_policy_accepted);
   data.append('waiver_accepted', form.waiver_accepted);
   data.append('race_kit_policy_accepted', form.race_kit_policy_accepted);
-  data.append('payment_method', form.payment_method);
-  if (form.proof_of_payment) data.append('proof_of_payment', form.proof_of_payment);
   form.participants.forEach((participant, index) => {
     Object.entries(participant).forEach(([key, value]) => {
       data.append(`participants[${index}]${key}`, value);
@@ -44,7 +41,6 @@ export default function RegistrationFlow() {
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [registration, setRegistration] = useState(null);
   const [form, setForm] = useState(null);
 
   useEffect(() => {
@@ -64,7 +60,6 @@ export default function RegistrationFlow() {
           emergency_contact_name: '', emergency_contact_phone: '',
           data_privacy_accepted: false, refund_policy_accepted: false,
           waiver_accepted: false, race_kit_policy_accepted: false,
-          payment_method: 'gcash', proof_of_payment: null,
           participants,
         });
       })
@@ -76,19 +71,18 @@ export default function RegistrationFlow() {
 
   const category = event.categories.find((c) => String(c.id) === String(categoryId));
 
-  async function handleSubmit() {
+  async function handlePayOnline() {
     setSubmitting(true);
     setSubmitError('');
     try {
       const result = await registrationsApi.submitRegistration(buildFormData(form, categoryId));
-      setRegistration(result);
-      setStep(4);
+      const { checkout_url } = await registrationsApi.createCheckout(result.id);
+      window.location.href = checkout_url;
     } catch (err) {
       const data = err.response?.data;
       setSubmitError(
-        data?.non_field_errors?.[0] || data?.detail || JSON.stringify(data) || 'Could not submit registration.'
+        data?.non_field_errors?.[0] || data?.detail || JSON.stringify(data) || 'Could not start online payment.'
       );
-    } finally {
       setSubmitting(false);
     }
   }
@@ -110,15 +104,12 @@ export default function RegistrationFlow() {
       {step === 3 && (
         <StepPayment
           category={category}
-          form={form}
-          setForm={setForm}
-          onSubmit={handleSubmit}
+          onPayOnline={handlePayOnline}
           onBack={() => setStep(2)}
           submitting={submitting}
           error={submitError}
         />
       )}
-      {step === 4 && registration && <StepConfirmation registration={registration} />}
     </FlowShell>
   );
 }
