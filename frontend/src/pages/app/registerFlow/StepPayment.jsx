@@ -8,46 +8,66 @@ export default function StepPayment({ category, form, setForm, onSubmit, onBack,
         onSubmit();
       }}
     >
-      <label className="login-info-title">Payment Method</label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <input
-          type="radio"
-          name="payment_method"
-          checked={form.payment_method === 'gcash'}
-          onChange={() => setForm((f) => ({ ...f, payment_method: 'gcash' }))}
-        />
-        <span>GCash</span>
-      </label>
-      <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-        <input
-          type="radio"
-          name="payment_method"
-          checked={form.payment_method === 'palawanpay'}
-          onChange={() => setForm((f) => ({ ...f, payment_method: 'palawanpay' }))}
-        />
-        <span>PalawanPay</span>
-      </label>
+      <div className="payment-grid">
+        <div>
+          <p className="payment-label">Payment Method</p>
+          <div className="payment-methods">
+            <label className="payment-method">
+              <input
+                type="radio"
+                name="payment_method"
+                checked={form.payment_method === 'gcash'}
+                onChange={() => setForm((f) => ({ ...f, payment_method: 'gcash' }))}
+              />
+              <span>GCash</span>
+            </label>
+            <label className="payment-method">
+              <input
+                type="radio"
+                name="payment_method"
+                checked={form.payment_method === 'palawanpay'}
+                onChange={() => setForm((f) => ({ ...f, payment_method: 'palawanpay' }))}
+              />
+              <span>PalawanPay</span>
+            </label>
+          </div>
 
-      <div style={{ textAlign: 'center', margin: '1rem 0' }}>
-        <img src={qrCode} alt="Payment QR code" style={{ maxWidth: '220px', borderRadius: '12px' }} />
-      </div>
+          <br />
 
-      <p style={{ textAlign: 'center', fontSize: '1.1rem', fontWeight: 700 }}>
-        Amount to pay: ₱{Number(category.fee).toLocaleString()}
-      </p>
+          <div className="payment-callout">
+            <p>
+              Scan the QR code with your {form.payment_method === 'gcash' ? 'GCash' : 'PalawanPay'} app to pay
+              <strong> ₱{Number(category.fee).toLocaleString()}</strong>, then upload your proof of payment below.
+            </p>
+          </div>
 
-      <div className="upload-section">
-        <label>Proof of Payment (optional — you can also upload this later)</label>
-        <div className="file-input-wrapper">
-          <input
-            type="file"
-            id="proofOfPayment"
-            accept="image/*"
-            onChange={(e) => setForm((f) => ({ ...f, proof_of_payment: e.target.files?.[0] || null }))}
-          />
-          <label htmlFor="proofOfPayment" className="file-input-label">
-            <span>{form.proof_of_payment ? form.proof_of_payment.name : 'Choose file'}</span>
-          </label>
+          <div className="upload-section">
+            <label>Proof of Payment (optional — you can also upload this later)</label>
+            <div className="file-input-wrapper">
+              <input
+                type="file"
+                id="proofOfPayment"
+                accept="image/*"
+                onChange={(e) => setForm((f) => ({ ...f, proof_of_payment: e.target.files?.[0] || null }))}
+              />
+              <label htmlFor="proofOfPayment" className="file-input-label">
+                <span>{form.proof_of_payment ? form.proof_of_payment.name : 'Choose file'}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div className="qr-card">
+          <p className="qr-header">Scan to Pay</p>
+          <div className="qr-box">
+            <img
+              src={qrCode}
+              alt="Payment QR code"
+              style={{ width: '100%', height: '100%', objectFit: 'contain', borderRadius: '18px' }}
+            />
+          </div>
+          <p className="qr-amount">₱{Number(category.fee).toLocaleString()}</p>
+          <p className="qr-note">Works with GCash and PalawanPay.</p>
         </div>
       </div>
 

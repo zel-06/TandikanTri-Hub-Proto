@@ -23,6 +23,16 @@ export default function Register() {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
   }
 
+  function handlePostalCodeChange(e) {
+    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 4);
+    setForm((f) => ({ ...f, postal_code: digitsOnly }));
+  }
+
+  function handlePhoneNumberChange(e) {
+    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 11);
+    setForm((f) => ({ ...f, phone: digitsOnly }));
+  }
+
   async function handleSubmit(e) {
     e.preventDefault();
     setErrors({});
@@ -75,7 +85,7 @@ export default function Register() {
 
             <label className="login-info-title">Phone</label>
             <label className="input-group">
-              <input type="tel" placeholder="phone number" value={form.phone} onChange={update('phone')} required />
+              <input type="tel" inputMode="search" placeholder="phone number" value={form.phone} onChange={handlePhoneNumberChange} required />
             </label>
 
             <label className="login-info-title">Address</label>
@@ -92,7 +102,7 @@ export default function Register() {
               <input type="text" placeholder="province" value={form.province} onChange={update('province')} required />
             </label>
             <label className="input-group">
-              <input type="text" placeholder="postal code" value={form.postal_code} onChange={update('postal_code')} required />
+              <input type="text" inputMode="numeric" placeholder="postal code" value={form.postal_code} onChange={handlePostalCodeChange} required />
             </label>
 
             <label className="login-info-title">Password</label>

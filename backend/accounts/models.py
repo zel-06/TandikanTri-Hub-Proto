@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from config.storage_backends import PublicMediaStorage, PrivateIDStorage
 
 
 class User(AbstractUser):
@@ -29,7 +30,7 @@ class User(AbstractUser):
     province = models.CharField(max_length=120, blank=True)
     postal_code = models.CharField(max_length=20, blank=True)
 
-    id_document = models.ImageField(upload_to='id_documents/', blank=True, null=True)
+    id_document = models.ImageField(upload_to='id_documents/', storage=PrivateIDStorage(), blank=True, null=True)
     id_verification_status = models.CharField(
         max_length=20, choices=VerificationStatus.choices, default=VerificationStatus.UNSUBMITTED
     )

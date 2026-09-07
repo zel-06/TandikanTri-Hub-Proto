@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 
+from config.storage_backends import PrivateIDStorage
 from events.models import EventCategory
 
 
@@ -77,7 +78,9 @@ class Payment(models.Model):
     registration = models.OneToOneField(Registration, on_delete=models.CASCADE, related_name='payment')
     method = models.CharField(max_length=20, choices=Method.choices)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    proof_of_payment = models.ImageField(upload_to='payment_proofs/', blank=True, null=True)
+    proof_of_payment = models.ImageField(
+        upload_to='payment_proofs/', storage=PrivateIDStorage(), blank=True, null=True
+    )
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
     verified_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, related_name='verified_payments'

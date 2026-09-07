@@ -4,12 +4,11 @@ import AuthNavbar from '../../../components/AuthNavbar';
 import Footer from '../../../components/Footer';
 import * as eventsApi from '../../../api/events';
 import * as registrationsApi from '../../../api/registrations';
+import RegistrationSteps from './RegistrationSteps';
 import StepDetails from './StepDetails';
 import StepAgreements from './StepAgreements';
 import StepPayment from './StepPayment';
 import StepConfirmation from './StepConfirmation';
-
-const STEP_LABELS = ['Personal Details', 'Agreements', 'Payment', 'Confirmation'];
 
 function blankParticipant(role = '') {
   return { role, full_name: '', date_of_birth: '', gender: '', nationality: 'Filipino', shirt_size: '' };
@@ -96,12 +95,11 @@ export default function RegistrationFlow() {
 
   return (
     <FlowShell>
-      <h1>{event.title} — {category.name}</h1>
-      {step < 4 && (
-        <p className="feed-meta" style={{ marginBottom: '1.5rem' }}>
-          Step {step} of 4 · {STEP_LABELS[step - 1]}
-        </p>
-      )}
+      <div className="register-header" style={{ justifyContent: 'center', marginBottom: '0.5rem' }}>
+        <h1>{event.title} — {category.name}</h1>
+      </div>
+
+      <RegistrationSteps currentStep={step} />
 
       {step === 1 && (
         <StepDetails category={category} form={form} setForm={setForm} onNext={() => setStep(2)} />
@@ -130,7 +128,7 @@ function FlowShell({ children }) {
     <>
       <AuthNavbar />
       <main className="login-main">
-        <section className="create-account-card" style={{ maxWidth: '640px' }}>
+        <section className="create-account-card" style={{ maxWidth: '760px' }}>
           {children}
         </section>
       </main>

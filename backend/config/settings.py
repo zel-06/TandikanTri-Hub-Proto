@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'notifications',
     'dashboard',
     'feed',
+    'storages',
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,24 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r'^https://.*\.vercel\.app$',
 ]
+
+#storage settings for AWS S3
+AWS_ACCESS_KEY_ID = env('SUPABASE_S3_ACCESS_KEY')
+AWS_SECRET_ACCESS_KEY = env('SUPABASE_S3_SECRET_KEY')
+AWS_STORAGE_BUCKET_NAME = 'communityfeed'  # default/fallback bucket
+AWS_S3_ENDPOINT_URL = env('SUPABASE_S3_ENDPOINT_URL')  # https://xxxxx.supabase.co/storage/v1/s3
+AWS_S3_REGION_NAME = env('SUPABASE_S3_REGION')
+AWS_S3_ADDRESSING_STYLE = 'path'
+AWS_DEFAULT_ACL = None  # Supabase manages ACLs via bucket policy, not per-object
+AWS_QUERYSTRING_AUTH = False  # for public buckets — no signed URLs needed
+
+# Django 5.1+ removed DEFAULT_FILE_STORAGE in favor of this dict. "default" is the fallback
+# used by any FileField/ImageField that doesn't pass its own storage= explicitly.
+STORAGES = {
+    'default': {
+        'BACKEND': 'config.storage_backends.PublicMediaStorage',
+    },
+    'staticfiles': {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    },
+}

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from config.storage_backends import PublicMediaStorage, PrivateIDStorage
 
 
 class Event(models.Model):
@@ -21,7 +22,7 @@ class Event(models.Model):
     distance = models.CharField(
         max_length=200, blank=True, help_text='e.g. "3km swim - 180km bike - 42km run"'
     )
-    hero_image = models.ImageField(upload_to='events/', blank=True, null=True)
+    hero_image = models.ImageField(upload_to='events/', storage=PublicMediaStorage(), blank=True, null=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.DRAFT)
 
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)

@@ -67,6 +67,16 @@ export default function StepDetails({ category, form, setForm, onNext }) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
   }
 
+  function handlePhoneNumberChange(e) {
+    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 11);
+    setForm((f) => ({ ...f, mobile_number: digitsOnly }));
+  }
+
+  function handleEmergencyPhoneNumberChange(e) {
+    const digitsOnly = e.target.value.replace(/\D/g, '').slice(0, 11);
+    setForm((f) => ({ ...f, emergency_contact_phone: digitsOnly }));
+  }
+
   function updateParticipant(index, next) {
     setForm((f) => {
       const participants = [...f.participants];
@@ -85,7 +95,8 @@ export default function StepDetails({ category, form, setForm, onNext }) {
       {isRelay && (
         <>
           <label className="login-info-title">Team Name</label>
-          <label className="input-group">
+          <br />
+          <label className="input-group" style={{ marginBottom: '1.5rem' }}>
             <input value={form.team_name} onChange={updateField('team_name')} required />
           </label>
         </>
@@ -109,7 +120,7 @@ export default function StepDetails({ category, form, setForm, onNext }) {
         </div>
         <div className="form-group">
           <label>Mobile Number</label>
-          <input type="tel" className="form-control" value={form.mobile_number} onChange={updateField('mobile_number')} required />
+          <input type="tel" inputMode="numeric" className="form-control" value={form.mobile_number} onChange={handlePhoneNumberChange} required />
         </div>
       </div>
       <div className="form-group">
@@ -125,7 +136,7 @@ export default function StepDetails({ category, form, setForm, onNext }) {
         </div>
         <div className="form-group">
           <label>Phone</label>
-          <input className="form-control" value={form.emergency_contact_phone} onChange={updateField('emergency_contact_phone')} />
+          <input className="form-control" inputMode="numeric" value={form.emergency_contact_phone} onChange={handleEmergencyPhoneNumberChange} />
         </div>
       </div>
 

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 
 from events.models import Event
+from config.storage_backends import PublicMediaStorage, PrivateIDStorage
 
 
 class CommunityPost(models.Model):
@@ -27,7 +28,7 @@ class CommunityPost(models.Model):
 
 class CommunityPostImage(models.Model):
     post = models.ForeignKey(CommunityPost, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='community_posts/')
+    image = models.ImageField(upload_to='community_posts/', storage=PublicMediaStorage())
 
     def __str__(self):
         return f'{self.post.title} image'

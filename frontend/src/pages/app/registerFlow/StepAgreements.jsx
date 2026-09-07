@@ -36,19 +36,22 @@ export default function StepAgreements({ form, setForm, onNext, onBack }) {
       }}
     >
       {AGREEMENTS.map((agreement) => (
-        <details key={agreement.field} style={{ marginBottom: '1rem' }}>
-          <summary style={{ cursor: 'pointer', fontWeight: 600 }}>{agreement.title}</summary>
-          <p style={{ margin: '0.75rem 0', color: '#4a5568', fontSize: '0.9rem', lineHeight: 1.6 }}>
-            {agreement.body}
-          </p>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <input
-              type="checkbox"
-              checked={form[agreement.field]}
-              onChange={() => toggle(agreement.field)}
-            />
-            <span>I have read and agree to the {agreement.title}</span>
-          </label>
+        <details key={agreement.field} className={`agreement-card${form[agreement.field] ? ' agreed' : ''}`}>
+          <summary className="agreement-summary">
+            <span>{agreement.title}</span>
+            {form[agreement.field] && <span className="agreement-check">✓</span>}
+          </summary>
+          <p className="agreement-body">{agreement.body}</p>
+          <div className="checkbox-field">
+            <label>
+              <input
+                type="checkbox"
+                checked={form[agreement.field]}
+                onChange={() => toggle(agreement.field)}
+              />
+              <span>I have read and agree to the {agreement.title}</span>
+            </label>
+          </div>
         </details>
       ))}
 
