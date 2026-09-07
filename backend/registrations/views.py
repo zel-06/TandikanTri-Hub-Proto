@@ -110,18 +110,34 @@ def paymongo_webhook(request):
                 registration.bib_number = str(1000 + registration.id + random.randint(0, 8))
             registration.save(update_fields=['status', 'bib_number'])
 
-            event_title = registration.event_category.event.title
+            event_obj = registration.event_category.event
+            event_title = event_obj.title
             message = (
                 f'Your payment for {event_title} has been verified and your registration is confirmed. '
                 f'Your bib number is {registration.bib_number}.'
             )
             notify(registration.user, Notification.Kind.PAYMENT, 'Payment Verified', message)
+
+            details_lines = [
+                f'Event: {event_title}',
+                f'Date: {event_obj.date.strftime("%B %d, %Y")}',
+                f'Venue: {event_obj.venue}',
+                f'Category: {registration.event_category.name}',
+            ]
+            if registration.team_name:
+                details_lines.append(f'Team: {registration.team_name}')
+            details_lines += [
+                f'Bib Number: {registration.bib_number}',
+                f'Amount Paid: PHP {payment.amount}',
+                f'Payment Method: {payment.get_method_display() if payment.method else "—"}',
+            ]
+
             send_mail(
                 subject=f'Payment Confirmed — {event_title}',
                 message=(
                     f'Hi {registration.user.get_full_name() or registration.user.username},\n\n{message}\n\n'
-                    f'Amount paid: PHP {payment.amount}\n'
-                    f'Category: {registration.event_category.name}\n\n'
+                    + '\n'.join(details_lines)
+                    + f'\n\nView your registration: {settings.FRONTEND_URL.rstrip("/")}/profile\n\n'
                     '— Tandikan Tri-Hub'
                 ),
                 from_email=None,
