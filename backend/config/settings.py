@@ -149,7 +149,10 @@ if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
     EMAIL_USE_TLS = True
 else:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL', default='Tandikan Tri-Hub <no-reply@tandikantrihub.com>')
+DEFAULT_FROM_EMAIL = env(
+    'DEFAULT_FROM_EMAIL',
+    default=f'Tandikan Tri-Hub <{EMAIL_HOST_USER}>' if EMAIL_HOST_USER else 'Tandikan Tri-Hub <no-reply@tandikantrihub.com>',
+)
 
 #PayMongo payment gateway
 PAYMONGO_SECRET_KEY = env('PAYMONGO_SECRET_KEY')
