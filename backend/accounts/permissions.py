@@ -25,3 +25,14 @@ IsAnyStaff = _role_permission(
     User.Role.FINANCE_OFFICER,
     User.Role.OPERATIONS_MANAGER,
 )
+
+
+class IsVerifiedUser(BasePermission):
+    message = 'Your ID verification must be approved before you can register for an event.'
+
+    def has_permission(self, request, view):
+        return bool(
+            request.user
+            and request.user.is_authenticated
+            and request.user.id_verification_status == User.VerificationStatus.APPROVED
+        )

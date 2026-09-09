@@ -21,6 +21,7 @@ export default function Profile() {
   const [passwordMessage, setPasswordMessage] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [idFile, setIdFile] = useState(null);
+  const [guardianIdFile, setGuardianIdFile] = useState(null);
   const [registrations, setRegistrations] = useState(null);
 
   useEffect(() => {
@@ -44,14 +45,17 @@ export default function Profile() {
     setSavedMessage('');
     setSaveError('');
     try {
-      const data = idFile ? new FormData() : { ...form };
-      if (idFile) {
+      const hasFile = idFile || guardianIdFile;
+      const data = hasFile ? new FormData() : { ...form };
+      if (hasFile) {
         Object.entries(form).forEach(([k, v]) => data.append(k, v));
-        data.append('id_document', idFile);
+        if (idFile) data.append('id_document', idFile);
+        if (guardianIdFile) data.append('guardian_id_document', guardianIdFile);
       }
       await authApi.updateMe(data);
       await refreshProfile();
       setIdFile(null);
+      setGuardianIdFile(null);
       setSavedMessage('Profile updated.');
     } catch (err) {
       setSaveError(JSON.stringify(err.response?.data) || 'Could not update profile.');
@@ -136,6 +140,12 @@ export default function Profile() {
                     <label>ID Verification: {VERIFICATION_LABEL[user.id_verification_status]}</label>
                     {(user.id_verification_status === 'unsubmitted' || user.id_verification_status === 'rejected') && (
                       <input type="file" accept="image/*" onChange={(e) => setIdFile(e.target.files?.[0] || null)} />
+                    )}
+                    {user.is_minor && (user.id_verification_status === 'unsubmitted' || user.id_verification_status === 'rejected') && (
+                      <div style={{ marginTop: '0.5rem' }}>
+                        <label>Guardian/Parent ID</label>
+                        <input type="file" accept="image/*" onChange={(e) => setGuardianIdFile(e.target.files?.[0] || null)} />
+                      </div>
                     )}
                   </div>
                 )}

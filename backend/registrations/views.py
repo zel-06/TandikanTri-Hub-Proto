@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
-from accounts.permissions import IsFinanceStaff
+from accounts.permissions import IsFinanceStaff, IsVerifiedUser
 from audit.models import AuditLogEntry, log_action
 from notifications.models import Notification, notify
 
@@ -22,7 +22,7 @@ from .serializers import PaymentSerializer, RegistrationCreateSerializer, Regist
 
 class RegistrationCreateView(generics.CreateAPIView):
     serializer_class = RegistrationCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsVerifiedUser]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)

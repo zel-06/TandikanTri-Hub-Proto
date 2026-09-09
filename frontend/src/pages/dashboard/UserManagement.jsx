@@ -88,6 +88,7 @@ export default function UserManagement() {
                   <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
                     <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Name</th>
                     <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Email</th>
+                    <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>ID Document</th>
                     <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>ID Verification</th>
                     <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Account Status</th>
                     <th style={{ padding: '1rem 0.5rem', color: '#9cb3d8' }}>Actions</th>
@@ -98,6 +99,33 @@ export default function UserManagement() {
                     <tr key={user.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                       <td style={{ padding: '1rem 0.5rem', fontWeight: 700 }}>{user.full_name || user.username}</td>
                       <td style={{ padding: '1rem 0.5rem' }}>{user.email}</td>
+                      <td style={{ padding: '1rem 0.5rem' }}>
+                        {user.id_document && (
+                          <a href={user.id_document} target="_blank" rel="noreferrer" title="Applicant ID">
+                            <img
+                              src={user.id_document}
+                              alt="ID document"
+                              style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 4 }}
+                            />
+                          </a>
+                        )}
+                        {user.guardian_id_document && (
+                          <a
+                            href={user.guardian_id_document}
+                            target="_blank"
+                            rel="noreferrer"
+                            title="Guardian/Parent ID"
+                            style={{ marginLeft: 6 }}
+                          >
+                            <img
+                              src={user.guardian_id_document}
+                              alt="Guardian ID document"
+                              style={{ width: 60, height: 40, objectFit: 'cover', borderRadius: 4 }}
+                            />
+                          </a>
+                        )}
+                        {!user.id_document && '—'}
+                      </td>
                       <td style={{ padding: '1rem 0.5rem' }}>
                         <span className="status-pill">{user.id_verification_status}</span>
                       </td>

@@ -60,7 +60,7 @@ function ParticipantFields({ index, participant, onChange, roleLabel }) {
   );
 }
 
-export default function StepDetails({ category, form, setForm, onNext }) {
+export default function StepDetails({ category, form, setForm, keepRecords, setKeepRecords, onNext }) {
   const isRelay = category.is_relay;
 
   function updateField(field) {
@@ -102,6 +102,15 @@ export default function StepDetails({ category, form, setForm, onNext }) {
         </>
       )}
 
+      <label className="checkbox-field" style={{ marginBottom: '1rem' }}>
+        <input
+          type="checkbox"
+          checked={keepRecords}
+          onChange={(e) => setKeepRecords(e.target.checked)}
+        />
+        {' '}This is me — pre-fill and save my details to my profile
+      </label>
+
       {form.participants.map((participant, index) => (
         <ParticipantFields
           key={index}
@@ -125,7 +134,12 @@ export default function StepDetails({ category, form, setForm, onNext }) {
       </div>
       <div className="form-group">
         <label>Address (optional)</label>
-        <input className="form-control" value={form.address} onChange={updateField('address')} />
+        <input
+          className="form-control"
+          value={form.address}
+          onChange={updateField('address')}
+          readOnly={keepRecords}
+        />
       </div>
 
       <label className="login-info-title">Emergency Contact</label>

@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import AuthNavbar from '../../components/AuthNavbar';
 import Footer from '../../components/Footer';
+import { useAuth } from '../../context/AuthContext';
 import * as eventsApi from '../../api/events';
 import '../../styles/event-detail.css';
 
@@ -58,10 +59,12 @@ function CountdownTimer({ deadline }) {
 
 export default function EventDetail() {
   const { id } = useParams();
+  const { user } = useAuth();
   const [event, setEvent] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const notVerified = !user || user.id_verification_status !== 'approved';
 
   useEffect(() => {
     eventsApi.getEvent(id)
@@ -183,11 +186,18 @@ export default function EventDetail() {
                 <button
                   className="register-category-btn"
                   type="button"
-                  disabled={selectedCategory.slots_left <= 0}
+                  disabled={selectedCategory.slots_left <= 0 || notVerified}
                   onClick={() => navigate(`/events/${event.id}/register/${selectedCategory.id}`)}
                 >
-                  {selectedCategory.slots_left <= 0 ? 'Fully Booked' : 'Register Now'}
+                  {selectedCategory.slots_left <= 0
+                    ? 'Fully Booked'
+                    : notVerified ? 'Verify Your ID to Register' : 'Register Now'}
                 </button>
+                {notVerified && selectedCategory.slots_left > 0 && (
+                  <p className="field-error" style={{ marginTop: '0.5rem' }}>
+                    Your ID must be verified before registering. <Link to="/profile">Go to Profile</Link>
+                  </p>
+                )}
               </div>
             )}
           </aside>

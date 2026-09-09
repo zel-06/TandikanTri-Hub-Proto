@@ -9,15 +9,30 @@ import uploadIcon from '../../assets/images/upload_id.png';
 const initialForm = {
   first_name: '', last_name: '', username: '', email: '', phone: '',
   street: '', city: '', barangay: '', province: '', postal_code: '',
-  password: '', password_confirm: '',
+  birthdate: '', password: '', password_confirm: '',
 };
+
+function calculateAge(dob) {
+  if (!dob) return '';
+  const birth = new Date(dob);
+  if (Number.isNaN(birth.getTime())) return '';
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  return age;
+}
 
 export default function Register() {
   const [form, setForm] = useState(initialForm);
   const [idFile, setIdFile] = useState(null);
+  const [guardianIdFile, setGuardianIdFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+
+  const age = calculateAge(form.birthdate);
+  const isMinor = age !== '' && age < 18;
 
   function update(field) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -36,11 +51,23 @@ export default function Register() {
   async function handleSubmit(e) {
     e.preventDefault();
     setErrors({});
+
+    const newErrors = {};
+    if (!idFile) newErrors.id_document = 'Please upload a valid ID.';
+    if (isMinor && !guardianIdFile) {
+      newErrors.guardian_id_document = 'A guardian or parent ID is required for applicants below 18 years old.';
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
     setSubmitting(true);
     try {
       const data = new FormData();
       Object.entries(form).forEach(([key, value]) => data.append(key, value));
       if (idFile) data.append('id_document', idFile);
+      if (guardianIdFile) data.append('guardian_id_document', guardianIdFile);
       await authApi.register(data);
       navigate('/login', { state: { registered: true } });
     } catch (err) {
@@ -105,6 +132,15 @@ export default function Register() {
               <input type="text" inputMode="numeric" placeholder="postal code" value={form.postal_code} onChange={handlePostalCodeChange} required />
             </label>
 
+            <label className="login-info-title">Birthdate</label>
+            <label className="input-group">
+              <input type="date" value={form.birthdate} onChange={update('birthdate')} required />
+            </label>
+            <label className="input-group">
+              <input type="text" value={age === '' ? '' : `Age: ${age}`} readOnly placeholder="Age" />
+            </label>
+            {errors.birthdate && <p className="field-error">{errors.birthdate}</p>}
+
             <label className="login-info-title">Password</label>
             <label className="input-group">
               <input type="password" placeholder="Password" value={form.password} onChange={update('password')} required />
@@ -130,6 +166,29 @@ export default function Register() {
                 </label>
               </div>
             </div>
+            {errors.id_document && <p className="field-error">{errors.id_document}</p>}
+
+            {isMinor && (
+              <div className="upload-section">
+                <label>Upload Guardian/Parent ID</label>
+                <p className="login-subtitle" style={{ margin: '0 0 0.5rem' }}>
+                  Since you are below 18, please also upload a valid ID of your parent or guardian.
+                </p>
+                <div className="file-input-wrapper">
+                  <input
+                    type="file"
+                    id="guardianIDverification"
+                    accept="image/*"
+                    onChange={(e) => setGuardianIdFile(e.target.files?.[0] || null)}
+                  />
+                  <label htmlFor="guardianIDverification" className="file-input-label">
+                    <img src={uploadIcon} alt="upload icon" className="input-icon" />
+                    <span>{guardianIdFile ? guardianIdFile.name : 'Choose file'}</span>
+                  </label>
+                </div>
+              </div>
+            )}
+            {errors.guardian_id_document && <p className="field-error">{errors.guardian_id_document}</p>}
 
             {errors.non_field && <p className="field-error">{errors.non_field}</p>}
 
