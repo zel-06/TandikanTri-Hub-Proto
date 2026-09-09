@@ -87,6 +87,13 @@ export default function RegistrationFlow() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [eventId, categoryId]);
 
+  useEffect(() => {
+    // Refresh the cached profile so a just-approved verification status is reflected
+    // without requiring the athlete to log out and back in.
+    refreshProfile().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   if (error) return <FlowShell><p className="form-error-banner">{error}</p></FlowShell>;
 
   if (user && user.id_verification_status !== 'approved') {

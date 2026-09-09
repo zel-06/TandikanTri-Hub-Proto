@@ -59,7 +59,7 @@ function CountdownTimer({ deadline }) {
 
 export default function EventDetail() {
   const { id } = useParams();
-  const { user } = useAuth();
+  const { user, refreshProfile } = useAuth();
   const [event, setEvent] = useState(null);
   const [selectedCategoryId, setSelectedCategoryId] = useState(null);
   const [error, setError] = useState('');
@@ -74,6 +74,13 @@ export default function EventDetail() {
       })
       .catch(() => setError('Could not load this event.'));
   }, [id]);
+
+  useEffect(() => {
+    // Refresh the cached profile so a just-approved verification status is reflected
+    // without requiring the athlete to log out and back in.
+    refreshProfile().catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (error) return <ErrorShell message={error} />;
   if (!event) return <ErrorShell message="Loading event…" />;
