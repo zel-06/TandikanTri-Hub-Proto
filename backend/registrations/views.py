@@ -1,5 +1,5 @@
 import csv
-import random
+import re
 
 from django.conf import settings
 from django.core.mail import send_mail
@@ -82,6 +82,24 @@ def create_checkout_session(request, pk):
     return Response({'checkout_url': session['attributes']['checkout_url']})
 
 
+def _generate_bib_number(registration):
+    """
+    Marathon categories are named after their distance (e.g. "3K", "10K", "50K"),
+    so bibs there are prefixed with that number: 3001, 3002, ... / 10001, 10002, ...
+    Non-marathon categories (Duathlon/Triathlon "Sprint Solo", "Sprint Relay", etc.)
+    have no distance in their name, so their bibs are plain: 001, 002, ...
+    Numbering restarts at 001 for each event category (not shared across categories
+    or events). Relay teams share one Registration row, so they naturally share one bib.
+    """
+    category = registration.event_category
+    match = re.match(r'^(\d+)', category.name)
+    prefix = match.group(1) if match else ''
+    already_assigned = Registration.objects.filter(
+        event_category=category,
+    ).exclude(bib_number='').count()
+    return f'{prefix}{already_assigned + 1:03d}'
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def paymongo_webhook(request):
@@ -107,7 +125,7 @@ def paymongo_webhook(request):
             registration = payment.registration
             registration.status = Registration.Status.CONFIRMED
             if not registration.bib_number:
-                registration.bib_number = str(1000 + registration.id + random.randint(0, 8))
+                registration.bib_number = _generate_bib_number(registration)
             registration.save(update_fields=['status', 'bib_number'])
 
             event_obj = registration.event_category.event
