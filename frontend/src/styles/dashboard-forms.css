@@ -37,6 +37,12 @@
 .admin-panel .distance-inputs { display: flex; gap: 0.5rem; flex: 1; }
 .admin-panel .distance-inputs input { flex: 1; padding: 0.5rem; border-radius: 8px; background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); color: #fff; }
 
+.admin-panel .btn-add-category {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.8rem;
+  border-radius: 8px;
+}
+
 .admin-panel .modal-overlay {
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;

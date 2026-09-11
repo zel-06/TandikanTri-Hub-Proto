@@ -6,14 +6,49 @@ import * as feedApi from '../../api/feed';
 
 const DISTANCES_BY_EVENT_TYPE = {
   marathon: ['3K', '5K', '10K', '21K (Half Marathon)', '42K (Full Marathon)'],
-  duathlon: ['Relay', 'Solo'],
-  triathlon: ['Relay', 'Solo'],
+  duathlon: ['Sprint', 'Standard'],
+  triathlon: ['Sprint', 'Standard'],
 };
+
+const PARTICIPATION_TYPES = ['Solo', 'Relay'];
 
 const RELAY_ROLES_BY_EVENT_TYPE = {
   duathlon: ['Runner', 'Cyclist'],
   triathlon: ['Swimmer', 'Cyclist', 'Runner'],
 };
+
+const HAS_PARTICIPATION_TYPES = ['duathlon', 'triathlon'];
+
+function buildDistanceRows(eventType) {
+  if (HAS_PARTICIPATION_TYPES.includes(eventType)) {
+    const categories = DISTANCES_BY_EVENT_TYPE[eventType] || [];
+    const rows = [];
+    categories.forEach((category) => {
+      PARTICIPATION_TYPES.forEach((participation) => {
+        rows.push({
+          id: `${category}-${participation}`.toLowerCase(),
+          name: `${category} ${participation}`,
+          category,
+          participation,
+          enabled: false,
+          fee: '',
+          slots: '',
+          isRelay: participation === 'Relay',
+        });
+      });
+    });
+    return rows;
+  }
+  const distances = DISTANCES_BY_EVENT_TYPE[eventType] || [];
+  return distances.map((name) => ({
+    id: name,
+    name,
+    enabled: false,
+    fee: '',
+    slots: '',
+    isRelay: false,
+  }));
+}
 
 const emptyEventForm = { title: '', venue: '', date: '', event_type: '', description: '', distance: '' };
 const emptyPostForm = { post_type: 'announcement', title: '', body: '', event: '' };
@@ -53,14 +88,7 @@ export default function EventManagement() {
   function handleEventTypeChange(e) {
     const event_type = e.target.value;
     setEventForm((f) => ({ ...f, event_type }));
-    const distances = DISTANCES_BY_EVENT_TYPE[event_type] || [];
-    setDistanceRows(distances.map((name) => ({
-      name,
-      enabled: false,
-      fee: '',
-      slots: '',
-      isRelay: name === 'Relay',
-    })));
+    setDistanceRows(buildDistanceRows(event_type));
   }
 
   function handleEditEvent(event) {
@@ -73,9 +101,7 @@ export default function EventManagement() {
       description: event.description || '',
       distance: event.distance || '',
     });
-    setDistanceRows((DISTANCES_BY_EVENT_TYPE[event.event_type] || []).map((name) => ({
-      name, enabled: false, fee: '', slots: '', isRelay: name === 'Relay',
-    })));
+    setDistanceRows(buildDistanceRows(event.event_type));
     if (photoPreviewUrl) URL.revokeObjectURL(photoPreviewUrl);
     setPhotoFile(null);
     setPhotoPreviewUrl(null);
@@ -126,7 +152,7 @@ export default function EventManagement() {
         ? await eventsApi.updateEvent(editingEventId, formData)
         : await eventsApi.createEvent(formData);
 
-      const selectedRows = distanceRows.filter((row) => row.enabled && row.fee && row.slots);
+      const selectedRows = distanceRows.filter((row) => row.enabled && row.name && row.fee && row.slots);
       for (const row of selectedRows) {
         await eventsApi.createCategory(event.id, {
           name: row.name,
@@ -230,6 +256,59 @@ export default function EventManagement() {
     loadPosts();
   }
 
+  function renderDistanceRow(row, label, { editable = false, onRemove } = {}) {
+    return (
+      <div className="distance-row" key={row.id}>
+        <input
+          type="checkbox"
+          checked={row.enabled}
+          onChange={(e) => setDistanceRows((rows) =>
+            rows.map((r) => r.id === row.id ? { ...r, enabled: e.target.checked } : r))}
+        />
+        {editable ? (
+          <input
+            type="text"
+            placeholder="Category name (e.g. 15K Fun Run)"
+            value={row.name}
+            style={{
+              minWidth: '160px', padding: '0.5rem', borderRadius: '8px',
+              background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff',
+            }}
+            onChange={(e) => setDistanceRows((rows) =>
+              rows.map((r) => r.id === row.id ? { ...r, name: e.target.value } : r))}
+          />
+        ) : (
+          <label>{label}</label>
+        )}
+        <div className="distance-inputs">
+          <input
+            type="number" min="0" placeholder="Reg. Fee (₱)" value={row.fee}
+            onChange={(e) => setDistanceRows((rows) =>
+              rows.map((r) => r.id === row.id ? { ...r, fee: e.target.value } : r))}
+          />
+          <input
+            type="number" min="1" placeholder="Total Slots" value={row.slots}
+            onChange={(e) => setDistanceRows((rows) =>
+              rows.map((r) => r.id === row.id ? { ...r, slots: e.target.value } : r))}
+          />
+        </div>
+        {onRemove && (
+          <button type="button" className="action-btn btn-delete" onClick={onRemove} title="Remove this category">
+            Remove
+          </button>
+        )}
+      </div>
+    );
+  }
+
+  function addCustomDistanceRow() {
+    const id = `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+    setDistanceRows((rows) => [
+      ...rows,
+      { id, name: '', enabled: true, fee: '', slots: '', isRelay: false, isCustom: true },
+    ]);
+  }
+
   return (
     <DashboardLayout title="Event Management">
       <section style={{ display: 'grid', gap: '2rem' }}>
@@ -310,29 +389,33 @@ export default function EventManagement() {
                   <label style={{ display: 'block', marginBottom: '1rem', color: '#9cb3d8', fontWeight: 600 }}>
                     Event Categories &amp; Fees{editingEventId ? ' (add new categories only)' : ''}
                   </label>
-                  {distanceRows.map((row, i) => (
-                    <div className="distance-row" key={row.name}>
-                      <input
-                        type="checkbox"
-                        checked={row.enabled}
-                        onChange={(e) => setDistanceRows((rows) =>
-                          rows.map((r, idx) => idx === i ? { ...r, enabled: e.target.checked } : r))}
-                      />
-                      <label>{row.name}</label>
-                      <div className="distance-inputs">
-                        <input
-                          type="number" min="0" placeholder="Reg. Fee (₱)" value={row.fee}
-                          onChange={(e) => setDistanceRows((rows) =>
-                            rows.map((r, idx) => idx === i ? { ...r, fee: e.target.value } : r))}
-                        />
-                        <input
-                          type="number" min="1" placeholder="Total Slots" value={row.slots}
-                          onChange={(e) => setDistanceRows((rows) =>
-                            rows.map((r, idx) => idx === i ? { ...r, slots: e.target.value } : r))}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                  {HAS_PARTICIPATION_TYPES.includes(eventForm.event_type)
+                    ? DISTANCES_BY_EVENT_TYPE[eventForm.event_type].map((category) => (
+                        <div key={category} style={{ marginBottom: '1rem' }}>
+                          <p style={{ fontWeight: 600, color: '#d8e4ff', marginBottom: '0.5rem' }}>{category}</p>
+                          {distanceRows
+                            .filter((row) => row.category === category)
+                            .map((row) => renderDistanceRow(row, row.participation))}
+                        </div>
+                      ))
+                    : (
+                        <>
+                          {distanceRows.map((row) => renderDistanceRow(row, row.name, {
+                            editable: row.isCustom,
+                            onRemove: row.isCustom
+                              ? () => setDistanceRows((rows) => rows.filter((r) => r.id !== row.id))
+                              : undefined,
+                          }))}
+                          <button
+                            type="button"
+                            className="btn btn-secondary btn-add-category"
+                            style={{ marginTop: '0.5rem' }}
+                            onClick={addCustomDistanceRow}
+                          >
+                            + Add Custom Category
+                          </button>
+                        </>
+                      )}
                 </div>
               )}
 
