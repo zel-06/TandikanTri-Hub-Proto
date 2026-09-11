@@ -4,18 +4,18 @@ import ConfirmDialog from '../../components/ConfirmDialog';
 import * as eventsApi from '../../api/events';
 import * as feedApi from '../../api/feed';
 
-const DISTANCES_BY_DISCIPLINE = {
+const DISTANCES_BY_EVENT_TYPE = {
   marathon: ['3K', '5K', '10K', '21K (Half Marathon)', '42K (Full Marathon)'],
   duathlon: ['Relay', 'Solo'],
   triathlon: ['Relay', 'Solo'],
 };
 
-const RELAY_ROLES_BY_DISCIPLINE = {
+const RELAY_ROLES_BY_EVENT_TYPE = {
   duathlon: ['Runner', 'Cyclist'],
   triathlon: ['Swimmer', 'Cyclist', 'Runner'],
 };
 
-const emptyEventForm = { title: '', venue: '', date: '', discipline: '', description: '', distance: '' };
+const emptyEventForm = { title: '', venue: '', date: '', event_type: '', description: '', distance: '' };
 const emptyPostForm = { post_type: 'announcement', title: '', body: '', event: '' };
 
 export default function EventManagement() {
@@ -50,10 +50,10 @@ export default function EventManagement() {
   useEffect(loadEvents, []);
   useEffect(loadPosts, []);
 
-  function handleDisciplineChange(e) {
-    const discipline = e.target.value;
-    setEventForm((f) => ({ ...f, discipline }));
-    const distances = DISTANCES_BY_DISCIPLINE[discipline] || [];
+  function handleEventTypeChange(e) {
+    const event_type = e.target.value;
+    setEventForm((f) => ({ ...f, event_type }));
+    const distances = DISTANCES_BY_EVENT_TYPE[event_type] || [];
     setDistanceRows(distances.map((name) => ({
       name,
       enabled: false,
@@ -69,11 +69,11 @@ export default function EventManagement() {
       title: event.title,
       venue: event.venue,
       date: event.date,
-      discipline: event.discipline,
+      event_type: event.event_type,
       description: event.description || '',
       distance: event.distance || '',
     });
-    setDistanceRows((DISTANCES_BY_DISCIPLINE[event.discipline] || []).map((name) => ({
+    setDistanceRows((DISTANCES_BY_EVENT_TYPE[event.event_type] || []).map((name) => ({
       name, enabled: false, fee: '', slots: '', isRelay: name === 'Relay',
     })));
     if (photoPreviewUrl) URL.revokeObjectURL(photoPreviewUrl);
@@ -116,7 +116,7 @@ export default function EventManagement() {
       formData.append('title', eventForm.title);
       formData.append('venue', eventForm.venue);
       formData.append('date', eventForm.date);
-      formData.append('discipline', eventForm.discipline);
+      formData.append('event_type', eventForm.event_type);
       formData.append('description', eventForm.description);
       formData.append('distance', eventForm.distance);
       formData.append('status', 'published');
@@ -133,7 +133,7 @@ export default function EventManagement() {
           fee: row.fee,
           total_slots: row.slots,
           is_relay: row.isRelay,
-          relay_roles: row.isRelay ? (RELAY_ROLES_BY_DISCIPLINE[eventForm.discipline] || []) : [],
+          relay_roles: row.isRelay ? (RELAY_ROLES_BY_EVENT_TYPE[eventForm.event_type] || []) : [],
         });
       }
 
@@ -242,25 +242,25 @@ export default function EventManagement() {
               <div className="form-row">
                 <div className="form-group">
                   <label>Event Title</label>
-                  <input className="form-control" value={eventForm.title}
+                  <input className="form-control" placeholder="Enter event title" value={eventForm.title}
                     onChange={(e) => setEventForm((f) => ({ ...f, title: e.target.value }))} required />
                 </div>
                 <div className="form-group">
                   <label>Venue / Location</label>
-                  <input className="form-control" value={eventForm.venue}
+                  <input className="form-control" placeholder="Enter venue or location" value={eventForm.venue}
                     onChange={(e) => setEventForm((f) => ({ ...f, venue: e.target.value }))} required />
                 </div>
               </div>
               <div className="form-row">
                 <div className="form-group">
                   <label>Event Date</label>
-                  <input type="date" className="form-control" value={eventForm.date}
+                  <input type="date" className="form-control" placeholder="Select event date" value={eventForm.date}
                     onChange={(e) => setEventForm((f) => ({ ...f, date: e.target.value }))} required />
                 </div>
                 <div className="form-group">
-                  <label>Event Category</label>
-                  <select className="form-control" value={eventForm.discipline} onChange={handleDisciplineChange} required>
-                    <option value="">-- Select Category --</option>
+                  <label>Event Type</label>
+                  <select className="form-control" value={eventForm.event_type} onChange={handleEventTypeChange} required>
+                    <option value="" disabled hidden>Select Event Type</option>
                     <option value="marathon">Marathon</option>
                     <option value="duathlon">Duathlon</option>
                     <option value="triathlon">Triathlon</option>
@@ -269,13 +269,13 @@ export default function EventManagement() {
               </div>
               <div className="form-row">
                 <div className="form-group">
-                  <label>Distance (optional)</label>
+                  <label>Distance</label>
                   <input className="form-control" placeholder="e.g. 3km swim - 180km bike - 42km run"
                     value={eventForm.distance}
                     onChange={(e) => setEventForm((f) => ({ ...f, distance: e.target.value }))} />
                 </div>
                 <div className="form-group">
-                  <label>Event Photo (optional)</label>
+                  <label>Event Photo</label>
                   <input type="file" accept="image/*" className="form-control" value=""
                     onChange={handleEventPhotoChange} />
                   {photoPreviewUrl && (
@@ -308,7 +308,7 @@ export default function EventManagement() {
               {distanceRows.length > 0 && (
                 <div style={{ margin: '0 0 1.5rem', padding: '1rem', background: 'rgba(0,0,0,0.2)', borderRadius: '16px' }}>
                   <label style={{ display: 'block', marginBottom: '1rem', color: '#9cb3d8', fontWeight: 600 }}>
-                    Distances &amp; Fees{editingEventId ? ' (add new categories only)' : ''}
+                    Event Categories &amp; Fees{editingEventId ? ' (add new categories only)' : ''}
                   </label>
                   {distanceRows.map((row, i) => (
                     <div className="distance-row" key={row.name}>

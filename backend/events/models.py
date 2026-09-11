@@ -4,7 +4,7 @@ from config.storage_backends import PublicMediaStorage, PrivateIDStorage
 
 
 class Event(models.Model):
-    class Discipline(models.TextChoices):
+    class EventType(models.TextChoices):
         MARATHON = 'marathon', 'Marathon'
         DUATHLON = 'duathlon', 'Duathlon'
         TRIATHLON = 'triathlon', 'Triathlon'
@@ -18,7 +18,7 @@ class Event(models.Model):
     venue = models.CharField(max_length=200)
     date = models.DateField()
     time = models.TimeField(null=True, blank=True)
-    discipline = models.CharField(max_length=20, choices=Discipline.choices)
+    event_type = models.CharField(max_length=20, choices=EventType.choices)
     distance = models.CharField(
         max_length=200, blank=True, help_text='e.g. "3km swim - 180km bike - 42km run"'
     )

@@ -4,13 +4,13 @@ import AuthNavbar from '../../components/AuthNavbar';
 import Footer from '../../components/Footer';
 import * as eventsApi from '../../api/events';
 
-const DISCIPLINE_LABEL = {
+const EVENT_TYPE_LABEL = {
   marathon: 'Marathon',
   duathlon: 'Duathlon',
   triathlon: 'Triathlon',
 };
 
-const DISCIPLINE_SEGMENTS = {
+const EVENT_TYPE_SEGMENTS = {
   marathon: 'Run Events',
   duathlon: 'Run, Bike Events',
   triathlon: 'Swim, Bike, Run Events',
@@ -61,7 +61,7 @@ export default function Events() {
                       backgroundPosition: 'center',
                     } : undefined}
                   >
-                    <span className="event-label">{DISCIPLINE_LABEL[event.discipline] || event.discipline}</span>
+                    <span className="event-label">{EVENT_TYPE_LABEL[event.event_type] || event.event_type}</span>
                     <h3>{event.title}</h3>
                     <p className="event-meta">
                       {new Date(event.date).toLocaleDateString()} · {event.venue}
@@ -71,7 +71,7 @@ export default function Events() {
                   <div className="event-card-right">
                     <div className="event-tags">
                       <span className="event-pill event-pill-blue">
-                        {DISCIPLINE_SEGMENTS[event.discipline] || DISCIPLINE_LABEL[event.discipline]}
+                        {EVENT_TYPE_SEGMENTS[event.event_type] || EVENT_TYPE_LABEL[event.event_type]}
                       </span>
                       {totalSlots > 0 && (
                         <span className="event-pill event-pill-green">{slotsLeft} slots left</span>

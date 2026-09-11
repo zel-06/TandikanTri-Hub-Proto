@@ -10,6 +10,6 @@ class EventCategoryInline(admin.TabularInline):
 
 @admin.register(Event)
 class EventAdmin(admin.ModelAdmin):
-    list_display = ['title', 'discipline', 'date', 'venue', 'status']
-    list_filter = ['discipline', 'status']
+    list_display = ['title', 'event_type', 'date', 'venue', 'status']
+    list_filter = ['event_type', 'status']
     inlines = [EventCategoryInline]

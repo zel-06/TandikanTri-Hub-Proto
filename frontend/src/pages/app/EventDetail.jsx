@@ -6,7 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 import * as eventsApi from '../../api/events';
 import '../../styles/event-detail.css';
 
-const DISCIPLINE_LABEL = {
+const EVENT_TYPE_LABEL = {
   marathon: 'Marathon',
   duathlon: 'Duathlon',
   triathlon: 'Triathlon',
@@ -93,7 +93,7 @@ export default function EventDetail() {
 
       <section className="event-hero">
         <div className="section-content">
-          <span className="event-hero-tag">{DISCIPLINE_LABEL[event.discipline] || event.discipline}</span>
+          <span className="event-hero-tag">{EVENT_TYPE_LABEL[event.event_type] || event.event_type}</span>
           <h1 className="event-hero-title">{event.title}</h1>
           <div className="event-hero-meta">
             <span>📅 {new Date(event.date).toLocaleDateString()}</span>

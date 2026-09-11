@@ -24,7 +24,7 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = [
-            'id', 'title', 'description', 'venue', 'date', 'time', 'discipline', 'distance',
+            'id', 'title', 'description', 'venue', 'date', 'time', 'event_type', 'distance',
             'hero_image', 'status', 'categories', 'created_at', 'updated_at',
         ]
 
@@ -33,6 +33,6 @@ class EventWriteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = [
-            'id', 'title', 'description', 'venue', 'date', 'time', 'discipline', 'distance',
+            'id', 'title', 'description', 'venue', 'date', 'time', 'event_type', 'distance',
             'hero_image', 'status',
         ]
