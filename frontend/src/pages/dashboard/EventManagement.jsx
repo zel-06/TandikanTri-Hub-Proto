@@ -349,7 +349,7 @@ export default function EventManagement() {
               <div className="form-row">
                 <div className="form-group">
                   <label>Distance</label>
-                  <input className="form-control" placeholder="e.g. 3km swim - 180km bike - 42km run"
+                  <input className="form-control" placeholder="Distance for Marathon, Duathlon, or Triathlon"
                     value={eventForm.distance}
                     onChange={(e) => setEventForm((f) => ({ ...f, distance: e.target.value }))} />
                 </div>
