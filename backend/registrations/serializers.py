@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -87,14 +88,22 @@ class RegistrationCreateSerializer(serializers.ModelSerializer):
         participants_data = validated_data.pop('participants')
         category = validated_data['event_category']
 
-        registration = Registration.objects.create(
-            user=self.context['request'].user,
-            agreements_accepted_at=timezone.now(),
-            **validated_data,
-        )
-        Participant.objects.bulk_create([
-            Participant(registration=registration, **participant) for participant in participants_data
-        ])
-        # method is left blank — PayMongo's webhook fills it in once the athlete actually pays.
-        Payment.objects.create(registration=registration, amount=category.fee)
+        with transaction.atomic():
+            # Re-check capacity under a lock: validate() already did an optimistic
+            # check, but that can go stale if other requests for this category are
+            # racing with this one — this is the authoritative, race-proof check.
+            locked_category = EventCategory.objects.select_for_update().get(pk=category.pk)
+            if locked_category.slots_left <= 0:
+                raise serializers.ValidationError('This category is fully booked.')
+
+            registration = Registration.objects.create(
+                user=self.context['request'].user,
+                agreements_accepted_at=timezone.now(),
+                **validated_data,
+            )
+            Participant.objects.bulk_create([
+                Participant(registration=registration, **participant) for participant in participants_data
+            ])
+            # method is left blank — PayMongo's webhook fills it in once the athlete actually pays.
+            Payment.objects.create(registration=registration, amount=category.fee)
         return registration

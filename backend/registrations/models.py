@@ -35,6 +35,13 @@ class Registration(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['event_category', 'bib_number'],
+                condition=~models.Q(bib_number=''),
+                name='unique_bib_number_per_category',
+            ),
+        ]
 
     def __str__(self):
         return f'{self.user} · {self.event_category}'

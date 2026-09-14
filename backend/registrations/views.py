@@ -1,8 +1,10 @@
 import csv
+import logging
 import re
 
 from django.conf import settings
 from django.core.mail import send_mail
+from django.db import transaction
 from django.db.models import Count, Sum
 from django.http import HttpResponse
 from django.utils import timezone
@@ -13,11 +15,14 @@ from rest_framework.response import Response
 
 from accounts.permissions import IsFinanceStaff, IsVerifiedUser
 from audit.models import AuditLogEntry, log_action
+from events.models import EventCategory
 from notifications.models import Notification, notify
 
 from . import paymongo
 from .models import Payment, Registration
 from .serializers import PaymentSerializer, RegistrationCreateSerializer, RegistrationSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class RegistrationCreateView(generics.CreateAPIView):
@@ -117,16 +122,22 @@ def paymongo_webhook(request):
             return Response(status=status.HTTP_200_OK)
 
         if payment.status != Payment.Status.VERIFIED:
-            payment.status = Payment.Status.VERIFIED
-            payment.verified_at = timezone.now()
-            payment.method = paymongo.get_payment_method_used(checkout_id) or payment.method
-            payment.save(update_fields=['status', 'verified_at', 'method'])
+            with transaction.atomic():
+                # Lock the event category so concurrent webhook calls for the same
+                # category assign bib numbers one at a time instead of racing on the
+                # same "already assigned" count.
+                EventCategory.objects.select_for_update().get(pk=payment.registration.event_category_id)
 
-            registration = payment.registration
-            registration.status = Registration.Status.CONFIRMED
-            if not registration.bib_number:
-                registration.bib_number = _generate_bib_number(registration)
-            registration.save(update_fields=['status', 'bib_number'])
+                payment.status = Payment.Status.VERIFIED
+                payment.verified_at = timezone.now()
+                payment.method = paymongo.get_payment_method_used(checkout_id) or payment.method
+                payment.save(update_fields=['status', 'verified_at', 'method'])
+
+                registration = payment.registration
+                registration.status = Registration.Status.CONFIRMED
+                if not registration.bib_number:
+                    registration.bib_number = _generate_bib_number(registration)
+                registration.save(update_fields=['status', 'bib_number'])
 
             event_obj = registration.event_category.event
             event_title = event_obj.title
@@ -150,18 +161,23 @@ def paymongo_webhook(request):
                 f'Payment Method: {payment.get_method_display() if payment.method else "—"}',
             ]
 
-            send_mail(
-                subject=f'Payment Confirmed — {event_title}',
-                message=(
-                    f'Hi {registration.user.get_full_name() or registration.user.username},\n\n{message}\n\n'
-                    + '\n'.join(details_lines)
-                    + f'\n\nView your registration: {settings.FRONTEND_URL.rstrip("/")}/profile\n\n'
-                    '— Tandikan Tri-Hub'
-                ),
-                from_email=None,
-                recipient_list=[registration.email],
-                fail_silently=True,
-            )
+            try:
+                send_mail(
+                    subject=f'Payment Confirmed — {event_title}',
+                    message=(
+                        f'Hi {registration.user.get_full_name() or registration.user.username},\n\n{message}\n\n'
+                        + '\n'.join(details_lines)
+                        + f'\n\nView your registration: {settings.FRONTEND_URL.rstrip("/")}/profile\n\n'
+                        '— Tandikan Tri-Hub'
+                    ),
+                    from_email=None,
+                    recipient_list=[registration.email],
+                    fail_silently=False,
+                )
+            except Exception:
+                logger.exception(
+                    'Failed to send payment confirmation email for registration %s', registration.id
+                )
             log_action(
                 None, AuditLogEntry.Module.FINANCE, 'Payment verified via PayMongo',
                 target_description=str(registration),
