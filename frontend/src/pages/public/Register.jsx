@@ -307,6 +307,8 @@ export default function Register() {
           </div>
           <h1>Create your account</h1>
 
+          <br />
+
           <Stepper currentStep={step} />
 
           {step === 1 && (
@@ -544,20 +546,46 @@ export default function Register() {
               <div className="terms-box" ref={termsBoxRef} onScroll={handleTermsScroll}>
                 <h3>Terms and Conditions</h3>
                 <p>
-                  By creating an account with Tandikan Tri Team, you agree to provide accurate registration
-                  and identification details, to use this platform only for legitimate event registration and
-                  participation, and to follow the rules, schedules, and policies set by the organizers for any
-                  event you join. Accounts found to contain false information or used for fraudulent registration
-                  may be suspended or terminated.
+                  <b>By creating an account on Tandikan Tri-Hub, you agree to the following:</b>
+
+                      <b>Account Responsibility</b>
+                      You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account.
+
+                      <b>Accurate Information</b>
+                      You agree to provide accurate, current, and complete information when creating and maintaining your account.
+
+                      <b>Platform Use</b>
+                      Tandikan Tri-Hub is provided for the purpose of discovering, registering for, and managing participation in multisport events organized or listed through the platform. You agree not to misuse the platform (e.g., unauthorized access, scraping, impersonation, or disrupting other users' access).
+
+                      <b>Community Feed</b>
+                      The community feed (announcements, event photos, updates) is posted by Tandikan Tri-Hub admins only. As a user, you may like and share posts, but may not comment on, publish, upload, or submit content to the feed. Any interactions (e.g., likes, shares) must be made in good faith and not used to manipulate engagement or disrupt the platform.
+
+                      <b>Service Availability</b>
+                      Tandikan Tri-Hub is provided "as is." While we aim for reliable uptime, we do not guarantee uninterrupted access and are not liable for losses arising from platform downtime.
+
+                      <b>Changes to Terms</b>
+                      These terms may be updated from time to time. Continued use of the platform after changes constitutes acceptance of the revised terms.
+                      
+                      <b>Governing Law</b>
+                      These terms are governed by the laws of the Republic of the Philippines.
                 </p>
                 <h3>Privacy Policy</h3>
                 <p>
-                  In compliance with the Data Privacy Act of 2012 (RA 10173), Tandikan Tri Team collects and
-                  processes the personal information and identification documents you submit solely for account
-                  verification, event registration, safety, and communication purposes. Your data will not be
-                  shared with third parties without your consent, except as required by law or race safety
-                  protocols. You may request access to, correction of, or deletion of your personal data by
-                  contacting the organizers.
+                  <b>In compliance with the Data Privacy Act of 2012 (RA 10173), Tandikan Tri-Hub collects and processes the following account-level personal information for the purpose of creating and managing your user account:</b>
+
+                  Full name, email address, and password (encrypted)
+                  Profile information you choose to provide (e.g., profile photo, bio)
+                  Login and activity data (e.g., login timestamps, device/browser information) for account security purposes
+
+                  <b>How we use this data:</b>
+
+                  To create, authenticate, and manage your account
+                  To send account-related notifications (e.g., password resets, registration confirmations)
+                  To personalize your experience on the platform (e.g., dashboard, community feed)
+                  Data sharing: Your account data will not be sold or shared with third parties for marketing purposes. It may be disclosed only: (a) with your consent, (b) as required by law, or (c) to event organizers only when you register for a specific event, subject to the separate Event Data Privacy Agreement at registration.
+
+                  Data retention & your rights: You may request access to, correction of, or deletion of your personal data at any time, subject to legal and operational limitations, by contacting [contact email/support]. Your data will be retained for as long as your account is active, or as required by law.
+
                 </p>
               </div>
 
