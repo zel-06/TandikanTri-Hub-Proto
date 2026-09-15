@@ -544,52 +544,100 @@ export default function Register() {
           {step === 3 && (
             <form className="create-account-form terms-step" onSubmit={handleSubmit}>
               <div className="terms-box" ref={termsBoxRef} onScroll={handleTermsScroll}>
-                <h3>Terms and Conditions</h3>
-                <p style={{ textAlign: 'justify' }}>
-                  <b>By creating an account on Tandikan Tri-Hub, you agree to the following:</b>
-                      
-                      <br />
-                      <b>Account Responsibility</b><br />
-                      You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account.
-                      <br />
-                      <b>Accurate Information</b><br />
-                      You agree to provide accurate, current, and complete information when creating and maintaining your account.
-                      <br />
-                      <b>Platform Use</b><br />
-                      Tandikan Tri-Hub is provided for the purpose of discovering, registering for, and managing participation in multisport events organized or listed through the platform. You agree not to misuse the platform (e.g., unauthorized access, scraping, impersonation, or disrupting other users' access).
-                      <br />
-                      <b>Community Feed</b><br />
-                      The community feed (announcements, event photos, updates) is posted by Tandikan Tri-Hub admins only. As a user, you may like and share posts, but may not comment on, publish, upload, or submit content to the feed. Any interactions (e.g., likes, shares) must be made in good faith and not used to manipulate engagement or disrupt the platform.
-                      <br />
-                      <b>Service Availability</b><br />
-                      Tandikan Tri-Hub is provided "as is." While we aim for reliable uptime, we do not guarantee uninterrupted access and are not liable for losses arising from platform downtime.
-                      <br />
-                      <b>Changes to Terms</b><br />
-                      These terms may be updated from time to time. Continued use of the platform after changes constitutes acceptance of the revised terms.
-                      <br />
-                      <b>Governing Law</b><br />
-                      These terms are governed by the laws of the Republic of the Philippines.
-                </p>
-                <h3>Privacy Policy</h3>
-                <p style={{ textAlign: 'justify' }}>
-                  <b>In compliance with the Data Privacy Act of 2012 (RA 10173), Tandikan Tri-Hub collects and processes the following account-level personal information for the purpose of creating and managing your user account:</b>
-                  <br />
-                  Full name, email address, and password (encrypted)<br />
-                  Profile information you choose to provide (e.g., profile photo, bio)<br />
-                  Login and activity data (e.g., login timestamps, device/browser information) for account security purposes
-                  
-                  <br />
-                  <b>How we use this data:</b>
-                  <br />
-                  To create, authenticate, and manage your account<br />
-                  To send account-related notifications (e.g., password resets, registration confirmations)<br />
-                  To personalize your experience on the platform (e.g., dashboard, community feed)<br />
-                  Data sharing: Your account data will not be sold or shared with third parties for marketing purposes. It may be disclosed only: (a) with your consent, (b) as required by law, or (c) to event organizers only when you register for a specific event, subject to the separate Event Data Privacy Agreement at registration.
-                  
-                  <br />
-                  Data retention & your rights: You may request access to, correction of, or deletion of your personal data at any time, subject to legal and operational limitations, by contacting [contact email/support]. Your data will be retained for as long as your account is active, or as required by law.
+                <section>
+                      <h3>Terms and Conditions</h3>
+                      <p style={{ textAlign: 'justify' }}>
+                        <b>By creating an account on Tandikan Tri-Hub, you agree to the following:</b>
+                      </p>
 
-                </p>
+                      <div>
+                        <b>Account Responsibility</b>
+                        <p style={{ textAlign: 'justify' }}>
+                          You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account.
+                        </p>
+                      </div>
+
+                      <div>
+                        <b>Accurate Information</b>
+                        <p style={{ textAlign: 'justify' }}>
+                          You agree to provide accurate, current, and complete information when creating and maintaining your account.
+                        </p>
+                      </div>
+
+                      <div>
+                        <b>Platform Use</b>
+                        <p style={{ textAlign: 'justify' }}>
+                          Tandikan Tri-Hub is provided for the purpose of discovering, registering for, and managing participation in multisport events organized or listed through the platform. You agree not to misuse the platform (e.g., unauthorized access, scraping, impersonation, or disrupting other users' access).
+                        </p>
+                      </div>
+
+                      <div>
+                        <b>Community Feed</b>
+                        <p style={{ textAlign: 'justify' }}>
+                          The community feed (announcements, event photos, updates) is posted by Tandikan Tri-Hub admins only. As a user, you may like and share posts, but may not comment on, publish, upload, or submit content to the feed. Any interactions (e.g., likes, shares) must be made in good faith and not used to manipulate engagement or disrupt the platform.
+                        </p>
+                      </div>
+
+                      <div>
+                        <b>Service Availability</b>
+                        <p style={{ textAlign: 'justify' }}>
+                          Tandikan Tri-Hub is provided "as is." While we aim for reliable uptime, we do not guarantee uninterrupted access and are not liable for losses arising from platform downtime.
+                        </p>
+                      </div>
+
+                      <div>
+                        <b>Changes to Terms</b>
+                        <p style={{ textAlign: 'justify' }}>
+                          These terms may be updated from time to time. Continued use of the platform after changes constitutes acceptance of the revised terms.
+                        </p>
+                      </div>
+
+                      <div>
+                        <b>Governing Law</b>
+                        <p style={{ textAlign: 'justify' }}>
+                          These terms are governed by the laws of the Republic of the Philippines.
+                        </p>
+                      </div>
+                    </section>
+
+                    <section>
+                      <h3>Privacy Policy</h3>
+                      <p style={{ textAlign: 'justify' }}>
+                        <b>
+                          In compliance with the Data Privacy Act of 2012 (RA 10173), Tandikan Tri-Hub collects and
+                          processes the following account-level personal information for the purpose of creating and
+                          managing your user account:
+                        </b>
+                      </p>
+                      <ul>
+                        <li>Full name, email address, and password (encrypted)</li>
+                        <li>Profile information you choose to provide (e.g., profile photo, bio)</li>
+                        <li>Login and activity data (e.g., login timestamps, device/browser information) for account security purposes</li>
+                      </ul>
+
+                      <p style={{ textAlign: 'justify' }}>
+                        <b>How we use this data:</b>
+                      </p>
+                      <ul>
+                        <li>To create, authenticate, and manage your account</li>
+                        <li>To send account-related notifications (e.g., password resets, registration confirmations)</li>
+                        <li>To personalize your experience on the platform (e.g., dashboard, community feed)</li>
+                      </ul>
+
+                      <p style={{ textAlign: 'justify' }}>
+                        <b>Data sharing:</b> Your account data will not be sold or shared with third parties for
+                        marketing purposes. It may be disclosed only: (a) with your consent, (b) as required by law,
+                        or (c) to event organizers only when you register for a specific event, subject to the
+                        separate Event Data Privacy Agreement at registration.
+                      </p>
+
+                      <p style={{ textAlign: 'justify' }}>
+                        <b>Data retention & your rights:</b> You may request access to, correction of, or deletion of
+                        your personal data at any time, subject to legal and operational limitations, by contacting{' '}
+                        <a href="mailto:tandikantrihub@gmail.com">tandikantrihub@gmail.com</a>. Your data will be
+                        retained for as long as your account is active, or as required by law.
+                      </p>
+                    </section>
               </div>
 
               {!termsScrolledToBottom && (
