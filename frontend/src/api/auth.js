@@ -8,6 +8,12 @@ export const register = (formData) =>
     headers: { 'Content-Type': 'multipart/form-data' },
   }).then((r) => r.data);
 
+export const sendVerificationCode = (email) =>
+  client.post('/auth/send-verification-code/', { email }).then((r) => r.data);
+
+export const verifyEmailCode = (email, code) =>
+  client.post('/auth/verify-code/', { email, code }).then((r) => r.data);
+
 export const fetchMe = () => client.get('/auth/me/').then((r) => r.data);
 
 export const updateMe = (data) => client.patch('/auth/me/', data).then((r) => r.data);

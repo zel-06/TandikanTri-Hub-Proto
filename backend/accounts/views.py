@@ -3,7 +3,9 @@ import secrets
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.core.validators import validate_email
 from django.http import HttpResponse
+from django.utils import timezone
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -14,7 +16,15 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from audit.models import AuditLogEntry, log_action
 from notifications.models import Notification, notify
 
-from .models import User
+from .models import EmailVerification, User
+from .otp import (
+    CODE_TTL_MINUTES,
+    RESEND_COOLDOWN_SECONDS,
+    code_expiry,
+    generate_code,
+    make_verification_token,
+    send_verification_email,
+)
 from .permissions import IsOperationsStaff, IsSuperAdmin
 from .serializers import (
     CustomTokenObtainPairSerializer,
@@ -29,6 +39,64 @@ class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def send_verification_code(request):
+    email = (request.data.get('email') or '').strip().lower()
+    if not email:
+        return Response({'email': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        validate_email(email)
+    except DjangoValidationError:
+        return Response({'email': 'Enter a valid email address.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if User.objects.filter(email__iexact=email).exists():
+        return Response({'email': 'An account with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    existing = EmailVerification.objects.filter(email=email).first()
+    if existing:
+        seconds_since_sent = (timezone.now() - existing.created_at).total_seconds()
+        if seconds_since_sent < RESEND_COOLDOWN_SECONDS:
+            wait = int(RESEND_COOLDOWN_SECONDS - seconds_since_sent)
+            return Response(
+                {'email': f'Please wait {wait}s before requesting a new code.', 'retry_after_seconds': wait},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+        existing.delete()
+
+    code = generate_code()
+    EmailVerification.objects.create(email=email, code=code, expires_at=code_expiry())
+    send_verification_email(email, code)
+    return Response({
+        'detail': 'Verification code sent.',
+        'cooldown_seconds': RESEND_COOLDOWN_SECONDS,
+        'expires_in_seconds': CODE_TTL_MINUTES * 60,
+    })
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_email_code(request):
+    email = (request.data.get('email') or '').strip().lower()
+    code = (request.data.get('code') or '').strip()
+
+    try:
+        record = EmailVerification.objects.get(email=email)
+    except EmailVerification.DoesNotExist:
+        return Response({'code': 'No verification code was sent to this email.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if record.expires_at < timezone.now():
+        return Response({'code': 'This code has expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
+    if record.code != code:
+        return Response({'code': 'Incorrect verification code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    record.is_verified = True
+    record.verified_at = timezone.now()
+    record.save(update_fields=['is_verified', 'verified_at'])
+
+    return Response({'verification_token': make_verification_token(email)})
 
 
 class CustomTokenObtainPairView(TokenObtainPairView):

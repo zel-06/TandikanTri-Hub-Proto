@@ -1,8 +1,12 @@
 from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError as DjangoValidationError
+from django.utils import timezone
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User, calculate_age
+from .otp import read_verified_email
+from .validators import validate_password_complexity
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -52,6 +56,10 @@ class RegisterSerializer(serializers.ModelSerializer):
     password_confirm = serializers.CharField(write_only=True)
     id_document = serializers.ImageField(required=True)
     birthdate = serializers.DateField(required=True)
+    email_verification_token = serializers.CharField(write_only=True)
+    terms_accepted = serializers.BooleanField(write_only=True)
+    privacy_accepted = serializers.BooleanField(write_only=True)
+    guardian_consent_name = serializers.CharField(required=False, allow_blank=True)
 
     class Meta:
         model = User
@@ -60,22 +68,55 @@ class RegisterSerializer(serializers.ModelSerializer):
             'street', 'city', 'barangay', 'province', 'postal_code',
             'birthdate', 'id_document', 'guardian_id_document',
             'password', 'password_confirm',
+            'email_verification_token', 'terms_accepted', 'privacy_accepted',
+            'guardian_consent_name',
         ]
 
     def validate(self, attrs):
         if attrs['password'] != attrs.pop('password_confirm'):
             raise serializers.ValidationError({'password_confirm': 'Passwords do not match.'})
-        age = calculate_age(attrs.get('birthdate'))
-        if age is not None and age < 18 and not attrs.get('guardian_id_document'):
+
+        try:
+            validate_password_complexity(attrs['password'], username=attrs.get('username'), email=attrs.get('email'))
+        except DjangoValidationError as exc:
+            raise serializers.ValidationError({'password': list(exc.messages)})
+
+        token = attrs.pop('email_verification_token')
+        verified_email = read_verified_email(token)
+        if not verified_email or verified_email != (attrs.get('email') or '').lower():
             raise serializers.ValidationError(
-                {'guardian_id_document': 'A guardian or parent ID is required for applicants below 18 years old.'}
+                {'email_verification_token': 'Email is not verified. Please verify your email again.'}
             )
+
+        if not attrs.pop('terms_accepted'):
+            raise serializers.ValidationError({'terms_accepted': 'You must agree to the Terms and Conditions.'})
+        if not attrs.pop('privacy_accepted'):
+            raise serializers.ValidationError({'privacy_accepted': 'You must agree to the Privacy Policy.'})
+
+        age = calculate_age(attrs.get('birthdate'))
+        if age is not None and age < 18:
+            if not attrs.get('guardian_id_document'):
+                raise serializers.ValidationError(
+                    {'guardian_id_document': 'A guardian or parent ID is required for applicants below 18 years old.'}
+                )
+            if not (attrs.get('guardian_consent_name') or '').strip():
+                raise serializers.ValidationError(
+                    {'guardian_consent_name': "The parent or guardian's typed full name is required as consent."}
+                )
         return attrs
 
     def create(self, validated_data):
         password = validated_data.pop('password')
-        user = User(role=User.Role.ATHLETE, **validated_data)
+        now = timezone.now()
+        user = User(
+            role=User.Role.ATHLETE,
+            terms_accepted_at=now,
+            privacy_accepted_at=now,
+            **validated_data,
+        )
         user.set_password(password)
+        if user.guardian_consent_name:
+            user.guardian_consent_at = now
         user.id_verification_status = (
             User.VerificationStatus.PENDING if user.has_required_verification_docs
             else User.VerificationStatus.UNSUBMITTED
