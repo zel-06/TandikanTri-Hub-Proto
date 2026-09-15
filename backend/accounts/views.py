@@ -4,6 +4,7 @@ import secrets
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
+from django.db import IntegrityError
 from django.http import HttpResponse
 from django.utils import timezone
 from rest_framework import generics, status
@@ -68,14 +69,24 @@ def send_verification_code(request):
 
     code = generate_code()
     try:
+        record = EmailVerification.objects.create(email=email, code=code, expires_at=code_expiry())
+    except IntegrityError:
+        # Another request for the same email won the race between our cooldown check
+        # and this insert (e.g. a double-click) - the unique constraint on email caught it.
+        return Response(
+            {'email': 'A verification code was just requested for this email. Please wait a moment and try again.'},
+            status=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
+
+    try:
         send_verification_email(email, code)
     except Exception:
+        record.delete()
         return Response(
             {'non_field': 'We could not send the verification email right now. Please try again shortly.'},
             status=status.HTTP_503_SERVICE_UNAVAILABLE,
         )
 
-    EmailVerification.objects.create(email=email, code=code, expires_at=code_expiry())
     return Response({
         'detail': 'Verification code sent.',
         'cooldown_seconds': RESEND_COOLDOWN_SECONDS,

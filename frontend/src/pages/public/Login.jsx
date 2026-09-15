@@ -11,6 +11,7 @@ import passIcon from '../../assets/images/pass_icon.png';
 export default function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
@@ -61,15 +62,18 @@ export default function Login() {
                 required
               />
             </label>
-            <label className="input-group">
+            <label className="input-group password-field">
               <img src={passIcon} alt="password icon" className="input-icon" />
               <input
-                type="password"
+                type={showPassword ? 'text' : 'password'}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button type="button" className="link-button password-toggle" onClick={() => setShowPassword((v) => !v)}>
+                {showPassword ? 'Hide' : 'Show'}
+              </button>
             </label>
 
             {error && <p style={{ color: '#ff6d79', fontSize: '0.9rem' }}>{String(error)}</p>}
