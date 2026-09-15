@@ -67,8 +67,15 @@ def send_verification_code(request):
         existing.delete()
 
     code = generate_code()
+    try:
+        send_verification_email(email, code)
+    except Exception:
+        return Response(
+            {'non_field': 'We could not send the verification email right now. Please try again shortly.'},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+
     EmailVerification.objects.create(email=email, code=code, expires_at=code_expiry())
-    send_verification_email(email, code)
     return Response({
         'detail': 'Verification code sent.',
         'cooldown_seconds': RESEND_COOLDOWN_SECONDS,

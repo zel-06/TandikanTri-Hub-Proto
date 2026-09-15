@@ -93,3 +93,30 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .create-account-card .btn-secondary:hover {
   background: #e5e7eb;
 }
+
+/* .btn-outline is a new, plain single-class rule (style.css), but admin_panel.css's
+   later, equal-specificity `.btn { border: none; ... }` strips its border in the
+   cascade regardless of source order tricks — so its real definition lives here,
+   after every other stylesheet, the same fix already applied to .btn-secondary above. */
+.btn-outline {
+  background: #ffffff;
+  color: #0f172a;
+  border: 1.5px solid #cbd5e1;
+}
+
+.btn-outline:hover {
+  border-color: #42e8f0;
+  background: #f0fdff;
+  transform: translateY(-2px);
+}
+
+/* Same cascade issue as .btn-outline above: needs to load after admin_panel.css's
+   .btn to reliably dim disabled primary/outline buttons (e.g. "Next" before a step's
+   required action is done) instead of leaving them looking fully clickable. */
+.btn:disabled,
+.btn:disabled:hover {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}

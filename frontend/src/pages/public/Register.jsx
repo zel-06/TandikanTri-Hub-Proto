@@ -46,15 +46,24 @@ function getPasswordStrength(password) {
   return { level: 4, label: 'Very Strong' };
 }
 
+function getPasswordChecks(password, username, email) {
+  return [
+    { label: 'At least 8 characters', met: password.length >= 8 },
+    { label: 'One uppercase letter', met: /[A-Z]/.test(password) },
+    { label: 'One lowercase letter', met: /[a-z]/.test(password) },
+    { label: 'One number', met: /\d/.test(password) },
+    { label: 'One special character', met: /[^A-Za-z0-9]/.test(password) },
+    {
+      label: 'Different from your username/email',
+      met: password.length > 0
+        && password.toLowerCase() !== (username || '').toLowerCase()
+        && password.toLowerCase() !== (email || '').toLowerCase(),
+    },
+  ];
+}
+
 function isPasswordValid(password, username, email) {
-  if (password.length < 8) return false;
-  if (!/[A-Z]/.test(password)) return false;
-  if (!/[a-z]/.test(password)) return false;
-  if (!/\d/.test(password)) return false;
-  if (!/[^A-Za-z0-9]/.test(password)) return false;
-  if (username && password.toLowerCase() === username.toLowerCase()) return false;
-  if (email && password.toLowerCase() === email.toLowerCase()) return false;
-  return true;
+  return getPasswordChecks(password, username, email).every((c) => c.met);
 }
 
 function Stepper({ currentStep }) {
@@ -86,11 +95,16 @@ export default function Register() {
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
-  const [otpCode, setOtpCode] = useState('');
+  const [otpDigits, setOtpDigits] = useState(['', '', '', '', '', '']);
   const [verificationToken, setVerificationToken] = useState(null);
   const [sendingCode, setSendingCode] = useState(false);
   const [verifyingCode, setVerifyingCode] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const otpRefs = useRef([]);
+  const otpCode = otpDigits.join('');
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
 
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
@@ -100,6 +114,7 @@ export default function Register() {
   const age = calculateAge(form.birthdate);
   const isMinor = age !== '' && age < 18;
   const passwordStrength = getPasswordStrength(form.password);
+  const passwordChecks = getPasswordChecks(form.password, form.username, form.email);
 
   useEffect(() => {
     if (cooldown <= 0) return undefined;
@@ -121,14 +136,7 @@ export default function Register() {
   }
 
   function updateEmail(e) {
-    const value = e.target.value;
-    setForm((f) => ({ ...f, email: value }));
-    if (otpSent || otpVerified) {
-      setOtpSent(false);
-      setOtpVerified(false);
-      setVerificationToken(null);
-      setOtpCode('');
-    }
+    setForm((f) => ({ ...f, email: e.target.value }));
   }
 
   function handlePostalCodeChange(e) {
@@ -143,17 +151,65 @@ export default function Register() {
 
   async function handleSendCode() {
     setErrors({});
+    if (!form.first_name || !form.last_name || !form.username || !form.phone || !form.email) {
+      setErrors({ non_field: 'Please fill in your name, username, phone, and email first.' });
+      return;
+    }
+    if (!/^\S+@\S+\.\S+$/.test(form.email)) {
+      setErrors({ email: 'Enter a valid email address.' });
+      return;
+    }
     setSendingCode(true);
     try {
       const res = await authApi.sendVerificationCode(form.email);
       setOtpSent(true);
-      setOtpCode('');
+      setOtpVerified(false);
+      setVerificationToken(null);
+      setOtpDigits(['', '', '', '', '', '']);
       setCooldown(res.cooldown_seconds || 60);
     } catch (err) {
       setErrors(err.response?.data || { non_field: 'Something went wrong. Please try again.' });
     } finally {
       setSendingCode(false);
     }
+  }
+
+  function handleChangeEmail() {
+    setOtpSent(false);
+    setOtpVerified(false);
+    setVerificationToken(null);
+    setOtpDigits(['', '', '', '', '', '']);
+    setCooldown(0);
+    setErrors({});
+  }
+
+  function handleOtpDigitChange(index, e) {
+    const char = e.target.value.replace(/\D/g, '').slice(-1);
+    setOtpDigits((d) => {
+      const next = [...d];
+      next[index] = char;
+      return next;
+    });
+    if (char && index < 5) otpRefs.current[index + 1]?.focus();
+  }
+
+  function handleOtpKeyDown(index, e) {
+    if (e.key === 'Backspace' && !otpDigits[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    } else if (e.key === 'Enter' && otpDigits.join('').length === 6) {
+      e.preventDefault();
+      handleVerifyCode();
+    }
+  }
+
+  function handleOtpPaste(e) {
+    const text = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (!text) return;
+    e.preventDefault();
+    const next = text.split('');
+    while (next.length < 6) next.push('');
+    setOtpDigits(next);
+    otpRefs.current[Math.min(text.length, 6) - 1]?.focus();
   }
 
   async function handleVerifyCode() {
@@ -170,15 +226,9 @@ export default function Register() {
     }
   }
 
-  function handleStep1Submit(e) {
+  function handleStep1Continue(e) {
     e.preventDefault();
-    if (!otpSent) {
-      handleSendCode();
-    } else if (!otpVerified) {
-      handleVerifyCode();
-    } else {
-      setStep(2);
-    }
+    if (otpVerified) setStep(2);
   }
 
   function handleStep2Next(e) {
@@ -187,8 +237,7 @@ export default function Register() {
     if (form.password !== form.password_confirm) {
       newErrors.password_confirm = 'Passwords do not match.';
     } else if (!isPasswordValid(form.password, form.username, form.email)) {
-      newErrors.password = 'Password must be at least 8 characters and include an uppercase letter, '
-        + 'a lowercase letter, a number, and a special character, and cannot match your username or email.';
+      newErrors.password = 'Please meet all the password requirements above.';
     }
     if (!idFile) newErrors.id_document = 'Please upload a valid ID.';
     if (isMinor) {
@@ -237,10 +286,7 @@ export default function Register() {
       if (keys.some((k) => STEP1_FIELDS.includes(k))) {
         setStep(1);
         if (responseErrors.email_verification_token) {
-          setOtpSent(false);
-          setOtpVerified(false);
-          setVerificationToken(null);
-          setOtpCode('');
+          handleChangeEmail();
         }
       } else if (keys.some((k) => STEP2_FIELDS.includes(k))) {
         setStep(2);
@@ -264,7 +310,7 @@ export default function Register() {
           <Stepper currentStep={step} />
 
           {step === 1 && (
-            <form className="create-account-form" onSubmit={handleStep1Submit}>
+            <form className="create-account-form" onSubmit={handleStep1Continue}>
               <label className="login-info-title">Name</label>
               <label className="input-group">
                 <input type="text" placeholder="first name" value={form.first_name} onChange={update('first_name')} required />
@@ -279,67 +325,89 @@ export default function Register() {
               </label>
               {errors.username && <p className="field-error">{errors.username}</p>}
 
-              <label className="login-info-title">Email</label>
-              <label className="input-group full-width">
-                <input
-                  type="email"
-                  placeholder="email address"
-                  value={form.email}
-                  onChange={updateEmail}
-                  disabled={otpSent}
-                  required
-                />
-              </label>
-              {errors.email && <p className="field-error">{errors.email}</p>}
-
               <label className="login-info-title">Phone</label>
               <label className="input-group full-width">
                 <input type="tel" inputMode="search" placeholder="phone number" value={form.phone} onChange={handlePhoneNumberChange} required />
               </label>
 
-              {otpSent && (
-                <div className="otp-section">
-                  <label className="login-info-title">Verification Code</label>
-                  <label className="input-group otp-input">
-                    <input
-                      type="text"
-                      inputMode="numeric"
-                      placeholder="6-digit code"
-                      maxLength={6}
-                      value={otpCode}
-                      onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
-                      disabled={otpVerified}
-                      required
-                    />
-                  </label>
-                  {errors.code && <p className="field-error">{errors.code}</p>}
-
-                  {otpVerified ? (
-                    <p className="otp-verified"><span className="agreement-check">✓</span> Email verified</p>
-                  ) : (
-                    <div className="otp-actions">
-                      <span className="otp-hint">Code sent to {form.email}. It expires in 5 minutes.</span>
-                      <button
-                        type="button"
-                        className="link-button"
-                        disabled={cooldown > 0 || sendingCode}
-                        onClick={handleSendCode}
-                      >
-                        {cooldown > 0 ? `Resend code in ${cooldown}s` : 'Resend code'}
-                      </button>
-                    </div>
+              <label className="login-info-title">Email</label>
+              <div className="email-verify-group full-width">
+                <label className="input-group">
+                  <input
+                    type="email"
+                    placeholder="email address"
+                    value={form.email}
+                    onChange={updateEmail}
+                    disabled={otpSent}
+                    required
+                  />
+                </label>
+                <div className="email-verify-actions">
+                  {!otpVerified && (
+                    <button
+                      type="button"
+                      className="btn-small"
+                      disabled={sendingCode || (otpSent && cooldown > 0)}
+                      onClick={handleSendCode}
+                    >
+                      {sendingCode
+                        ? 'Sending…'
+                        : !otpSent
+                          ? 'Send Verification Code'
+                          : cooldown > 0 ? `Resend in ${cooldown}s` : 'Resend code'}
+                    </button>
+                  )}
+                  {otpSent && !otpVerified && (
+                    <button type="button" className="link-button" onClick={handleChangeEmail}>
+                      Change email
+                    </button>
                   )}
                 </div>
+                {errors.email && <p className="field-error">{errors.email}</p>}
+              </div>
+
+              {otpSent && !otpVerified && (
+                <div className="otp-section full-width">
+                  <label className="login-info-title">Enter the 6-digit code</label>
+                  <div className="otp-digit-group" onPaste={handleOtpPaste}>
+                    {otpDigits.map((digit, i) => (
+                      <input
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={i}
+                        ref={(el) => { otpRefs.current[i] = el; }}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        className="otp-digit"
+                        value={digit}
+                        onChange={(e) => handleOtpDigitChange(i, e)}
+                        onKeyDown={(e) => handleOtpKeyDown(i, e)}
+                      />
+                    ))}
+                  </div>
+                  <div className="otp-actions">
+                    <span className="otp-hint">Sent to {form.email} · expires in 5 minutes</span>
+                    <button
+                      type="button"
+                      className="btn-small"
+                      disabled={verifyingCode || otpCode.length < 6}
+                      onClick={handleVerifyCode}
+                    >
+                      {verifyingCode ? 'Verifying…' : 'Verify Code'}
+                    </button>
+                  </div>
+                  {errors.code && <p className="field-error">{errors.code}</p>}
+                </div>
+              )}
+
+              {otpVerified && (
+                <p className="otp-verified full-width"><span className="agreement-check">✓</span> Email verified</p>
               )}
 
               {errors.non_field && <p className="field-error">{errors.non_field}</p>}
 
-              <button className="btn btn-primary login-submit" type="submit" disabled={sendingCode || verifyingCode}>
-                {!otpSent
-                  ? (sendingCode ? 'Sending code…' : 'Send Verification Code')
-                  : !otpVerified
-                    ? (verifyingCode ? 'Verifying…' : 'Verify Code')
-                    : 'Next'}
+              <button className="btn btn-primary login-submit" type="submit" disabled={!otpVerified}>
+                Next
               </button>
             </form>
           )}
@@ -373,11 +441,17 @@ export default function Register() {
               {errors.birthdate && <p className="field-error">{errors.birthdate}</p>}
 
               <label className="login-info-title">Password</label>
-              <label className="input-group">
-                <input type="password" placeholder="Password" value={form.password} onChange={update('password')} required />
+              <label className="input-group password-field">
+                <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={form.password} onChange={update('password')} required />
+                <button type="button" className="link-button password-toggle" onClick={() => setShowPassword((v) => !v)}>
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
               </label>
-              <label className="input-group">
-                <input type="password" placeholder="Confirm password" value={form.password_confirm} onChange={update('password_confirm')} required />
+              <label className="input-group password-field">
+                <input type={showPasswordConfirm ? 'text' : 'password'} placeholder="Confirm password" value={form.password_confirm} onChange={update('password_confirm')} required />
+                <button type="button" className="link-button password-toggle" onClick={() => setShowPasswordConfirm((v) => !v)}>
+                  {showPasswordConfirm ? 'Hide' : 'Show'}
+                </button>
               </label>
 
               <div className="password-strength full-width">
@@ -386,9 +460,14 @@ export default function Register() {
                     <span key={i} className={`bar level-${passwordStrength.level >= i ? passwordStrength.level : 0}`} />
                   ))}
                 </div>
-                <p className="password-strength-label">
-                  {passwordStrength.label || 'Use at least 8 characters (12+ recommended) with uppercase, lowercase, a number, and a special character.'}
-                </p>
+                {passwordStrength.label && <p className="password-strength-label">{passwordStrength.label}</p>}
+                <ul className="password-checklist">
+                  {passwordChecks.map((c) => (
+                    <li key={c.label} className={c.met ? 'met' : ''}>
+                      <span className="check-icon">{c.met ? '✓' : ''}</span>{c.label}
+                    </li>
+                  ))}
+                </ul>
               </div>
               {errors.password && <p className="field-error">{errors.password}</p>}
               {errors.password_confirm && <p className="field-error">{errors.password_confirm}</p>}
@@ -461,7 +540,7 @@ export default function Register() {
           )}
 
           {step === 3 && (
-            <form className="create-account-form" onSubmit={handleSubmit}>
+            <form className="create-account-form terms-step" onSubmit={handleSubmit}>
               <div className="terms-box" ref={termsBoxRef} onScroll={handleTermsScroll}>
                 <h3>Terms and Conditions</h3>
                 <p>
@@ -481,35 +560,38 @@ export default function Register() {
                   contacting the organizers.
                 </p>
               </div>
+
               {!termsScrolledToBottom && (
-                <p className="terms-scroll-hint">Scroll to the end of the box above to enable the checkboxes below.</p>
+                <p className="terms-scroll-hint">Scroll to the end of the box above to read the full policy — the checkboxes will appear once you reach the bottom.</p>
               )}
 
-              <div className="checkbox-field">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={termsAccepted}
-                    disabled={!termsScrolledToBottom}
-                    onChange={(e) => setTermsAccepted(e.target.checked)}
-                  />
-                  <span>I have read and agree to the Terms and Conditions.</span>
-                </label>
-              </div>
-              {errors.terms_accepted && <p className="field-error">{errors.terms_accepted}</p>}
+              {termsScrolledToBottom && (
+                <>
+                  <div className="checkbox-field">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={termsAccepted}
+                        onChange={(e) => setTermsAccepted(e.target.checked)}
+                      />
+                      <span>I have read and agree to the Terms and Conditions.</span>
+                    </label>
+                  </div>
+                  {errors.terms_accepted && <p className="field-error">{errors.terms_accepted}</p>}
 
-              <div className="checkbox-field">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={privacyAccepted}
-                    disabled={!termsScrolledToBottom}
-                    onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                  />
-                  <span>I have read and agree to the Privacy Policy.</span>
-                </label>
-              </div>
-              {errors.privacy_accepted && <p className="field-error">{errors.privacy_accepted}</p>}
+                  <div className="checkbox-field">
+                    <label>
+                      <input
+                        type="checkbox"
+                        checked={privacyAccepted}
+                        onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                      />
+                      <span>I have read and agree to the Privacy Policy.</span>
+                    </label>
+                  </div>
+                  {errors.privacy_accepted && <p className="field-error">{errors.privacy_accepted}</p>}
+                </>
+              )}
 
               {errors.non_field && <p className="field-error">{errors.non_field}</p>}
 
