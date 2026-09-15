@@ -547,33 +547,27 @@ export default function Register() {
                 <h3>Terms and Conditions</h3>
                 <p style={{ textAlign: 'justify' }}>
                   <b>By creating an account on Tandikan Tri-Hub, you agree to the following:</b>
+                      
                       <br />
-                      <b>Account Responsibility</b>
-                      <br />
+                      <b>Account Responsibility</b><br />
                       You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account.
                       <br />
-                      <b>Accurate Information</b>
-                      <br />
+                      <b>Accurate Information</b><br />
                       You agree to provide accurate, current, and complete information when creating and maintaining your account.
                       <br />
-                      <b>Platform Use</b>
-                      <br />
+                      <b>Platform Use</b><br />
                       Tandikan Tri-Hub is provided for the purpose of discovering, registering for, and managing participation in multisport events organized or listed through the platform. You agree not to misuse the platform (e.g., unauthorized access, scraping, impersonation, or disrupting other users' access).
                       <br />
-                      <b>Community Feed</b>
-                      <br />
+                      <b>Community Feed</b><br />
                       The community feed (announcements, event photos, updates) is posted by Tandikan Tri-Hub admins only. As a user, you may like and share posts, but may not comment on, publish, upload, or submit content to the feed. Any interactions (e.g., likes, shares) must be made in good faith and not used to manipulate engagement or disrupt the platform.
                       <br />
-                      <b>Service Availability</b>
-                      <br />
+                      <b>Service Availability</b><br />
                       Tandikan Tri-Hub is provided "as is." While we aim for reliable uptime, we do not guarantee uninterrupted access and are not liable for losses arising from platform downtime.
                       <br />
-                      <b>Changes to Terms</b>
-                      <br />
+                      <b>Changes to Terms</b><br />
                       These terms may be updated from time to time. Continued use of the platform after changes constitutes acceptance of the revised terms.
                       <br />
-                      <b>Governing Law</b>
-                      <br />
+                      <b>Governing Law</b><br />
                       These terms are governed by the laws of the Republic of the Philippines.
                 </p>
                 <h3>Privacy Policy</h3>
@@ -583,6 +577,7 @@ export default function Register() {
                   Full name, email address, and password (encrypted)<br />
                   Profile information you choose to provide (e.g., profile photo, bio)<br />
                   Login and activity data (e.g., login timestamps, device/browser information) for account security purposes
+                  
                   <br />
                   <b>How we use this data:</b>
                   <br />
@@ -590,6 +585,7 @@ export default function Register() {
                   To send account-related notifications (e.g., password resets, registration confirmations)<br />
                   To personalize your experience on the platform (e.g., dashboard, community feed)<br />
                   Data sharing: Your account data will not be sold or shared with third parties for marketing purposes. It may be disclosed only: (a) with your consent, (b) as required by law, or (c) to event organizers only when you register for a specific event, subject to the separate Event Data Privacy Agreement at registration.
+                  
                   <br />
                   Data retention & your rights: You may request access to, correction of, or deletion of your personal data at any time, subject to legal and operational limitations, by contacting [contact email/support]. Your data will be retained for as long as your account is active, or as required by law.
 
