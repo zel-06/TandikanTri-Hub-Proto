@@ -120,3 +120,51 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   transform: none;
   box-shadow: none;
 }
+
+/* ConfirmDialog's .modal-overlay centering and .modal-content/.modal-header/.close-btn
+   only exist scoped dark for .admin-panel in dashboard-forms.css. These are plain
+   single-class rules, so the .admin-panel-scoped (2-class) versions always win by
+   specificity wherever that context applies - this is purely the light-theme default
+   for everywhere else (e.g. the athlete-facing "Log out?" / "Delete account?" confirmations on Profile.jsx).
+   Without this, the overlay's inline `display: flex` has no align-items/justify-content,
+   so the dialog sits top-left and stretches full-height instead of being centered. */
+.modal-overlay {
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 2rem;
+  width: 90%;
+  max-height: 85vh;
+  overflow-y: auto;
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.18);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #0f172a;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #ff6d79;
+}

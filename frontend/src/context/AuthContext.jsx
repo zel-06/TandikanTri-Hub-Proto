@@ -1,15 +1,19 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import * as authApi from '../api/auth';
-import { clearTokens, setTokens } from '../api/client';
+import { checkAndConsumeSessionExpired, clearTokens, getTokens, setTokens } from '../api/client';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sessionExpired, setSessionExpired] = useState(false);
 
   useEffect(() => {
-    const access = localStorage.getItem('access_token');
+    if (checkAndConsumeSessionExpired()) {
+      setSessionExpired(true);
+    }
+    const { access } = getTokens();
     if (!access) {
       setLoading(false);
       return;
@@ -21,10 +25,11 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false));
   }, []);
 
-  async function login(username, password) {
+  async function login(username, password, rememberMe) {
     const data = await authApi.login(username, password);
-    setTokens({ access: data.access, refresh: data.refresh });
+    setTokens({ access: data.access, refresh: data.refresh }, rememberMe);
     setUser(data.user);
+    setSessionExpired(false);
     return data.user;
   }
 
@@ -40,7 +45,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, refreshProfile, setUser }}>
+    <AuthContext.Provider value={{ user, loading, sessionExpired, login, logout, refreshProfile, setUser }}>
       {children}
     </AuthContext.Provider>
   );

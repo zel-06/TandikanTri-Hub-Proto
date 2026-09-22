@@ -14,9 +14,21 @@ export const sendVerificationCode = (email) =>
 export const verifyEmailCode = (email, code) =>
   client.post('/auth/verify-code/', { email, code }).then((r) => r.data);
 
+export const requestPasswordResetCode = (email) =>
+  client.post('/auth/forgot-password/request-code/', { email }).then((r) => r.data);
+
+export const verifyPasswordResetCode = (email, code) =>
+  client.post('/auth/forgot-password/verify-code/', { email, code }).then((r) => r.data);
+
+export const resetPassword = (resetToken, newPassword) =>
+  client.post('/auth/forgot-password/reset/', { reset_token: resetToken, new_password: newPassword }).then((r) => r.data);
+
 export const fetchMe = () => client.get('/auth/me/').then((r) => r.data);
 
 export const updateMe = (data) => client.patch('/auth/me/', data).then((r) => r.data);
 
 export const changePassword = (payload) =>
   client.post('/auth/change-password/', payload).then((r) => r.data);
+
+export const deleteMe = (password) =>
+  client.delete('/auth/me/', { data: { password } }).then((r) => r.data);

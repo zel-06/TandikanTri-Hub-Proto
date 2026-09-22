@@ -12,8 +12,13 @@ function timeAgo(iso) {
   return `${days} day${days > 1 ? 's' : ''} ago`;
 }
 
+function formatFullDate(iso) {
+  return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+}
+
 export default function NotificationMenu({ open, onClose, onUnreadChange }) {
   const [notifications, setNotifications] = useState([]);
+  const [selected, setSelected] = useState(null);
 
   useEffect(() => {
     if (!open) return;
@@ -23,9 +28,10 @@ export default function NotificationMenu({ open, onClose, onUnreadChange }) {
         onUnreadChange?.(list.some((n) => !n.read));
       })
       .catch(() => {});
-  }, [open]);
+  }, [open, onUnreadChange]);
 
   async function handleOpenItem(notification) {
+    setSelected(notification);
     if (!notification.read) {
       await notificationsApi.markNotificationRead(notification.id).catch(() => {});
       setNotifications((prev) => {
@@ -45,44 +51,67 @@ export default function NotificationMenu({ open, onClose, onUnreadChange }) {
   const hasUnread = notifications.some((n) => !n.read);
 
   return (
-    <div className={`notification-menu${open ? ' active' : ''}`}>
-      <div className="notification-header">
-        <div className="notification-header-row">
-          <div>
-            <h3>Notifications</h3>
-            <p>Stay updated with your events</p>
+    <>
+      <div className={`notification-menu${open ? ' active' : ''}`}>
+        <div className="notification-header">
+          <div className="notification-header-row">
+            <div>
+              <h3>Notifications</h3>
+              <p>Stay updated with your events</p>
+            </div>
+            <div className="notification-header-actions">
+              {hasUnread && (
+                <button type="button" className="notification-read-all" onClick={handleReadAll}>
+                  Read all
+                </button>
+              )}
+              <button type="button" className="notification-close" onClick={onClose} aria-label="Close notifications">
+                &times;
+              </button>
+            </div>
           </div>
-          {hasUnread && (
-            <button type="button" className="notification-read-all" onClick={handleReadAll}>
-              Read all
-            </button>
+        </div>
+        <div className="notification-body">
+          {notifications.length === 0 && (
+            <p className="empty-state">No notifications yet.</p>
           )}
+          {notifications.map((notification) => (
+            <button
+              key={notification.id}
+              type="button"
+              className={`notification-item${notification.read ? '' : ' unread'}`}
+              onClick={() => handleOpenItem(notification)}
+            >
+              <div className="notification-content">
+                <div className="notification-text">
+                  <h4>{notification.title}</h4>
+                  <p>{notification.body}</p>
+                  <div className="notification-time">{timeAgo(notification.created_at)}</div>
+                </div>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
-      <div className="notification-body">
-        {notifications.length === 0 && (
-          <p style={{ padding: '1.5rem', color: '#7c95bf' }}>No notifications yet.</p>
-        )}
-        {notifications.map((notification) => (
-          <a
-            key={notification.id}
-            href="#notification"
-            className={`notification-item${notification.read ? '' : ' unread'}`}
-            onClick={(e) => {
-              e.preventDefault();
-              handleOpenItem(notification);
-            }}
-          >
-            <div className="notification-content">
-              <div className="notification-text">
-                <h4>{notification.title}</h4>
-                <p>{notification.body}</p>
-                <div className="notification-time">{timeAgo(notification.created_at)}</div>
-              </div>
+
+      {selected && (
+        <div
+          className="modal-overlay"
+          style={{ display: 'flex' }}
+          onClick={(e) => { e.stopPropagation(); setSelected(null); }}
+        >
+          <div className="modal-content notification-detail" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>{selected.title}</h3>
+              <button type="button" className="close-btn" onClick={() => setSelected(null)} aria-label="Close">
+                &times;
+              </button>
             </div>
-          </a>
-        ))}
-      </div>
-    </div>
+            <p className="notification-detail-time">{formatFullDate(selected.created_at)}</p>
+            <p className="notification-detail-body">{selected.body}</p>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

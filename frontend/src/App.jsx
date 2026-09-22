@@ -8,6 +8,7 @@ import Landing from './pages/public/Landing';
 import About from './pages/public/About';
 import Login from './pages/public/Login';
 import Register from './pages/public/Register';
+import ForgotPassword from './pages/public/ForgotPassword';
 
 import Home from './pages/app/Home';
 import Events from './pages/app/Events';
@@ -33,6 +34,7 @@ export default function App() {
           <Route path="/about" element={<About />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
 
           {/* Authenticated */}
           <Route element={<ProtectedRoute />}>

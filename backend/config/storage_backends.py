@@ -23,6 +23,10 @@ class PublicMediaStorage(S3Boto3Storage):
 class PrivateIDStorage(S3Boto3Storage):
     bucket_name = 'id-documents'
     querystring_auth = True
-    querystring_expire = 300
+    # Signed URLs are baked into the user-list response once, not regenerated per
+    # click, so a short expiry made them go stale while staff were still reviewing
+    # the queue (broken thumbnail, "ExpiredToken" on click). 30 minutes gives a
+    # reviewer a realistic session without leaving the link valid indefinitely.
+    querystring_expire = 1800
     custom_domain = False
     file_overwrite = False

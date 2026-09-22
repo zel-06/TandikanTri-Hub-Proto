@@ -7,21 +7,57 @@ export const API_BASE_URL = import.meta.env.DEV ? 'http://127.0.0.1:8000/api' : 
 
 const client = axios.create({ baseURL: API_BASE_URL });
 
-function getTokens() {
+const REMEMBER_KEY = 'remember_me';
+// Marks that a non-remembered (session-only) login is active, so that returning after
+// the tab/browser closes - which wipes sessionStorage - can be told apart from a
+// first-time visitor and shown a "your session has expired" notice.
+const HAD_SESSION_KEY = 'had_active_session';
+
+function getStorage() {
+  return localStorage.getItem(REMEMBER_KEY) === 'true' ? localStorage : sessionStorage;
+}
+
+export function getTokens() {
+  const storage = getStorage();
   return {
-    access: localStorage.getItem('access_token'),
-    refresh: localStorage.getItem('refresh_token'),
+    access: storage.getItem('access_token'),
+    refresh: storage.getItem('refresh_token'),
   };
 }
 
-export function setTokens({ access, refresh }) {
-  if (access) localStorage.setItem('access_token', access);
-  if (refresh) localStorage.setItem('refresh_token', refresh);
+export function setTokens({ access, refresh }, rememberMe) {
+  if (rememberMe !== undefined) {
+    localStorage.setItem(REMEMBER_KEY, rememberMe ? 'true' : 'false');
+    if (rememberMe) {
+      localStorage.removeItem(HAD_SESSION_KEY);
+    } else {
+      localStorage.setItem(HAD_SESSION_KEY, 'true');
+    }
+  }
+  const storage = getStorage();
+  if (access) storage.setItem('access_token', access);
+  if (refresh) storage.setItem('refresh_token', refresh);
 }
 
 export function clearTokens() {
   localStorage.removeItem('access_token');
   localStorage.removeItem('refresh_token');
+  sessionStorage.removeItem('access_token');
+  sessionStorage.removeItem('refresh_token');
+  localStorage.removeItem(HAD_SESSION_KEY);
+}
+
+// One-shot check, called on app load: were we in a non-remembered session that's now
+// gone because the tab/browser was closed and reopened? Clears its own marker so it
+// only reports true once per lapsed session.
+export function checkAndConsumeSessionExpired() {
+  const remembered = localStorage.getItem(REMEMBER_KEY) === 'true';
+  const hadSession = localStorage.getItem(HAD_SESSION_KEY) === 'true';
+  if (!remembered && hadSession && !sessionStorage.getItem('access_token')) {
+    localStorage.removeItem(HAD_SESSION_KEY);
+    return true;
+  }
+  return false;
 }
 
 client.interceptors.request.use((config) => {

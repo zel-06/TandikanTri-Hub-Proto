@@ -28,7 +28,7 @@ def notify_new_post(post, actor):
 
 class CommunityPostListCreateView(generics.ListCreateAPIView):
     serializer_class = CommunityPostSerializer
-    queryset = CommunityPost.objects.select_related('event', 'created_by').prefetch_related('images', 'likes')
+    queryset = CommunityPost.objects.select_related('event', 'created_by').prefetch_related('images', 'likes__user')
 
     def get_permissions(self):
         if self.request.method == 'POST':

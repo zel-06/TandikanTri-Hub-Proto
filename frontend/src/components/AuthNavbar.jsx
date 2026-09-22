@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../assets/images/logo.png';
 import notifIcon from '../assets/images/notif_icon.png';
 import profileIcon from '../assets/images/profile_settings.png';
 import NotificationMenu from './NotificationMenu';
-import ProfileMenu from './ProfileMenu';
 import * as notificationsApi from '../api/notifications';
 
 const POLL_INTERVAL_MS = 20000;
 const TOAST_DURATION_MS = 6000;
 
 export default function AuthNavbar() {
-  const [profileOpen, setProfileOpen] = useState(false);
+  const navigate = useNavigate();
   const [notificationOpen, setNotificationOpen] = useState(false);
   const [hasUnread, setHasUnread] = useState(false);
   const [toasts, setToasts] = useState([]);
@@ -59,7 +58,6 @@ export default function AuthNavbar() {
   useEffect(() => {
     function handleOutsideClick(e) {
       if (rootRef.current && !rootRef.current.contains(e.target)) {
-        setProfileOpen(false);
         setNotificationOpen(false);
       }
     }
@@ -107,7 +105,6 @@ export default function AuthNavbar() {
             title="Notifications"
             onClick={(e) => {
               e.stopPropagation();
-              setProfileOpen(false);
               setNotificationOpen((v) => !v);
             }}
           >
@@ -115,19 +112,14 @@ export default function AuthNavbar() {
           </button>
           <button
             className="btn-icon btn-profile"
-            title="Profile & Dashboard"
-            onClick={(e) => {
-              e.stopPropagation();
-              setNotificationOpen(false);
-              setProfileOpen((v) => !v);
-            }}
+            title="User Profile"
+            onClick={() => navigate('/profile')}
           >
             <img src={profileIcon} alt="" />
           </button>
         </div>
       </header>
 
-      <ProfileMenu open={profileOpen} />
       <NotificationMenu
         open={notificationOpen}
         onClose={() => setNotificationOpen(false)}

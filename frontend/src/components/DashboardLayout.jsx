@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { ROLE_LABELS, modulesForRole } from '../roles';
+import ConfirmDialog from './ConfirmDialog';
 import logo from '../assets/images/logo.png';
 
 export default function DashboardLayout({ title, eyebrow, actions, children }) {
@@ -8,6 +10,7 @@ export default function DashboardLayout({ title, eyebrow, actions, children }) {
   const navigate = useNavigate();
   const location = useLocation();
   const modules = modulesForRole(user.role);
+  const [confirmingLogout, setConfirmingLogout] = useState(false);
 
   function handleLogout() {
     // Logout always fires from a page behind ProtectedRoute, whose own
@@ -54,7 +57,7 @@ export default function DashboardLayout({ title, eyebrow, actions, children }) {
           <button
             className="btn btn-secondary"
             style={{ marginTop: '12px', width: '100%' }}
-            onClick={handleLogout}
+            onClick={() => setConfirmingLogout(true)}
           >
             Log Out
           </button>
@@ -72,6 +75,15 @@ export default function DashboardLayout({ title, eyebrow, actions, children }) {
 
         {children}
       </main>
+
+      <ConfirmDialog
+        open={confirmingLogout}
+        title="Log out?"
+        message="You will need to log in again to access the admin panel."
+        confirmLabel="Log Out"
+        onConfirm={handleLogout}
+        onCancel={() => setConfirmingLogout(false)}
+      />
     </div>
   );
 }

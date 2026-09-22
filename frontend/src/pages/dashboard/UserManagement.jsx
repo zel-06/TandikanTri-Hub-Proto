@@ -139,11 +139,13 @@ export default function UserManagement() {
                               onClick={() => handleVerify(user.id, 'rejected')}>Reject</button>
                           </>
                         )}
-                        {user.account_status === 'active'
-                          ? <button className="action-btn btn-delete" disabled={busyId === user.id}
-                              onClick={() => handleAccountStatus(user.id, 'suspended')}>Suspend</button>
-                          : <button className="action-btn btn-edit" disabled={busyId === user.id}
-                              onClick={() => handleAccountStatus(user.id, 'active')}>Reactivate</button>}
+                        {user.account_status === 'deleted' ? null : (
+                          user.account_status === 'active'
+                            ? <button className="action-btn btn-delete" disabled={busyId === user.id}
+                                onClick={() => handleAccountStatus(user.id, 'suspended')}>Suspend</button>
+                            : <button className="action-btn btn-edit" disabled={busyId === user.id}
+                                onClick={() => handleAccountStatus(user.id, 'active')}>Reactivate</button>
+                        )}
                       </td>
                     </tr>
                   ))}

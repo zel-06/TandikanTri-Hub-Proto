@@ -15,6 +15,7 @@ class CommunityPostSerializer(serializers.ModelSerializer):
     images = CommunityPostImageSerializer(many=True, read_only=True)
     likes_count = serializers.SerializerMethodField()
     liked_by_me = serializers.SerializerMethodField()
+    likers = serializers.SerializerMethodField()
     author_name = serializers.SerializerMethodField()
     event = serializers.PrimaryKeyRelatedField(
         queryset=Event.objects.all(), required=False, allow_null=True
@@ -25,7 +26,7 @@ class CommunityPostSerializer(serializers.ModelSerializer):
         model = CommunityPost
         fields = [
             'id', 'post_type', 'title', 'body', 'event', 'event_title',
-            'images', 'likes_count', 'liked_by_me', 'author_name', 'created_at',
+            'images', 'likes_count', 'liked_by_me', 'likers', 'author_name', 'created_at',
         ]
 
     def get_likes_count(self, obj):
@@ -36,6 +37,18 @@ class CommunityPostSerializer(serializers.ModelSerializer):
         if not request or not request.user.is_authenticated:
             return False
         return obj.likes.filter(user_id=request.user.id).exists()
+
+    def get_likers(self, obj):
+        likers = []
+        for like in obj.likes.all():
+            user = like.user
+            if user is None:
+                continue
+            likers.append({
+                'username': user.username,
+                'profile_picture': user.profile_picture.url if user.profile_picture else None,
+            })
+        return likers
 
     def get_author_name(self, obj):
         return 'Tandikan Tri Team'

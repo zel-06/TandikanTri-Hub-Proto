@@ -23,7 +23,10 @@ from .otp import (
     RESEND_COOLDOWN_SECONDS,
     code_expiry,
     generate_code,
+    make_reset_token,
     make_verification_token,
+    read_reset_email,
+    send_password_reset_email,
     send_verification_email,
 )
 from .permissions import IsOperationsStaff, IsSuperAdmin
@@ -34,6 +37,7 @@ from .serializers import (
     UserListSerializer,
     UserSerializer,
 )
+from .validators import validate_password_complexity
 
 
 class RegisterView(generics.CreateAPIView):
@@ -117,6 +121,107 @@ def verify_email_code(request):
     return Response({'verification_token': make_verification_token(email)})
 
 
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def request_password_reset_code(request):
+    email = (request.data.get('email') or '').strip().lower()
+    if not email:
+        return Response({'email': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        validate_email(email)
+    except DjangoValidationError:
+        return Response({'email': 'Enter a valid email address.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Always return the same generic response, whether or not an account exists for this
+    # email, so the response can't be used to enumerate registered accounts.
+    generic_response = Response({
+        'detail': 'If an account exists for this email, a reset code has been sent.',
+        'cooldown_seconds': RESEND_COOLDOWN_SECONDS,
+        'expires_in_seconds': CODE_TTL_MINUTES * 60,
+    })
+
+    user = User.objects.filter(email__iexact=email).first()
+    if not user:
+        return generic_response
+
+    existing = EmailVerification.objects.filter(email=email).first()
+    if existing:
+        seconds_since_sent = (timezone.now() - existing.created_at).total_seconds()
+        if seconds_since_sent < RESEND_COOLDOWN_SECONDS:
+            return generic_response
+        existing.delete()
+
+    code = generate_code()
+    try:
+        record = EmailVerification.objects.create(email=email, code=code, expires_at=code_expiry())
+    except IntegrityError:
+        return generic_response
+
+    try:
+        send_password_reset_email(email, code)
+    except Exception:
+        record.delete()
+        return generic_response
+
+    return generic_response
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def verify_password_reset_code(request):
+    email = (request.data.get('email') or '').strip().lower()
+    code = (request.data.get('code') or '').strip()
+
+    try:
+        record = EmailVerification.objects.get(email=email)
+    except EmailVerification.DoesNotExist:
+        return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if record.expires_at < timezone.now() or record.code != code:
+        return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    record.is_verified = True
+    record.verified_at = timezone.now()
+    record.save(update_fields=['is_verified', 'verified_at'])
+
+    return Response({'reset_token': make_reset_token(email)})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def reset_password(request):
+    token = request.data.get('reset_token')
+    new_password = request.data.get('new_password', '')
+
+    email = read_reset_email(token)
+    if not email:
+        return Response(
+            {'reset_token': 'This reset session has expired. Please request a new code.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        user = User.objects.get(email__iexact=email)
+    except User.DoesNotExist:
+        return Response(
+            {'reset_token': 'This reset session has expired. Please request a new code.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        validate_password_complexity(new_password, username=user.username, email=user.email)
+        validate_password(new_password, user=user)
+    except DjangoValidationError as exc:
+        return Response({'new_password': list(exc.messages)}, status=status.HTTP_400_BAD_REQUEST)
+
+    user.set_password(new_password)
+    user.save(update_fields=['password'])
+    EmailVerification.objects.filter(email=email).delete()
+
+    log_action(user, AuditLogEntry.Module.SECURITY, 'Password reset via forgot password', target_description=str(user))
+    return Response(status=status.HTTP_204_NO_CONTENT)
+
+
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
@@ -132,6 +237,24 @@ class MeView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+    def delete(self, request):
+        if not request.user.check_password(request.data.get('password', '')):
+            return Response({'password': 'Incorrect password.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+        log_action(user, AuditLogEntry.Module.SECURITY, 'Account self-deleted', target_description=str(user))
+
+        # Soft-delete: the row stays so existing event registrations/payments keep a
+        # valid FK to it, but the username/email are freed up for a fresh signup and
+        # the password is made permanently unusable.
+        user.username = f'deleted_user_{user.id}'
+        user.email = ''
+        user.account_status = User.AccountStatus.DELETED
+        user.set_unusable_password()
+        user.save(update_fields=['username', 'email', 'account_status', 'password'])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 @api_view(['POST'])

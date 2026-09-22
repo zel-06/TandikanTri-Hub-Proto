@@ -18,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'username', 'email', 'first_name', 'last_name', 'full_name',
             'role', 'phone', 'street', 'city', 'barangay', 'province', 'postal_code',
-            'birthdate', 'is_minor', 'id_document', 'guardian_id_document',
+            'birthdate', 'is_minor', 'profile_picture', 'id_document', 'guardian_id_document',
             'id_verification_status', 'id_verification_note',
             'account_status', 'date_joined',
         ]
@@ -28,7 +28,18 @@ class UserSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance, validated_data):
+        old_picture_name = instance.profile_picture.name if instance.profile_picture else None
+
         instance = super().update(instance, validated_data)
+
+        if old_picture_name:
+            new_picture_name = instance.profile_picture.name if instance.profile_picture else None
+            if old_picture_name != new_picture_name:
+                try:
+                    instance.profile_picture.storage.delete(old_picture_name)
+                except Exception:
+                    pass  # storage hiccup - the old file is just orphaned, not worth failing the request over
+
         if (
             instance.id_verification_status in (User.VerificationStatus.UNSUBMITTED, User.VerificationStatus.REJECTED)
             and instance.has_required_verification_docs
@@ -146,6 +157,11 @@ class StaffAccountCreateSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    
+    default_error_messages = {
+        'no_active_account': 'Invalid username or password! Please try again.',
+        }
+        
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
@@ -154,8 +170,16 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
         return token
 
     def validate(self, attrs):
+        login_input = attrs.get(self.username_field)
+        if login_input:
+            matched_user = User.objects.filter(email__iexact=login_input).first()
+            if matched_user:
+                attrs[self.username_field] = matched_user.username
+
         data = super().validate(attrs)
         if self.user.account_status == User.AccountStatus.SUSPENDED:
             raise serializers.ValidationError('This account has been suspended.')
+        if self.user.account_status == User.AccountStatus.DELETED:
+            raise serializers.ValidationError('This account no longer exists.')
         data['user'] = UserSerializer(self.user).data
         return data

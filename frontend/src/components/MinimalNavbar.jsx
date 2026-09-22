@@ -8,7 +8,7 @@ export default function MinimalNavbar() {
         <Link to="/"><img src={logo} alt="Tandikan Tri Team Logo" /></Link>
         <span className="logo-text">Tandikan Tri-Hub</span>
       </div>
-      <a href="#contact" className="btn-nav">Contact Us</a>
+      <a href="/about" className="btn-nav">Contact Us</a>
     </header>
   );
 }

@@ -29,6 +29,7 @@ class User(AbstractUser):
     class AccountStatus(models.TextChoices):
         ACTIVE = 'active', 'Active'
         SUSPENDED = 'suspended', 'Suspended'
+        DELETED = 'deleted', 'Deleted'
 
     role = models.CharField(max_length=32, choices=Role.choices, default=Role.ATHLETE)
 
@@ -40,6 +41,8 @@ class User(AbstractUser):
     postal_code = models.CharField(max_length=20, blank=True)
 
     birthdate = models.DateField(null=True, blank=True)
+
+    profile_picture = models.ImageField(upload_to='profile_pictures/', storage=PublicMediaStorage(), blank=True, null=True)
 
     id_document = models.ImageField(upload_to='id_documents/', storage=PrivateIDStorage(), blank=True, null=True)
     guardian_id_document = models.ImageField(

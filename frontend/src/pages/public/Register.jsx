@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import MinimalNavbar from '../../components/MinimalNavbar';
 import Footer from '../../components/Footer';
 import * as authApi from '../../api/auth';
+import { EyeIcon, EyeOffIcon } from '../../components/EyeIcon';
+import { getPasswordChecks, getPasswordStrength, isPasswordValid } from '../../utils/password';
 import logo from '../../assets/images/logo.png';
 import uploadIcon from '../../assets/images/upload_id.png';
 
@@ -29,41 +31,6 @@ function calculateAge(dob) {
   const m = today.getMonth() - birth.getMonth();
   if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
   return age;
-}
-
-function getPasswordStrength(password) {
-  if (!password) return { level: 0, label: '' };
-  let score = 0;
-  if (password.length >= 8) score++;
-  if (password.length >= 12) score++;
-  if (/[A-Z]/.test(password)) score++;
-  if (/[a-z]/.test(password)) score++;
-  if (/\d/.test(password)) score++;
-  if (/[^A-Za-z0-9]/.test(password)) score++;
-  if (score <= 2) return { level: 1, label: 'Weak' };
-  if (score <= 3) return { level: 2, label: 'Fair' };
-  if (score <= 5) return { level: 3, label: 'Strong' };
-  return { level: 4, label: 'Very Strong' };
-}
-
-function getPasswordChecks(password, username, email) {
-  return [
-    { label: 'At least 8 characters', met: password.length >= 8 },
-    { label: 'One uppercase letter', met: /[A-Z]/.test(password) },
-    { label: 'One lowercase letter', met: /[a-z]/.test(password) },
-    { label: 'One number', met: /\d/.test(password) },
-    { label: 'One special character', met: /[^A-Za-z0-9]/.test(password) },
-    {
-      label: 'Different from your username/email',
-      met: password.length > 0
-        && password.toLowerCase() !== (username || '').toLowerCase()
-        && password.toLowerCase() !== (email || '').toLowerCase(),
-    },
-  ];
-}
-
-function isPasswordValid(password, username, email) {
-  return getPasswordChecks(password, username, email).every((c) => c.met);
 }
 
 function Stepper({ currentStep }) {
@@ -445,14 +412,24 @@ export default function Register() {
               <label className="login-info-title">Password</label>
               <label className="input-group password-field">
                 <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={form.password} onChange={update('password')} required />
-                <button type="button" className="link-button password-toggle" onClick={() => setShowPassword((v) => !v)}>
-                  {showPassword ? 'Hide' : 'Show'}
+                <button
+                  type="button"
+                  className="link-button password-toggle"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPassword((v) => !v)}
+                >
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
               </label>
               <label className="input-group password-field">
                 <input type={showPasswordConfirm ? 'text' : 'password'} placeholder="Confirm password" value={form.password_confirm} onChange={update('password_confirm')} required />
-                <button type="button" className="link-button password-toggle" onClick={() => setShowPasswordConfirm((v) => !v)}>
-                  {showPasswordConfirm ? 'Hide' : 'Show'}
+                <button
+                  type="button"
+                  className="link-button password-toggle"
+                  aria-label={showPasswordConfirm ? 'Hide password' : 'Show password'}
+                  onClick={() => setShowPasswordConfirm((v) => !v)}
+                >
+                  {showPasswordConfirm ? <EyeOffIcon /> : <EyeIcon />}
                 </button>
               </label>
 

@@ -13,7 +13,7 @@ export default function PublicNavbar() {
         <Link to="/about">About</Link>
       </nav>
       <div className="nav-actions">
-        <Link to="/login" className="btn-nav">Login / Create Account</Link>
+        <Link to="/login" className="btn-nav">Login or Create account</Link>
       </div>
     </header>
   );
