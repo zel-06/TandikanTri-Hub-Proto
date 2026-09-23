@@ -1,12 +1,15 @@
 import csv
 import secrets
 
+from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
 from django.db import IntegrityError
 from django.http import HttpResponse
 from django.utils import timezone
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token as google_id_token
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -119,6 +122,48 @@ def verify_email_code(request):
     record.save(update_fields=['is_verified', 'verified_at'])
 
     return Response({'verification_token': make_verification_token(email)})
+
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def google_auth(request):
+    credential = request.data.get('credential')
+    if not credential:
+        return Response({'credential': 'Missing Google credential.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        idinfo = google_id_token.verify_oauth2_token(
+            credential, google_requests.Request(), settings.GOOGLE_CLIENT_ID
+        )
+    except ValueError:
+        return Response({'credential': 'Invalid Google credential.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if not idinfo.get('email_verified'):
+        return Response({'credential': 'Google account email is not verified.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    email = idinfo['email'].lower()
+    user = User.objects.filter(email__iexact=email).exclude(account_status=User.AccountStatus.DELETED).first()
+
+    if user:
+        if user.account_status == User.AccountStatus.SUSPENDED:
+            return Response({'detail': 'This account has been suspended.'}, status=status.HTTP_403_FORBIDDEN)
+        token = CustomTokenObtainPairSerializer.get_token(user)
+        return Response({
+            'account_exists': True,
+            'access': str(token.access_token),
+            'refresh': str(token),
+            'user': UserSerializer(user).data,
+        })
+
+    return Response({
+        'account_exists': False,
+        'email_verification_token': make_verification_token(email, via='google'),
+        'prefill': {
+            'email': email,
+            'first_name': idinfo.get('given_name', ''),
+            'last_name': idinfo.get('family_name', ''),
+        },
+    })
 
 
 @api_view(['POST'])

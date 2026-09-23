@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import MinimalNavbar from '../../components/MinimalNavbar';
 import Footer from '../../components/Footer';
 import { useAuth } from '../../context/AuthContext';
 import { EyeIcon, EyeOffIcon } from '../../components/EyeIcon';
 import { ROLES } from '../../roles';
+import * as authApi from '../../api/auth';
 import logo from '../../assets/images/logo.png';
 import emailIcon from '../../assets/images/email_icon.png';
 import passIcon from '../../assets/images/pass_icon.png';
@@ -16,9 +18,29 @@ export default function Login() {
   const [rememberMe, setRememberMe] = useState(true);
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
-  const { login, sessionExpired } = useAuth();
+  const { login, loginWithTokens, sessionExpired } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const googleBtnWrapRef = useRef(null);
+  const [googleBtnWidth, setGoogleBtnWidth] = useState(300);
+
+  // The GSI button takes a fixed pixel width, not a percentage - measure the
+  // wrapper so it never renders wider than the card on narrow screens.
+  useEffect(() => {
+    function measure() {
+      if (googleBtnWrapRef.current) setGoogleBtnWidth(googleBtnWrapRef.current.offsetWidth);
+    }
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  function redirectAfterLogin(user) {
+    const from = location.state?.from?.pathname;
+    if (from) navigate(from, { replace: true });
+    else if (user.role === ROLES.ATHLETE) navigate('/home', { replace: true });
+    else navigate('/dashboard/overview', { replace: true });
+  }
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -26,10 +48,7 @@ export default function Login() {
     setSubmitting(true);
     try {
       const user = await login(username, password, rememberMe);
-      const from = location.state?.from?.pathname;
-      if (from) navigate(from, { replace: true });
-      else if (user.role === ROLES.ATHLETE) navigate('/home', { replace: true });
-      else navigate('/dashboard/overview', { replace: true });
+      redirectAfterLogin(user);
     } catch (err) {
       setError(
         err.response?.data?.detail ||
@@ -38,6 +57,27 @@ export default function Login() {
       );
     } finally {
       setSubmitting(false);
+    }
+  }
+
+  async function handleGoogleSuccess(credentialResponse) {
+    setError('');
+    try {
+      const data = await authApi.googleAuth(credentialResponse.credential);
+      if (data.account_exists) {
+        const user = loginWithTokens(data, rememberMe);
+        redirectAfterLogin(user);
+      } else {
+        navigate('/register', {
+          state: { googlePrefill: data.prefill, googleToken: data.email_verification_token },
+        });
+      }
+    } catch (err) {
+      setError(
+        err.response?.data?.detail ||
+        Object.values(err.response?.data || {})[0] ||
+        'Google sign-in failed. Please try again.'
+      );
     }
   }
 
@@ -111,6 +151,17 @@ export default function Login() {
             </button>
 
           </form>
+
+          <div className="auth-divider"><span>or</span></div>
+
+          <div className="google-login-wrap" ref={googleBtnWrapRef}>
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => setError('Google sign-in failed. Please try again.')}
+              text="continue_with"
+              width={String(googleBtnWidth)}
+            />
+          </div>
 
           <div className="login-footer">
             <p>Don't have an account? <Link to="/register">Create account</Link></p>

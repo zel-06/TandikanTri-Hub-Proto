@@ -38,19 +38,25 @@ def send_verification_email(email, code):
     )
 
 
-def make_verification_token(email):
-    return signing.dumps({'email': email.lower()}, salt=TOKEN_SALT)
+def make_verification_token(email, via='otp'):
+    return signing.dumps({'email': email.lower(), 'via': via}, salt=TOKEN_SALT)
 
 
-def read_verified_email(token):
-    """Returns the verified email for a token, or None if the token is missing/invalid/expired."""
+def read_verification_token(token):
+    """Returns {'email', 'via'} for a token, or None if missing/invalid/expired.
+
+    'via' is 'otp' for the normal send-code/verify-code flow, or 'google' when the
+    token was minted after verifying a Google ID token server-side - RegisterSerializer
+    uses this to decide whether a password is required, so it can't be spoofed by a
+    client simply omitting the password fields on an ordinary OTP-verified token.
+    """
     if not token:
         return None
     try:
         data = signing.loads(token, salt=TOKEN_SALT, max_age=TOKEN_MAX_AGE_SECONDS)
     except signing.BadSignature:
         return None
-    return data.get('email')
+    return {'email': data.get('email'), 'via': data.get('via', 'otp')}
 
 
 def send_password_reset_email(email, code):

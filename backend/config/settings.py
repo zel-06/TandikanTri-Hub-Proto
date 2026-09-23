@@ -139,6 +139,8 @@ CORS_ALLOWED_ORIGIN_REGEXES = [
 
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')
 
+GOOGLE_CLIENT_ID = env('GOOGLE_CLIENT_ID', default='')
+
 #Email — falls back to printing to the console until real SMTP credentials are supplied
 EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
 EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')

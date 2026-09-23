@@ -14,6 +14,9 @@ export const sendVerificationCode = (email) =>
 export const verifyEmailCode = (email, code) =>
   client.post('/auth/verify-code/', { email, code }).then((r) => r.data);
 
+export const googleAuth = (credential) =>
+  client.post('/auth/google/', { credential }).then((r) => r.data);
+
 export const requestPasswordResetCode = (email) =>
   client.post('/auth/forgot-password/request-code/', { email }).then((r) => r.data);
 

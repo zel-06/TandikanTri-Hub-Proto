@@ -1,10 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { GoogleLogin } from '@react-oauth/google';
 import MinimalNavbar from '../../components/MinimalNavbar';
 import Footer from '../../components/Footer';
 import * as authApi from '../../api/auth';
+import { useAuth } from '../../context/AuthContext';
 import { EyeIcon, EyeOffIcon } from '../../components/EyeIcon';
 import { getPasswordChecks, getPasswordStrength, isPasswordValid } from '../../utils/password';
+import { ROLES } from '../../roles';
 import logo from '../../assets/images/logo.png';
 import uploadIcon from '../../assets/images/upload_id.png';
 
@@ -59,6 +62,8 @@ export default function Register() {
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const { loginWithTokens } = useAuth();
 
   const [otpSent, setOtpSent] = useState(false);
   const [otpVerified, setOtpVerified] = useState(false);
@@ -67,7 +72,10 @@ export default function Register() {
   const [sendingCode, setSendingCode] = useState(false);
   const [verifyingCode, setVerifyingCode] = useState(false);
   const [cooldown, setCooldown] = useState(0);
+  const [isGoogleAuth, setIsGoogleAuth] = useState(false);
   const otpRefs = useRef([]);
+  const googleBtnWrapRef = useRef(null);
+  const [googleBtnWidth, setGoogleBtnWidth] = useState(300);
   const otpCode = otpDigits.join('');
 
   const [showPassword, setShowPassword] = useState(false);
@@ -97,6 +105,54 @@ export default function Register() {
       }
     }
   }, [step]);
+
+  // Arrived here from Login's "Continue with Google" (no existing account found there).
+  useEffect(() => {
+    const prefill = location.state?.googlePrefill;
+    const googleToken = location.state?.googleToken;
+    if (prefill && googleToken) {
+      applyGoogleVerification(prefill, googleToken);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    function measure() {
+      if (googleBtnWrapRef.current) setGoogleBtnWidth(googleBtnWrapRef.current.offsetWidth);
+    }
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, []);
+
+  function applyGoogleVerification(prefill, googleToken) {
+    setForm((f) => ({
+      ...f,
+      email: prefill.email,
+      first_name: prefill.first_name || f.first_name,
+      last_name: prefill.last_name || f.last_name,
+    }));
+    setOtpSent(true);
+    setOtpVerified(true);
+    setVerificationToken(googleToken);
+    setIsGoogleAuth(true);
+  }
+
+  async function handleGoogleSuccess(credentialResponse) {
+    setErrors({});
+    try {
+      const data = await authApi.googleAuth(credentialResponse.credential);
+      if (data.account_exists) {
+        const user = loginWithTokens(data, true);
+        if (user.role === ROLES.ATHLETE) navigate('/home', { replace: true });
+        else navigate('/dashboard/overview', { replace: true });
+      } else {
+        applyGoogleVerification(data.prefill, data.email_verification_token);
+      }
+    } catch (err) {
+      setErrors(err.response?.data || { non_field: 'Google sign-in failed. Please try again.' });
+    }
+  }
 
   function update(field) {
     return (e) => setForm((f) => ({ ...f, [field]: e.target.value }));
@@ -147,6 +203,7 @@ export default function Register() {
     setVerificationToken(null);
     setOtpDigits(['', '', '', '', '', '']);
     setCooldown(0);
+    setIsGoogleAuth(false);
     setErrors({});
   }
 
@@ -201,10 +258,12 @@ export default function Register() {
   function handleStep2Next(e) {
     e.preventDefault();
     const newErrors = {};
-    if (form.password !== form.password_confirm) {
-      newErrors.password_confirm = 'Passwords do not match.';
-    } else if (!isPasswordValid(form.password, form.username, form.email)) {
-      newErrors.password = 'Please meet all the password requirements above.';
+    if (!isGoogleAuth) {
+      if (form.password !== form.password_confirm) {
+        newErrors.password_confirm = 'Passwords do not match.';
+      } else if (!isPasswordValid(form.password, form.username, form.email)) {
+        newErrors.password = 'Please meet all the password requirements above.';
+      }
     }
     if (!idFile) newErrors.id_document = 'Please upload a valid ID.';
     if (isMinor) {
@@ -237,7 +296,10 @@ export default function Register() {
     setSubmitting(true);
     try {
       const data = new FormData();
-      Object.entries(form).forEach(([key, value]) => data.append(key, value));
+      Object.entries(form).forEach(([key, value]) => {
+        if (isGoogleAuth && (key === 'password' || key === 'password_confirm')) return;
+        data.append(key, value);
+      });
       if (idFile) data.append('id_document', idFile);
       if (guardianIdFile) data.append('guardian_id_document', guardianIdFile);
       data.append('email_verification_token', verificationToken || '');
@@ -277,6 +339,20 @@ export default function Register() {
           <br />
 
           <Stepper currentStep={step} />
+
+          {step === 1 && !isGoogleAuth && (
+            <>
+              <div className="google-login-wrap" ref={googleBtnWrapRef}>
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setErrors({ non_field: 'Google sign-in failed. Please try again.' })}
+                  text="signup_with"
+                  width={String(googleBtnWidth)}
+                />
+              </div>
+              <div className="auth-divider"><span>or fill in manually</span></div>
+            </>
+          )}
 
           {step === 1 && (
             <form className="create-account-form" onSubmit={handleStep1Continue}>
@@ -370,7 +446,9 @@ export default function Register() {
               )}
 
               {otpVerified && (
-                <p className="otp-verified full-width"><span className="agreement-check">✓</span> Email verified</p>
+                <p className="otp-verified full-width">
+                  <span className="agreement-check">✓</span> {isGoogleAuth ? 'Email verified via Google' : 'Email verified'}
+                </p>
               )}
 
               {errors.non_field && <p className="field-error">{errors.non_field}</p>}
@@ -409,47 +487,51 @@ export default function Register() {
               </label>
               {errors.birthdate && <p className="field-error">{errors.birthdate}</p>}
 
-              <label className="login-info-title">Password</label>
-              <label className="input-group password-field">
-                <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={form.password} onChange={update('password')} required />
-                <button
-                  type="button"
-                  className="link-button password-toggle"
-                  aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  onClick={() => setShowPassword((v) => !v)}
-                >
-                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                </button>
-              </label>
-              <label className="input-group password-field">
-                <input type={showPasswordConfirm ? 'text' : 'password'} placeholder="Confirm password" value={form.password_confirm} onChange={update('password_confirm')} required />
-                <button
-                  type="button"
-                  className="link-button password-toggle"
-                  aria-label={showPasswordConfirm ? 'Hide password' : 'Show password'}
-                  onClick={() => setShowPasswordConfirm((v) => !v)}
-                >
-                  {showPasswordConfirm ? <EyeOffIcon /> : <EyeIcon />}
-                </button>
-              </label>
+              {!isGoogleAuth && (
+                <>
+                  <label className="login-info-title">Password</label>
+                  <label className="input-group password-field">
+                    <input type={showPassword ? 'text' : 'password'} placeholder="Password" value={form.password} onChange={update('password')} required />
+                    <button
+                      type="button"
+                      className="link-button password-toggle"
+                      aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      onClick={() => setShowPassword((v) => !v)}
+                    >
+                      {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                    </button>
+                  </label>
+                  <label className="input-group password-field">
+                    <input type={showPasswordConfirm ? 'text' : 'password'} placeholder="Confirm password" value={form.password_confirm} onChange={update('password_confirm')} required />
+                    <button
+                      type="button"
+                      className="link-button password-toggle"
+                      aria-label={showPasswordConfirm ? 'Hide password' : 'Show password'}
+                      onClick={() => setShowPasswordConfirm((v) => !v)}
+                    >
+                      {showPasswordConfirm ? <EyeOffIcon /> : <EyeIcon />}
+                    </button>
+                  </label>
 
-              <div className="password-strength full-width">
-                <div className="password-strength-bars">
-                  {[1, 2, 3, 4].map((i) => (
-                    <span key={i} className={`bar level-${passwordStrength.level >= i ? passwordStrength.level : 0}`} />
-                  ))}
-                </div>
-                {passwordStrength.label && <p className="password-strength-label">{passwordStrength.label}</p>}
-                <ul className="password-checklist">
-                  {passwordChecks.map((c) => (
-                    <li key={c.label} className={c.met ? 'met' : ''}>
-                      <span className="check-icon">{c.met ? '✓' : ''}</span>{c.label}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              {errors.password && <p className="field-error">{errors.password}</p>}
-              {errors.password_confirm && <p className="field-error">{errors.password_confirm}</p>}
+                  <div className="password-strength full-width">
+                    <div className="password-strength-bars">
+                      {[1, 2, 3, 4].map((i) => (
+                        <span key={i} className={`bar level-${passwordStrength.level >= i ? passwordStrength.level : 0}`} />
+                      ))}
+                    </div>
+                    {passwordStrength.label && <p className="password-strength-label">{passwordStrength.label}</p>}
+                    <ul className="password-checklist">
+                      {passwordChecks.map((c) => (
+                        <li key={c.label} className={c.met ? 'met' : ''}>
+                          <span className="check-icon">{c.met ? '✓' : ''}</span>{c.label}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  {errors.password && <p className="field-error">{errors.password}</p>}
+                  {errors.password_confirm && <p className="field-error">{errors.password_confirm}</p>}
+                </>
+              )}
 
               <div className="upload-section">
                 <label>Upload ID</label>

@@ -33,6 +33,15 @@ export function AuthProvider({ children }) {
     return data.user;
   }
 
+  // Same as login(), but for callers that already have tokens + user data in hand
+  // (e.g. after POST /auth/google/ returns account_exists: true).
+  function loginWithTokens({ access, refresh, user: userData }, rememberMe) {
+    setTokens({ access, refresh }, rememberMe);
+    setUser(userData);
+    setSessionExpired(false);
+    return userData;
+  }
+
   function logout() {
     clearTokens();
     setUser(null);
@@ -45,7 +54,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, sessionExpired, login, logout, refreshProfile, setUser }}>
+    <AuthContext.Provider value={{ user, loading, sessionExpired, login, loginWithTokens, logout, refreshProfile, setUser }}>
       {children}
     </AuthContext.Provider>
   );

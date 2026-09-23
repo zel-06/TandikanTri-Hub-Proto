@@ -5,7 +5,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from .models import User, calculate_age
-from .otp import read_verified_email
+from .otp import read_verification_token
 from .validators import validate_password_complexity
 
 
@@ -63,8 +63,8 @@ class UserListSerializer(serializers.ModelSerializer):
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, validators=[validate_password])
-    password_confirm = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=False, validators=[validate_password])
+    password_confirm = serializers.CharField(write_only=True, required=False)
     id_document = serializers.ImageField(required=True)
     birthdate = serializers.DateField(required=True)
     email_verification_token = serializers.CharField(write_only=True)
@@ -84,20 +84,29 @@ class RegisterSerializer(serializers.ModelSerializer):
         ]
 
     def validate(self, attrs):
-        if attrs['password'] != attrs.pop('password_confirm'):
-            raise serializers.ValidationError({'password_confirm': 'Passwords do not match.'})
-
-        try:
-            validate_password_complexity(attrs['password'], username=attrs.get('username'), email=attrs.get('email'))
-        except DjangoValidationError as exc:
-            raise serializers.ValidationError({'password': list(exc.messages)})
-
         token = attrs.pop('email_verification_token')
-        verified_email = read_verified_email(token)
+        token_data = read_verification_token(token)
+        verified_email = token_data.get('email') if token_data else None
         if not verified_email or verified_email != (attrs.get('email') or '').lower():
             raise serializers.ValidationError(
                 {'email_verification_token': 'Email is not verified. Please verify your email again.'}
             )
+
+        password = attrs.pop('password', None)
+        password_confirm = attrs.pop('password_confirm', None)
+        if token_data.get('via') == 'google':
+            # Email ownership was already proven via Google Sign-In - no password to set.
+            attrs['_unusable_password'] = True
+        else:
+            if not password:
+                raise serializers.ValidationError({'password': 'This field is required.'})
+            if password != password_confirm:
+                raise serializers.ValidationError({'password_confirm': 'Passwords do not match.'})
+            try:
+                validate_password_complexity(password, username=attrs.get('username'), email=attrs.get('email'))
+            except DjangoValidationError as exc:
+                raise serializers.ValidationError({'password': list(exc.messages)})
+            attrs['password'] = password
 
         if not attrs.pop('terms_accepted'):
             raise serializers.ValidationError({'terms_accepted': 'You must agree to the Terms and Conditions.'})
@@ -117,7 +126,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
-        password = validated_data.pop('password')
+        unusable_password = validated_data.pop('_unusable_password', False)
+        password = validated_data.pop('password', None)
         now = timezone.now()
         user = User(
             role=User.Role.ATHLETE,
@@ -125,7 +135,10 @@ class RegisterSerializer(serializers.ModelSerializer):
             privacy_accepted_at=now,
             **validated_data,
         )
-        user.set_password(password)
+        if unusable_password:
+            user.set_unusable_password()
+        else:
+            user.set_password(password)
         if user.guardian_consent_name:
             user.guardian_consent_at = now
         user.id_verification_status = (
