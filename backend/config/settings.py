@@ -88,6 +88,18 @@ DATABASES = {
 }
 
 
+# Throttle counts (and anything else cached) need to be shared across Vercel's
+# serverless instances - the default in-memory cache is per-process and resets
+# constantly there, making throttling unreliable. Run `manage.py createcachetable`
+# once against each database before this reaches it (local now, production before
+# deploying) - the table won't exist until then.
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache_table',
+    }
+}
+
 AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -111,7 +123,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'accounts.authentication.ActiveAccountJWTAuthentication',
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -121,6 +133,29 @@ REST_FRAMEWORK = {
         'rest_framework.parsers.MultiPartParser',
         'rest_framework.parsers.FormParser',
     ),
+    'DEFAULT_THROTTLE_CLASSES': (
+        'rest_framework.throttling.AnonRateThrottle',
+        'rest_framework.throttling.UserRateThrottle',
+    ),
+    # Strict values here are the production defaults - during user testing (many
+    # testers sharing one school WiFi IP) these get overridden via env vars set only
+    # in Vercel, without touching code. Removing those env vars snaps straight back
+    # to these defaults on the next deploy.
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': env('THROTTLE_ANON_RATE', default='60/min'),
+        'user': env('THROTTLE_USER_RATE', default='120/min'),
+        # Tighter, dedicated buckets for the endpoints that gate account access -
+        # code-guessing and login attempts - on top of the blanket anon/user rates above.
+        'otp_verify': env('THROTTLE_OTP_VERIFY_RATE', default='10/min'),
+        'login': env('THROTTLE_LOGIN_RATE', default='20/min'),
+    },
+    # Without this, DRF's throttle IP-detection trusts a client-supplied
+    # X-Forwarded-For header verbatim, letting anyone spoof their throttle identity.
+    # 1 is correct for a single reverse-proxy hop in front of the app (Vercel and a
+    # standalone Render deployment both set X-Forwarded-For to the real client IP as
+    # that one hop) - only needs bumping if another proxy/CDN (e.g. Cloudflare) is
+    # later stacked in front of either.
+    'NUM_PROXIES': env.int('NUM_PROXIES', default=1),
 }
 
 SIMPLE_JWT = {
@@ -132,9 +167,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
-]
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r'^https://.*\.vercel\.app$',
+    'https://tandikantrihub.vercel.app',
 ]
 
 FRONTEND_URL = env('FRONTEND_URL', default='http://localhost:5173')

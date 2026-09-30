@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from accounts.permissions import IsEventStaff
 from audit.models import AuditLogEntry, log_action
+from config.csv_utils import csv_safe_row
 
 from .models import Event, EventCategory
 from .serializers import EventCategorySerializer, EventSerializer, EventWriteSerializer
@@ -118,7 +119,7 @@ def export_participants_csv(request, event_id):
     ).order_by('registration__bib_number')
     for participant in participants:
         registration = participant.registration
-        writer.writerow([
+        writer.writerow(csv_safe_row([
             registration.bib_number or '',
             participant.full_name,
             registration.event_category.name,
@@ -132,5 +133,5 @@ def export_participants_csv(request, event_id):
             participant.shirt_size,
             registration.email,
             registration.mobile_number,
-        ])
+        ]))
     return response

@@ -7,6 +7,8 @@ import { useAuth } from '../../context/AuthContext';
 import { ROLES } from '../../roles';
 import * as authApi from '../../api/auth';
 import * as registrationsApi from '../../api/registrations';
+import { EyeIcon, EyeOffIcon } from '../../components/EyeIcon';
+import { getPasswordChecks, getPasswordStrength, isPasswordValid } from '../../utils/password';
 import logo from '../../assets/images/logo.png';
 
 const VERIFICATION_LABEL = {
@@ -24,7 +26,9 @@ export default function Profile() {
   const [saveError, setSaveError] = useState('');
   const [passwordForm, setPasswordForm] = useState({ current_password: '', new_password: '' });
   const [passwordMessage, setPasswordMessage] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const [passwordErrors, setPasswordErrors] = useState({});
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
   const [idFile, setIdFile] = useState(null);
   const [guardianIdFile, setGuardianIdFile] = useState(null);
   const [registrations, setRegistrations] = useState(null);
@@ -36,10 +40,21 @@ export default function Profile() {
   const [uploadingPhoto, setUploadingPhoto] = useState(false);
   const [photoError, setPhotoError] = useState('');
 
+  const [changingEmail, setChangingEmail] = useState(false);
+  const [emailStep, setEmailStep] = useState('request'); // 'request' | 'code'
+  const [newEmail, setNewEmail] = useState('');
+  const [emailPassword, setEmailPassword] = useState('');
+  const [showEmailPassword, setShowEmailPassword] = useState(false);
+  const [emailCode, setEmailCode] = useState('');
+  const [emailErrors, setEmailErrors] = useState({});
+  const [emailMessage, setEmailMessage] = useState('');
+  const [sendingEmailCode, setSendingEmailCode] = useState(false);
+  const [confirmingEmailCode, setConfirmingEmailCode] = useState(false);
+
   useEffect(() => {
     if (user) {
       setForm({
-        username: user.username, first_name: user.first_name, last_name: user.last_name, email: user.email,
+        username: user.username, first_name: user.first_name, last_name: user.last_name,
         phone: user.phone, street: user.street, city: user.city,
         barangay: user.barangay, province: user.province, postal_code: user.postal_code,
       });
@@ -51,6 +66,9 @@ export default function Profile() {
   }, []);
 
   if (!user || !form) return null;
+
+  const newPasswordStrength = getPasswordStrength(passwordForm.new_password);
+  const newPasswordChecks = getPasswordChecks(passwordForm.new_password, user.username, user.email);
 
   async function handlePhotoChange(e) {
     const file = e.target.files?.[0];
@@ -94,13 +112,68 @@ export default function Profile() {
   async function handleChangePassword(e) {
     e.preventDefault();
     setPasswordMessage('');
-    setPasswordError('');
+    setPasswordErrors({});
+    if (!isPasswordValid(passwordForm.new_password, user.username, user.email)) {
+      setPasswordErrors({ new_password: 'Please meet all the password requirements above.' });
+      return;
+    }
     try {
       await authApi.changePassword(passwordForm);
       setPasswordForm({ current_password: '', new_password: '' });
       setPasswordMessage('Password changed.');
+      // Refreshes has_password too - matters right after a Google-only account sets
+      // its first password, so "Change email" unlocks without a full page reload.
+      await refreshProfile();
     } catch (err) {
-      setPasswordError(JSON.stringify(err.response?.data) || 'Could not change password.');
+      setPasswordErrors(err.response?.data || { non_field: 'Could not change password.' });
+    }
+  }
+
+  function openEmailChange() {
+    setEmailErrors({});
+    setEmailMessage('');
+    if (!user.has_password) {
+      setEmailErrors({ non_field: 'Please set a password first, in Change Password below, before changing your email.' });
+      return;
+    }
+    setNewEmail('');
+    setEmailPassword('');
+    setEmailCode('');
+    setEmailStep('request');
+    setChangingEmail(true);
+  }
+
+  function closeEmailChange() {
+    setChangingEmail(false);
+  }
+
+  async function handleRequestEmailChange(e) {
+    e.preventDefault();
+    setEmailErrors({});
+    setSendingEmailCode(true);
+    try {
+      await authApi.requestEmailChange(newEmail, emailPassword);
+      setEmailStep('code');
+    } catch (err) {
+      setEmailErrors(err.response?.data || { non_field: 'Could not send the verification code.' });
+    } finally {
+      setSendingEmailCode(false);
+    }
+  }
+
+  async function handleConfirmEmailChange(e) {
+    e.preventDefault();
+    setEmailErrors({});
+    setConfirmingEmailCode(true);
+    try {
+      await authApi.confirmEmailChange(newEmail, emailCode);
+      await refreshProfile();
+      setChangingEmail(false);
+      setEmailMessage('Email changed.');
+    } catch (err) {
+      setEmailErrors(err.response?.data || { non_field: 'Could not confirm the code.' });
+    } finally {
+      setConfirmingEmailCode(false);
     }
   }
 
@@ -201,8 +274,10 @@ export default function Profile() {
                 <div className="form-row">
                   <div className="form-group">
                     <label>Email</label>
-                    <input className="form-control" type="email" value={form.email}
-                      onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))} />
+                    <div className="email-display-row">
+                      <span className="email-display-value">{user.email || '—'}</span>
+                      <button type="button" className="link-button" onClick={openEmailChange}>Change email</button>
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>Phone</label>
@@ -210,6 +285,69 @@ export default function Profile() {
                       onChange={(e) => setForm((f) => ({ ...f, phone: e.target.value }))} />
                   </div>
                 </div>
+                {emailMessage && <p style={{ color: '#2be7b6' }}>{emailMessage}</p>}
+                {!changingEmail && emailErrors.non_field && <p className="field-error">{emailErrors.non_field}</p>}
+
+                {changingEmail && (
+                  <div className="email-change-panel">
+                    {emailStep === 'request' && (
+                      <>
+                        <div className="form-row">
+                          <div className="form-group">
+                            <label>New Email</label>
+                            <input className="form-control" type="email" value={newEmail}
+                              onChange={(e) => setNewEmail(e.target.value)} required />
+                          </div>
+                          <div className="form-group">
+                            <label>Current Password</label>
+                            <div className="password-field-wrap">
+                              <input className="form-control" type={showEmailPassword ? 'text' : 'password'} value={emailPassword}
+                                onChange={(e) => setEmailPassword(e.target.value)} required />
+                              <button
+                                type="button"
+                                className="password-toggle-btn"
+                                aria-label={showEmailPassword ? 'Hide password' : 'Show password'}
+                                onClick={() => setShowEmailPassword((v) => !v)}
+                              >
+                                {showEmailPassword ? <EyeOffIcon /> : <EyeIcon />}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        {emailErrors.new_email && <p className="field-error">{[].concat(emailErrors.new_email).join(' ')}</p>}
+                        {emailErrors.current_password && <p className="field-error">{[].concat(emailErrors.current_password).join(' ')}</p>}
+                        {emailErrors.non_field && <p className="field-error">{[].concat(emailErrors.non_field).join(' ')}</p>}
+                        <div className="step-actions">
+                          <button type="button" className="btn btn-outline" onClick={closeEmailChange}>Cancel</button>
+                          <button type="button" className="btn btn-secondary" disabled={sendingEmailCode} onClick={handleRequestEmailChange}>
+                            {sendingEmailCode ? 'Sending…' : 'Send Code'}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                    {emailStep === 'code' && (
+                      <>
+                        <p className="login-subtitle" style={{ margin: '0 0 0.75rem' }}>
+                          Enter the 6-digit code sent to {newEmail}.
+                        </p>
+                        <div className="form-group">
+                          <label>Verification Code</label>
+                          <input className="form-control" value={emailCode} maxLength={6}
+                            onChange={(e) => setEmailCode(e.target.value.replace(/\D/g, '').slice(0, 6))} required />
+                        </div>
+                        {emailErrors.code && <p className="field-error">{[].concat(emailErrors.code).join(' ')}</p>}
+                        {emailErrors.new_email && <p className="field-error">{[].concat(emailErrors.new_email).join(' ')}</p>}
+                        {emailErrors.non_field && <p className="field-error">{[].concat(emailErrors.non_field).join(' ')}</p>}
+                        <div className="step-actions">
+                          <button type="button" className="btn btn-outline" onClick={closeEmailChange}>Cancel</button>
+                          <button type="button" className="btn btn-secondary" disabled={confirmingEmailCode || emailCode.length < 6} onClick={handleConfirmEmailChange}>
+                            {confirmingEmailCode ? 'Confirming…' : 'Confirm'}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
                 <div className="form-row">
                   <div className="form-group">
                     <label>Street</label>
@@ -264,16 +402,69 @@ export default function Profile() {
                 <div className="form-row">
                   <div className="form-group">
                     <label>Current Password</label>
-                    <input className="form-control" type="password" value={passwordForm.current_password}
-                      onChange={(e) => setPasswordForm((f) => ({ ...f, current_password: e.target.value }))} required />
+                    <div className="password-field-wrap">
+                      <input className="form-control" type={showCurrentPassword ? 'text' : 'password'} value={passwordForm.current_password}
+                        onChange={(e) => setPasswordForm((f) => ({ ...f, current_password: e.target.value }))} required />
+                      <button
+                        type="button"
+                        className="password-toggle-btn"
+                        aria-label={showCurrentPassword ? 'Hide password' : 'Show password'}
+                        onClick={() => setShowCurrentPassword((v) => !v)}
+                      >
+                        {showCurrentPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      </button>
+                    </div>
                   </div>
                   <div className="form-group">
                     <label>New Password</label>
-                    <input className="form-control" type="password" value={passwordForm.new_password}
-                      onChange={(e) => setPasswordForm((f) => ({ ...f, new_password: e.target.value }))} required />
+                    <div className="password-field-wrap">
+                      <input className="form-control" type={showNewPassword ? 'text' : 'password'} value={passwordForm.new_password}
+                        onChange={(e) => setPasswordForm((f) => ({ ...f, new_password: e.target.value }))} required />
+                      <button
+                        type="button"
+                        className="password-toggle-btn"
+                        aria-label={showNewPassword ? 'Hide password' : 'Show password'}
+                        onClick={() => setShowNewPassword((v) => !v)}
+                      >
+                        {showNewPassword ? <EyeOffIcon /> : <EyeIcon />}
+                      </button>
+                    </div>
                   </div>
                 </div>
-                {passwordError && <p className="form-error-banner">{passwordError}</p>}
+
+                {passwordForm.new_password && (
+                  <div className="password-strength">
+                    <div className="password-strength-bars">
+                      {[1, 2, 3, 4].map((i) => (
+                        <span key={i} className={`bar level-${newPasswordStrength.level >= i ? newPasswordStrength.level : 0}`} />
+                      ))}
+                    </div>
+                    {newPasswordStrength.label && <p className="password-strength-label">{newPasswordStrength.label}</p>}
+                    <ul className="password-checklist">
+                      {newPasswordChecks.map((c) => (
+                        <li key={c.label} className={c.met ? 'met' : ''}>
+                          <span className="check-icon">{c.met ? '✓' : ''}</span>{c.label}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {passwordErrors.current_password && (
+                  <p className="field-error">
+                    {[].concat(passwordErrors.current_password).join(' ')}
+                  </p>
+                )}
+                {passwordErrors.new_password && (
+                  <p className="field-error">
+                    {[].concat(passwordErrors.new_password).join(' ')}
+                  </p>
+                )}
+                {passwordErrors.non_field && (
+                  <p className="field-error">
+                    {[].concat(passwordErrors.non_field).join(' ')}
+                  </p>
+                )}
                 {passwordMessage && <p style={{ color: '#2be7b6' }}>{passwordMessage}</p>}
                 <button className="btn btn-secondary" type="submit">Change Password</button>
               </form>

@@ -37,6 +37,10 @@ def create_checkout_session(payment, success_url, cancel_url):
                 'description': f'Tandikan Tri-Hub registration #{registration.id}',
                 'success_url': success_url,
                 'cancel_url': cancel_url,
+                # Lets the webhook find the right Payment by registration even if this
+                # session isn't the one whose id ends up stored as paymongo_checkout_id
+                # (e.g. the user opened checkout twice and paid the earlier one).
+                'metadata': {'registration_id': str(registration.id)},
             },
         },
     }

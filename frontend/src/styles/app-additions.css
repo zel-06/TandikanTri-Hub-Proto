@@ -51,6 +51,50 @@
 }
 .form-control:focus { border-color: #1476ff; outline: none; }
 textarea.form-control { resize: vertical; min-height: 100px; }
+
+.password-field-wrap { position: relative; }
+.password-field-wrap .form-control { padding-right: 2.75rem; }
+.password-field-wrap .password-toggle-btn {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: #64748b;
+  cursor: pointer;
+}
+.password-field-wrap .password-toggle-btn:hover { color: #1476ff; }
+
+.email-display-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1rem;
+  border-radius: 14px;
+  background: #f7f9fc;
+  border: 1px solid #d7dee8;
+  box-sizing: border-box;
+}
+.email-display-value {
+  color: #0f172a;
+  font-size: 0.95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.email-change-panel {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border-radius: 16px;
+  background: #f7f9fc;
+  border: 1px solid #d7dee8;
+}
 @media (max-width: 700px) {
   .form-row { grid-template-columns: 1fr; }
 }

@@ -11,24 +11,28 @@ from django.utils import timezone
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token as google_id_token
 from rest_framework import generics, status
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.throttling import ScopedRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from audit.models import AuditLogEntry, log_action
+from config.csv_utils import csv_safe_row
 from notifications.models import Notification, notify
 
 from .models import EmailVerification, User
 from .otp import (
     CODE_TTL_MINUTES,
+    MAX_CODE_ATTEMPTS,
     RESEND_COOLDOWN_SECONDS,
     code_expiry,
     generate_code,
     make_reset_token,
     make_verification_token,
     read_reset_email,
+    send_email_changed_notice,
     send_password_reset_email,
     send_verification_email,
 )
@@ -103,6 +107,7 @@ def send_verification_code(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([ScopedRateThrottle])
 def verify_email_code(request):
     email = (request.data.get('email') or '').strip().lower()
     code = (request.data.get('code') or '').strip()
@@ -114,7 +119,14 @@ def verify_email_code(request):
 
     if record.expires_at < timezone.now():
         return Response({'code': 'This code has expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
+    if record.attempts >= MAX_CODE_ATTEMPTS:
+        return Response(
+            {'code': 'Too many incorrect attempts. Please request a new code.'},
+            status=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
     if record.code != code:
+        record.attempts += 1
+        record.save(update_fields=['attempts'])
         return Response({'code': 'Incorrect verification code.'}, status=status.HTTP_400_BAD_REQUEST)
 
     record.is_verified = True
@@ -124,8 +136,12 @@ def verify_email_code(request):
     return Response({'verification_token': make_verification_token(email)})
 
 
+verify_email_code.cls.throttle_scope = 'otp_verify'
+
+
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([ScopedRateThrottle])
 def google_auth(request):
     credential = request.data.get('credential')
     if not credential:
@@ -164,6 +180,9 @@ def google_auth(request):
             'last_name': idinfo.get('family_name', ''),
         },
     })
+
+
+google_auth.cls.throttle_scope = 'login'
 
 
 @api_view(['POST'])
@@ -213,6 +232,7 @@ def request_password_reset_code(request):
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
+@throttle_classes([ScopedRateThrottle])
 def verify_password_reset_code(request):
     email = (request.data.get('email') or '').strip().lower()
     code = (request.data.get('code') or '').strip()
@@ -222,7 +242,12 @@ def verify_password_reset_code(request):
     except EmailVerification.DoesNotExist:
         return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if record.expires_at < timezone.now() or record.code != code:
+    if record.expires_at < timezone.now() or record.attempts >= MAX_CODE_ATTEMPTS:
+        return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if record.code != code:
+        record.attempts += 1
+        record.save(update_fields=['attempts'])
         return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
 
     record.is_verified = True
@@ -230,6 +255,9 @@ def verify_password_reset_code(request):
     record.save(update_fields=['is_verified', 'verified_at'])
 
     return Response({'reset_token': make_reset_token(email)})
+
+
+verify_password_reset_code.cls.throttle_scope = 'otp_verify'
 
 
 @api_view(['POST'])
@@ -245,9 +273,8 @@ def reset_password(request):
             status=status.HTTP_400_BAD_REQUEST,
         )
 
-    try:
-        user = User.objects.get(email__iexact=email)
-    except User.DoesNotExist:
+    user = User.objects.filter(email__iexact=email).first()
+    if not user:
         return Response(
             {'reset_token': 'This reset session has expired. Please request a new code.'},
             status=status.HTTP_400_BAD_REQUEST,
@@ -269,6 +296,8 @@ def reset_password(request):
 
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
+    throttle_classes = [ScopedRateThrottle]
+    throttle_scope = 'login'
 
 
 class MeView(APIView):
@@ -307,15 +336,130 @@ class MeView(APIView):
 def change_password(request):
     current_password = request.data.get('current_password', '')
     new_password = request.data.get('new_password', '')
-    if not request.user.check_password(current_password):
+    # A Google-only account has no password to check against (has_usable_password()
+    # is always False for one) - this is also how such an account sets its *first*
+    # password, a prerequisite for the verified email-change flow below.
+    if request.user.has_usable_password() and not request.user.check_password(current_password):
         return Response({'current_password': 'Incorrect password.'}, status=status.HTTP_400_BAD_REQUEST)
     try:
+        validate_password_complexity(new_password, username=request.user.username, email=request.user.email)
         validate_password(new_password, user=request.user)
     except DjangoValidationError as exc:
         return Response({'new_password': list(exc.messages)}, status=status.HTTP_400_BAD_REQUEST)
     request.user.set_password(new_password)
     request.user.save(update_fields=['password'])
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def request_email_change(request):
+    if not request.user.has_usable_password():
+        return Response(
+            {'non_field': 'Please set a password first (in Change Password) before changing your email.'},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    current_password = request.data.get('current_password', '')
+    if not request.user.check_password(current_password):
+        return Response({'current_password': 'Incorrect password.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    new_email = (request.data.get('new_email') or '').strip().lower()
+    if not new_email:
+        return Response({'new_email': 'Email is required.'}, status=status.HTTP_400_BAD_REQUEST)
+    try:
+        validate_email(new_email)
+    except DjangoValidationError:
+        return Response({'new_email': 'Enter a valid email address.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if new_email == request.user.email.lower():
+        return Response({'new_email': 'This is already your current email.'}, status=status.HTTP_400_BAD_REQUEST)
+    if User.objects.filter(email__iexact=new_email).exclude(pk=request.user.pk).exists():
+        return Response({'new_email': 'An account with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    existing = EmailVerification.objects.filter(email=new_email).first()
+    if existing:
+        seconds_since_sent = (timezone.now() - existing.created_at).total_seconds()
+        if seconds_since_sent < RESEND_COOLDOWN_SECONDS:
+            wait = int(RESEND_COOLDOWN_SECONDS - seconds_since_sent)
+            return Response(
+                {'new_email': f'Please wait {wait}s before requesting a new code.', 'retry_after_seconds': wait},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+        existing.delete()
+
+    code = generate_code()
+    try:
+        record = EmailVerification.objects.create(email=new_email, code=code, expires_at=code_expiry())
+    except IntegrityError:
+        return Response(
+            {'new_email': 'A verification code was just requested for this email. Please wait a moment and try again.'},
+            status=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
+
+    try:
+        send_verification_email(new_email, code)
+    except Exception:
+        record.delete()
+        return Response(
+            {'non_field': 'We could not send the verification email right now. Please try again shortly.'},
+            status=status.HTTP_503_SERVICE_UNAVAILABLE,
+        )
+
+    return Response({
+        'detail': 'Verification code sent.',
+        'cooldown_seconds': RESEND_COOLDOWN_SECONDS,
+        'expires_in_seconds': CODE_TTL_MINUTES * 60,
+    })
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+@throttle_classes([ScopedRateThrottle])
+def confirm_email_change(request):
+    new_email = (request.data.get('new_email') or '').strip().lower()
+    code = (request.data.get('code') or '').strip()
+
+    try:
+        record = EmailVerification.objects.get(email=new_email)
+    except EmailVerification.DoesNotExist:
+        return Response({'code': 'No verification code was sent to this email.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    if record.expires_at < timezone.now():
+        return Response({'code': 'This code has expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
+    if record.attempts >= MAX_CODE_ATTEMPTS:
+        return Response(
+            {'code': 'Too many incorrect attempts. Please request a new code.'},
+            status=status.HTTP_429_TOO_MANY_REQUESTS,
+        )
+    if record.code != code:
+        record.attempts += 1
+        record.save(update_fields=['attempts'])
+        return Response({'code': 'Incorrect verification code.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Close the race where someone else claimed this email while the code was in flight.
+    if User.objects.filter(email__iexact=new_email).exclude(pk=request.user.pk).exists():
+        record.delete()
+        return Response({'new_email': 'An account with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+    old_email = request.user.email
+    request.user.email = new_email
+    request.user.save(update_fields=['email'])
+    record.delete()
+
+    try:
+        send_email_changed_notice(old_email, new_email)
+    except Exception:
+        pass  # best-effort notice - the email change itself already succeeded
+
+    log_action(
+        request.user, AuditLogEntry.Module.SECURITY, 'Email changed',
+        target_description=f'{old_email} -> {new_email}',
+    )
+    return Response(UserSerializer(request.user).data)
+
+
+confirm_email_change.cls.throttle_scope = 'otp_verify'
 
 
 class UserListView(generics.ListAPIView):
@@ -394,10 +538,10 @@ def export_users_csv(request):
     writer = csv.writer(response)
     writer.writerow(['Username', 'Full Name', 'Email', 'ID Verification', 'Account Status', 'Joined'])
     for user in User.objects.filter(role=User.Role.ATHLETE):
-        writer.writerow([
+        writer.writerow(csv_safe_row([
             user.username, user.get_full_name(), user.email,
             user.id_verification_status, user.account_status, user.date_joined.isoformat(),
-        ])
+        ]))
     return response
 
 

@@ -39,6 +39,9 @@ class CommunityPostSerializer(serializers.ModelSerializer):
         return obj.likes.filter(user_id=request.user.id).exists()
 
     def get_likers(self, obj):
+        request = self.context.get('request')
+        if not request or not request.user.is_authenticated:
+            return []
         likers = []
         for like in obj.likes.all():
             user = like.user

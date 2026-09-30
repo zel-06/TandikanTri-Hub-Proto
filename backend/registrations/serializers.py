@@ -2,7 +2,7 @@ from django.db import transaction
 from django.utils import timezone
 from rest_framework import serializers
 
-from events.models import EventCategory
+from events.models import Event, EventCategory
 from events.serializers import EventCategorySerializer
 
 from .models import Participant, Payment, Registration
@@ -64,6 +64,10 @@ class RegistrationCreateSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         category: EventCategory = attrs['event_category']
+        if category.event.status != Event.Status.PUBLISHED:
+            raise serializers.ValidationError('This event is not open for registration.')
+        if category.registration_deadline and category.registration_deadline < timezone.localdate():
+            raise serializers.ValidationError('The registration deadline for this category has passed.')
         if category.slots_left <= 0:
             raise serializers.ValidationError('This category is fully booked.')
 

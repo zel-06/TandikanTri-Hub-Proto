@@ -55,12 +55,29 @@ class User(AbstractUser):
 
     account_status = models.CharField(max_length=20, choices=AccountStatus.choices, default=AccountStatus.ACTIVE)
 
+    # Per-account login lockout (on top of the per-IP throttle) - counts consecutive
+    # wrong-password attempts against THIS account regardless of who's trying, and
+    # temporarily blocks login once it hits the limit. See CustomTokenObtainPairSerializer.
+    failed_login_attempts = models.PositiveSmallIntegerField(default=0)
+    lockout_until = models.DateTimeField(null=True, blank=True)
+
     terms_accepted_at = models.DateTimeField(null=True, blank=True)
     privacy_accepted_at = models.DateTimeField(null=True, blank=True)
     guardian_consent_name = models.CharField(max_length=255, blank=True)
     guardian_consent_at = models.DateTimeField(null=True, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            # Plain unique=True would also forbid two soft-deleted accounts from both
+            # having email='' (MeView.delete() clears email on deletion) - excluding
+            # blank emails from the constraint keeps that pattern working while still
+            # stopping two real, active accounts from sharing one email address.
+            models.UniqueConstraint(
+                fields=['email'], condition=~models.Q(email=''), name='unique_non_empty_email',
+            ),
+        ]
 
     @property
     def is_staff_role(self):
@@ -96,6 +113,7 @@ class EmailVerification(models.Model):
     expires_at = models.DateTimeField()
     is_verified = models.BooleanField(default=False)
     verified_at = models.DateTimeField(null=True, blank=True)
+    attempts = models.PositiveSmallIntegerField(default=0)
 
     def __str__(self):
         return self.email

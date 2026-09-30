@@ -15,6 +15,7 @@ from rest_framework.response import Response
 
 from accounts.permissions import IsFinanceStaff, IsVerifiedUser
 from audit.models import AuditLogEntry, log_action
+from config.csv_utils import csv_safe_row
 from events.models import EventCategory
 from notifications.models import Notification, notify
 
@@ -113,15 +114,31 @@ def paymongo_webhook(request):
 
     event = request.data.get('data', {}).get('attributes', {})
     if event.get('type') == 'checkout_session.payment.paid':
-        checkout_id = event.get('data', {}).get('id')
-        try:
-            payment = Payment.objects.select_related(
-                'registration', 'registration__event_category', 'registration__event_category__event'
-            ).get(paymongo_checkout_id=checkout_id)
-        except Payment.DoesNotExist:
+        session_data = event.get('data', {})
+        checkout_id = session_data.get('id')
+        payment = Payment.objects.select_related(
+            'registration', 'registration__event_category', 'registration__event_category__event'
+        ).filter(paymongo_checkout_id=checkout_id).first()
+
+        if not payment:
+            # The checkout_id that actually got paid isn't the one stored on the
+            # Payment anymore (e.g. the user re-opened checkout and this was an
+            # earlier, since-replaced session) - fall back to the registration_id we
+            # stamped into the session's metadata at creation time.
+            registration_id = session_data.get('attributes', {}).get('metadata', {}).get('registration_id')
+            if registration_id:
+                payment = Payment.objects.select_related(
+                    'registration', 'registration__event_category', 'registration__event_category__event'
+                ).filter(registration_id=registration_id).first()
+
+        if not payment:
             return Response(status=status.HTTP_200_OK)
 
         if payment.status != Payment.Status.VERIFIED:
+            if payment.paymongo_checkout_id != checkout_id:
+                payment.paymongo_checkout_id = checkout_id
+                payment.save(update_fields=['paymongo_checkout_id'])
+
             with transaction.atomic():
                 # Lock the event category so concurrent webhook calls for the same
                 # category assign bib numbers one at a time instead of racing on the
@@ -240,7 +257,7 @@ def export_finance_report_csv(request):
     for payment in Payment.objects.select_related(
         'registration', 'registration__event_category', 'registration__event_category__event'
     ):
-        writer.writerow([
+        writer.writerow(csv_safe_row([
             payment.registration_id,
             payment.registration.event_category.event.title,
             payment.registration.event_category.name,
@@ -248,5 +265,5 @@ def export_finance_report_csv(request):
             payment.get_method_display(),
             payment.get_status_display(),
             payment.verified_at.isoformat() if payment.verified_at else '',
-        ])
+        ]))
     return response

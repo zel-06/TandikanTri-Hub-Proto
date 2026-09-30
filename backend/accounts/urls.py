@@ -15,6 +15,8 @@ urlpatterns = [
     path('auth/refresh/', TokenRefreshView.as_view(), name='token-refresh'),
     path('auth/me/', views.MeView.as_view(), name='me'),
     path('auth/change-password/', views.change_password, name='change-password'),
+    path('auth/change-email/request/', views.request_email_change, name='request-email-change'),
+    path('auth/change-email/confirm/', views.confirm_email_change, name='confirm-email-change'),
 
     path('users/', views.UserListView.as_view(), name='user-list'),
     path('users/export/', views.export_users_csv, name='user-export'),

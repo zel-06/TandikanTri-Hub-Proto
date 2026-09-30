@@ -1,17 +1,28 @@
+import math
+from datetime import timedelta
+
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
+from audit.models import AuditLogEntry, log_action
 
 from .models import User, calculate_age
 from .otp import read_verification_token
 from .validators import validate_password_complexity
 
+LOGIN_MAX_ATTEMPTS = 5
+LOGIN_LOCKOUT_MINUTES = 5
+
 
 class UserSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(source='get_full_name', read_only=True)
     is_minor = serializers.BooleanField(read_only=True)
+    has_password = serializers.SerializerMethodField()
 
     class Meta:
         model = User
@@ -20,15 +31,23 @@ class UserSerializer(serializers.ModelSerializer):
             'role', 'phone', 'street', 'city', 'barangay', 'province', 'postal_code',
             'birthdate', 'is_minor', 'profile_picture', 'id_document', 'guardian_id_document',
             'id_verification_status', 'id_verification_note',
-            'account_status', 'date_joined',
+            'account_status', 'date_joined', 'has_password',
         ]
         read_only_fields = [
-            'id', 'role', 'id_verification_status', 'id_verification_note',
+            'id', 'email', 'role', 'id_verification_status', 'id_verification_note',
             'account_status', 'date_joined',
         ]
 
+    def get_has_password(self, obj):
+        # False for Google-only accounts (set_unusable_password() at signup) - the
+        # frontend uses this to prompt "set a password first" before letting them
+        # into the verified email-change flow.
+        return obj.has_usable_password()
+
     def update(self, instance, validated_data):
         old_picture_name = instance.profile_picture.name if instance.profile_picture else None
+        old_id_name = instance.id_document.name if instance.id_document else None
+        old_guardian_id_name = instance.guardian_id_document.name if instance.guardian_id_document else None
 
         instance = super().update(instance, validated_data)
 
@@ -40,10 +59,14 @@ class UserSerializer(serializers.ModelSerializer):
                 except Exception:
                     pass  # storage hiccup - the old file is just orphaned, not worth failing the request over
 
-        if (
-            instance.id_verification_status in (User.VerificationStatus.UNSUBMITTED, User.VerificationStatus.REJECTED)
-            and instance.has_required_verification_docs
-        ):
+        new_id_name = instance.id_document.name if instance.id_document else None
+        new_guardian_id_name = instance.guardian_id_document.name if instance.guardian_id_document else None
+        id_changed = new_id_name != old_id_name or new_guardian_id_name != old_guardian_id_name
+
+        # Covers both a first-time submission AND replacing an already-approved ID with a
+        # different photo - either way the document on file has changed, so whatever staff
+        # approved before no longer applies and it must go back through review.
+        if id_changed and instance.has_required_verification_docs:
             instance.id_verification_status = User.VerificationStatus.PENDING
             instance.id_verification_note = ''
             instance.save(update_fields=['id_verification_status', 'id_verification_note'])
@@ -91,6 +114,13 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {'email_verification_token': 'Email is not verified. Please verify your email again.'}
             )
+
+        # send_verification_code already rejects an email already in use, but that check
+        # and this create() happen far apart in time (the user fills out the rest of the
+        # form in between) - re-check here to close that race instead of letting a
+        # duplicate insert hit the DB's unique constraint and surface as a raw 500.
+        if attrs.get('email') and User.objects.filter(email__iexact=attrs['email']).exists():
+            raise serializers.ValidationError({'email': 'An account with this email already exists.'})
 
         password = attrs.pop('password', None)
         password_confirm = attrs.pop('password_confirm', None)
@@ -161,6 +191,11 @@ class StaffAccountCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Staff accounts must be assigned a staff role.')
         return value
 
+    def validate_email(self, value):
+        if value and User.objects.filter(email__iexact=value).exists():
+            raise serializers.ValidationError('An account with this email already exists.')
+        return value
+
     def create(self, validated_data):
         temp_password = validated_data.pop('temp_password')
         user = User(account_status=User.AccountStatus.ACTIVE, **validated_data)
@@ -184,15 +219,50 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
     def validate(self, attrs):
         login_input = attrs.get(self.username_field)
+        matched_user = None
         if login_input:
-            matched_user = User.objects.filter(email__iexact=login_input).first()
+            matched_user = User.objects.filter(
+                Q(username__iexact=login_input) | Q(email__iexact=login_input)
+            ).first()
             if matched_user:
                 attrs[self.username_field] = matched_user.username
 
-        data = super().validate(attrs)
+        # Per-account lockout, on top of the per-IP throttle - an unknown login_input
+        # never has a matched_user, so it always falls through to the generic
+        # no_active_account error below and reveals nothing about account existence.
+        if matched_user and matched_user.lockout_until and matched_user.lockout_until > timezone.now():
+            raise serializers.ValidationError(self._lockout_message(matched_user.lockout_until))
+
+        try:
+            data = super().validate(attrs)
+        except AuthenticationFailed:
+            if matched_user:
+                matched_user.failed_login_attempts += 1
+                if matched_user.failed_login_attempts >= LOGIN_MAX_ATTEMPTS:
+                    matched_user.lockout_until = timezone.now() + timedelta(minutes=LOGIN_LOCKOUT_MINUTES)
+                    matched_user.failed_login_attempts = 0  # fresh count once the lockout itself expires
+                    matched_user.save(update_fields=['failed_login_attempts', 'lockout_until'])
+                    log_action(
+                        matched_user, AuditLogEntry.Module.SECURITY,
+                        'Account locked after repeated failed logins', target_description=str(matched_user),
+                    )
+                    raise serializers.ValidationError(self._lockout_message(matched_user.lockout_until)) from None
+                matched_user.save(update_fields=['failed_login_attempts'])
+            raise
+
+        if matched_user and (matched_user.failed_login_attempts or matched_user.lockout_until):
+            matched_user.failed_login_attempts = 0
+            matched_user.lockout_until = None
+            matched_user.save(update_fields=['failed_login_attempts', 'lockout_until'])
+
         if self.user.account_status == User.AccountStatus.SUSPENDED:
             raise serializers.ValidationError('This account has been suspended.')
         if self.user.account_status == User.AccountStatus.DELETED:
             raise serializers.ValidationError('This account no longer exists.')
         data['user'] = UserSerializer(self.user).data
         return data
+
+    @staticmethod
+    def _lockout_message(lockout_until):
+        minutes = max(1, math.ceil((lockout_until - timezone.now()).total_seconds() / 60))
+        return f'Too many failed attempts. Please try again in {minutes} minute{"s" if minutes != 1 else ""}.'

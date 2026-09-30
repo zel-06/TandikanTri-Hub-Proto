@@ -5,6 +5,7 @@ from rest_framework import generics
 from rest_framework.decorators import api_view, permission_classes
 
 from accounts.permissions import IsOperationsStaff
+from config.csv_utils import csv_safe_row
 
 from .models import AuditLogEntry
 from .serializers import AuditLogEntrySerializer
@@ -36,11 +37,11 @@ def export_audit_log_csv(request):
     writer = csv.writer(response)
     writer.writerow(['Timestamp', 'Administrator', 'Module', 'Action', 'Details'])
     for entry in AuditLogEntry.objects.select_related('actor').all():
-        writer.writerow([
+        writer.writerow(csv_safe_row([
             entry.created_at.isoformat(),
             entry.actor.get_full_name() or entry.actor.username if entry.actor else 'System',
             entry.get_module_display(),
             entry.action,
             entry.target_description,
-        ])
+        ]))
     return response

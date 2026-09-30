@@ -33,5 +33,11 @@ export const updateMe = (data) => client.patch('/auth/me/', data).then((r) => r.
 export const changePassword = (payload) =>
   client.post('/auth/change-password/', payload).then((r) => r.data);
 
+export const requestEmailChange = (newEmail, currentPassword) =>
+  client.post('/auth/change-email/request/', { new_email: newEmail, current_password: currentPassword }).then((r) => r.data);
+
+export const confirmEmailChange = (newEmail, code) =>
+  client.post('/auth/change-email/confirm/', { new_email: newEmail, code }).then((r) => r.data);
+
 export const deleteMe = (password) =>
   client.delete('/auth/me/', { data: { password } }).then((r) => r.data);

@@ -1,4 +1,4 @@
-import random
+import secrets
 from datetime import timedelta
 
 from django.conf import settings
@@ -8,6 +8,7 @@ from django.utils import timezone
 
 CODE_TTL_MINUTES = 5
 RESEND_COOLDOWN_SECONDS = 60
+MAX_CODE_ATTEMPTS = 5
 TOKEN_SALT = 'email-verification'
 TOKEN_MAX_AGE_SECONDS = 30 * 60
 
@@ -19,7 +20,7 @@ RESET_TOKEN_MAX_AGE_SECONDS = 15 * 60
 
 
 def generate_code():
-    return f'{random.randint(0, 999999):06d}'
+    return f'{secrets.randbelow(1_000_000):06d}'
 
 
 def code_expiry():
@@ -68,6 +69,18 @@ def send_password_reset_email(email, code):
         ),
         from_email=settings.DEFAULT_FROM_EMAIL,
         recipient_list=[email],
+    )
+
+
+def send_email_changed_notice(old_email, new_email):
+    send_mail(
+        subject='Your Tandikan Tri-Hub account email was changed',
+        message=(
+            f'Your account email was changed to {new_email}.\n\n'
+            'If you did not make this change, please contact us immediately.'
+        ),
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        recipient_list=[old_email],
     )
 
 
