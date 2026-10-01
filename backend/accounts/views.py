@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.core.validators import validate_email
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.http import HttpResponse
 from django.utils import timezone
 from google.auth.transport import requests as google_requests
@@ -112,26 +112,31 @@ def verify_email_code(request):
     email = (request.data.get('email') or '').strip().lower()
     code = (request.data.get('code') or '').strip()
 
-    try:
-        record = EmailVerification.objects.get(email=email)
-    except EmailVerification.DoesNotExist:
-        return Response({'code': 'No verification code was sent to this email.'}, status=status.HTTP_400_BAD_REQUEST)
+    # select_for_update() serializes concurrent guesses against this ONE row - only ever
+    # contended by someone brute-forcing this specific code, never a bystander user - so a
+    # burst of simultaneous wrong guesses is counted one at a time instead of racing past
+    # MAX_CODE_ATTEMPTS via a read-modify-write on a stale attempts value.
+    with transaction.atomic():
+        try:
+            record = EmailVerification.objects.select_for_update().get(email=email)
+        except EmailVerification.DoesNotExist:
+            return Response({'code': 'No verification code was sent to this email.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if record.expires_at < timezone.now():
-        return Response({'code': 'This code has expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
-    if record.attempts >= MAX_CODE_ATTEMPTS:
-        return Response(
-            {'code': 'Too many incorrect attempts. Please request a new code.'},
-            status=status.HTTP_429_TOO_MANY_REQUESTS,
-        )
-    if record.code != code:
-        record.attempts += 1
-        record.save(update_fields=['attempts'])
-        return Response({'code': 'Incorrect verification code.'}, status=status.HTTP_400_BAD_REQUEST)
+        if record.expires_at < timezone.now():
+            return Response({'code': 'This code has expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
+        if record.attempts >= MAX_CODE_ATTEMPTS:
+            return Response(
+                {'code': 'Too many incorrect attempts. Please request a new code.'},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+        if record.code != code:
+            record.attempts += 1
+            record.save(update_fields=['attempts'])
+            return Response({'code': 'Incorrect verification code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    record.is_verified = True
-    record.verified_at = timezone.now()
-    record.save(update_fields=['is_verified', 'verified_at'])
+        record.is_verified = True
+        record.verified_at = timezone.now()
+        record.save(update_fields=['is_verified', 'verified_at'])
 
     return Response({'verification_token': make_verification_token(email)})
 
@@ -237,22 +242,23 @@ def verify_password_reset_code(request):
     email = (request.data.get('email') or '').strip().lower()
     code = (request.data.get('code') or '').strip()
 
-    try:
-        record = EmailVerification.objects.get(email=email)
-    except EmailVerification.DoesNotExist:
-        return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+    with transaction.atomic():
+        try:
+            record = EmailVerification.objects.select_for_update().get(email=email)
+        except EmailVerification.DoesNotExist:
+            return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if record.expires_at < timezone.now() or record.attempts >= MAX_CODE_ATTEMPTS:
-        return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+        if record.expires_at < timezone.now() or record.attempts >= MAX_CODE_ATTEMPTS:
+            return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if record.code != code:
-        record.attempts += 1
-        record.save(update_fields=['attempts'])
-        return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
+        if record.code != code:
+            record.attempts += 1
+            record.save(update_fields=['attempts'])
+            return Response({'code': 'Invalid or expired code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    record.is_verified = True
-    record.verified_at = timezone.now()
-    record.save(update_fields=['is_verified', 'verified_at'])
+        record.is_verified = True
+        record.verified_at = timezone.now()
+        record.save(update_fields=['is_verified', 'verified_at'])
 
     return Response({'reset_token': make_reset_token(email)})
 
@@ -420,32 +426,33 @@ def confirm_email_change(request):
     new_email = (request.data.get('new_email') or '').strip().lower()
     code = (request.data.get('code') or '').strip()
 
-    try:
-        record = EmailVerification.objects.get(email=new_email)
-    except EmailVerification.DoesNotExist:
-        return Response({'code': 'No verification code was sent to this email.'}, status=status.HTTP_400_BAD_REQUEST)
+    with transaction.atomic():
+        try:
+            record = EmailVerification.objects.select_for_update().get(email=new_email)
+        except EmailVerification.DoesNotExist:
+            return Response({'code': 'No verification code was sent to this email.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    if record.expires_at < timezone.now():
-        return Response({'code': 'This code has expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
-    if record.attempts >= MAX_CODE_ATTEMPTS:
-        return Response(
-            {'code': 'Too many incorrect attempts. Please request a new code.'},
-            status=status.HTTP_429_TOO_MANY_REQUESTS,
-        )
-    if record.code != code:
-        record.attempts += 1
-        record.save(update_fields=['attempts'])
-        return Response({'code': 'Incorrect verification code.'}, status=status.HTTP_400_BAD_REQUEST)
+        if record.expires_at < timezone.now():
+            return Response({'code': 'This code has expired. Please request a new one.'}, status=status.HTTP_400_BAD_REQUEST)
+        if record.attempts >= MAX_CODE_ATTEMPTS:
+            return Response(
+                {'code': 'Too many incorrect attempts. Please request a new code.'},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+        if record.code != code:
+            record.attempts += 1
+            record.save(update_fields=['attempts'])
+            return Response({'code': 'Incorrect verification code.'}, status=status.HTTP_400_BAD_REQUEST)
 
-    # Close the race where someone else claimed this email while the code was in flight.
-    if User.objects.filter(email__iexact=new_email).exclude(pk=request.user.pk).exists():
+        # Close the race where someone else claimed this email while the code was in flight.
+        if User.objects.filter(email__iexact=new_email).exclude(pk=request.user.pk).exists():
+            record.delete()
+            return Response({'new_email': 'An account with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        old_email = request.user.email
+        request.user.email = new_email
+        request.user.save(update_fields=['email'])
         record.delete()
-        return Response({'new_email': 'An account with this email already exists.'}, status=status.HTTP_400_BAD_REQUEST)
-
-    old_email = request.user.email
-    request.user.email = new_email
-    request.user.save(update_fields=['email'])
-    record.delete()
 
     try:
         send_email_changed_notice(old_email, new_email)

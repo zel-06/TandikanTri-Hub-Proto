@@ -84,6 +84,12 @@ DATABASES = {
         # connection open between requests just hogs a pooler slot instead of freeing it back
         # up. Only reuse connections on a persistent server (local dev / traditional hosting).
         'CONN_MAX_AGE': 0 if env.bool('VERCEL', default=False) else 60,
+        # Required when DB_HOST points at Supabase's transaction-mode pooler (as it does on
+        # Vercel) - a server-side cursor's state can't survive being handed to a different
+        # backend connection mid-use, which is exactly what transaction-mode pooling does.
+        # Harmless on the direct connection used locally (nothing here calls .iterator(),
+        # the only thing that actually engages a server-side cursor).
+        'DISABLE_SERVER_SIDE_CURSORS': True,
     }
 }
 

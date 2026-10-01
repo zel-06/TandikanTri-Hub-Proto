@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
-from django.db.models import Q
+from django.db.models import F, Q
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed
@@ -237,17 +237,39 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             data = super().validate(attrs)
         except AuthenticationFailed:
             if matched_user:
-                matched_user.failed_login_attempts += 1
-                if matched_user.failed_login_attempts >= LOGIN_MAX_ATTEMPTS:
-                    matched_user.lockout_until = timezone.now() + timedelta(minutes=LOGIN_LOCKOUT_MINUTES)
-                    matched_user.failed_login_attempts = 0  # fresh count once the lockout itself expires
-                    matched_user.save(update_fields=['failed_login_attempts', 'lockout_until'])
-                    log_action(
-                        matched_user, AuditLogEntry.Module.SECURITY,
-                        'Account locked after repeated failed logins', target_description=str(matched_user),
-                    )
+                # Gate the increment itself on "not already locked" - not just the later
+                # lock-trigger step. Without this, a straggling concurrent request that
+                # started before anyone was locked can still land its +1 AFTER another
+                # request already set lockout_until and reset the counter to 0, dragging
+                # the count back up even though the account is supposed to be locked.
+                # Since each .update() is one atomic statement, Postgres serializes
+                # concurrent UPDATEs to the same row - once lockout_until is set, every
+                # later increment attempt's WHERE clause simply stops matching.
+                rows = User.objects.filter(pk=matched_user.pk, lockout_until__isnull=True).update(
+                    failed_login_attempts=F('failed_login_attempts') + 1
+                )
+                matched_user.refresh_from_db(fields=['failed_login_attempts', 'lockout_until'])
+                if rows == 0:
+                    # Already locked by a concurrent request before our increment landed.
                     raise serializers.ValidationError(self._lockout_message(matched_user.lockout_until)) from None
-                matched_user.save(update_fields=['failed_login_attempts'])
+                if matched_user.failed_login_attempts >= LOGIN_MAX_ATTEMPTS:
+                    lockout_until = timezone.now() + timedelta(minutes=LOGIN_LOCKOUT_MINUTES)
+                    # Conditional UPDATE as a lock-free compare-and-swap: only the request that
+                    # actually flips lockout_until from NULL gets rows_locked > 0, so under a
+                    # burst of concurrent failures exactly one of them logs the audit entry -
+                    # the rest just see lockout_until already set and report the same message.
+                    rows_locked = User.objects.filter(pk=matched_user.pk, lockout_until__isnull=True).update(
+                        lockout_until=lockout_until, failed_login_attempts=0,
+                    )
+                    if rows_locked:
+                        log_action(
+                            matched_user, AuditLogEntry.Module.SECURITY,
+                            'Account locked after repeated failed logins', target_description=str(matched_user),
+                        )
+                    else:
+                        matched_user.refresh_from_db(fields=['lockout_until'])
+                        lockout_until = matched_user.lockout_until
+                    raise serializers.ValidationError(self._lockout_message(lockout_until)) from None
             raise
 
         if matched_user and (matched_user.failed_login_attempts or matched_user.lockout_until):
