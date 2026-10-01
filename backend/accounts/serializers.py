@@ -237,15 +237,25 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
             data = super().validate(attrs)
         except AuthenticationFailed:
             if matched_user:
+                # "Not locked" means lockout_until is NULL *or* already in the past - an
+                # expired lockout must be treated exactly like no lockout at all. Using only
+                # isnull=True here was the bug: lockout_until is only ever cleared on a
+                # successful login, never when it merely expires, so after one lockout ran
+                # out every later UPDATE's isnull=True filter matched 0 rows forever -
+                # attempts stopped being counted, no second lockout could ever trigger, and
+                # the stale past timestamp produced a nonsense "try again in 1 minute".
+                now = timezone.now()
+                not_locked = Q(lockout_until__isnull=True) | Q(lockout_until__lte=now)
                 # Gate the increment itself on "not already locked" - not just the later
                 # lock-trigger step. Without this, a straggling concurrent request that
                 # started before anyone was locked can still land its +1 AFTER another
                 # request already set lockout_until and reset the counter to 0, dragging
                 # the count back up even though the account is supposed to be locked.
                 # Since each .update() is one atomic statement, Postgres serializes
-                # concurrent UPDATEs to the same row - once lockout_until is set, every
-                # later increment attempt's WHERE clause simply stops matching.
-                rows = User.objects.filter(pk=matched_user.pk, lockout_until__isnull=True).update(
+                # concurrent UPDATEs to the same row - once lockout_until is set to a
+                # genuinely future time, every later increment attempt's WHERE clause
+                # simply stops matching.
+                rows = User.objects.filter(pk=matched_user.pk).filter(not_locked).update(
                     failed_login_attempts=F('failed_login_attempts') + 1
                 )
                 matched_user.refresh_from_db(fields=['failed_login_attempts', 'lockout_until'])
@@ -253,12 +263,12 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
                     # Already locked by a concurrent request before our increment landed.
                     raise serializers.ValidationError(self._lockout_message(matched_user.lockout_until)) from None
                 if matched_user.failed_login_attempts >= LOGIN_MAX_ATTEMPTS:
-                    lockout_until = timezone.now() + timedelta(minutes=LOGIN_LOCKOUT_MINUTES)
+                    lockout_until = now + timedelta(minutes=LOGIN_LOCKOUT_MINUTES)
                     # Conditional UPDATE as a lock-free compare-and-swap: only the request that
-                    # actually flips lockout_until from NULL gets rows_locked > 0, so under a
-                    # burst of concurrent failures exactly one of them logs the audit entry -
-                    # the rest just see lockout_until already set and report the same message.
-                    rows_locked = User.objects.filter(pk=matched_user.pk, lockout_until__isnull=True).update(
+                    # actually flips lockout_until to this new value gets rows_locked > 0, so
+                    # under a burst of concurrent failures exactly one of them logs the audit
+                    # entry - the rest just see lockout_until already set and report that.
+                    rows_locked = User.objects.filter(pk=matched_user.pk).filter(not_locked).update(
                         lockout_until=lockout_until, failed_login_attempts=0,
                     )
                     if rows_locked:
