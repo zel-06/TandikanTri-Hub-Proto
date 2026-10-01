@@ -14,6 +14,7 @@ class EventCategorySerializer(serializers.ModelSerializer):
         fields = [
             'id', 'event', 'event_title', 'name', 'fee', 'total_slots', 'filled_slots', 'slots_left',
             'is_relay', 'relay_roles', 'kit_inclusions', 'registration_deadline', 'participants_required',
+            'start_time',
         ]
         read_only_fields = ['event']
 

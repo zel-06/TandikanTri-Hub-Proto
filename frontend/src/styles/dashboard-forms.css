@@ -20,6 +20,10 @@
 .admin-panel .form-control:focus { border-color: #4f96ff; outline: none; }
 .admin-panel select.form-control option { background: #081025; color: #fff; }
 .admin-panel .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+/* Used where a row can have a conditional extra field (e.g. Event Time only for
+   duathlon/triathlon): dense packing lets a later field (Distance) fall back into
+   an empty cell left behind by a taller column, instead of leaving a blank gap. */
+.admin-panel .form-row-dense { grid-auto-flow: dense; }
 .admin-panel textarea.form-control { resize: vertical; min-height: 100px; }
 
 .admin-panel .distance-row {

@@ -14,6 +14,11 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    /* .notification-menu (and anything else fixed-positioned off-canvas via a
+       negative right/left offset) still expands document.scrollWidth even though
+       it's never visibly reachable - clamping it here, not just on that one
+       component, is what actually stops it from widening the page horizontally. */
+    overflow-x: hidden;
 }
 
 a {

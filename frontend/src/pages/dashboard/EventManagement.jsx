@@ -47,10 +47,11 @@ function buildDistanceRows(eventType) {
     fee: '',
     slots: '',
     isRelay: false,
+    startTime: '',
   }));
 }
 
-const emptyEventForm = { title: '', venue: '', date: '', event_type: '', description: '', distance: '' };
+const emptyEventForm = { title: '', venue: '', date: '', time: '', event_type: '', description: '', distance: '' };
 const emptyPostForm = { post_type: 'announcement', title: '', body: '', event: '' };
 
 export default function EventManagement() {
@@ -87,7 +88,8 @@ export default function EventManagement() {
 
   function handleEventTypeChange(e) {
     const event_type = e.target.value;
-    setEventForm((f) => ({ ...f, event_type }));
+    const showsTimeField = event_type === 'duathlon' || event_type === 'triathlon';
+    setEventForm((f) => ({ ...f, event_type, time: showsTimeField ? f.time : '' }));
     setDistanceRows(buildDistanceRows(event_type));
   }
 
@@ -97,6 +99,7 @@ export default function EventManagement() {
       title: event.title,
       venue: event.venue,
       date: event.date,
+      time: event.time ? event.time.slice(0, 5) : '', // DRF serializes TimeField as "HH:MM:SS"; <input type="time"> wants "HH:MM"
       event_type: event.event_type,
       description: event.description || '',
       distance: event.distance || '',
@@ -142,6 +145,12 @@ export default function EventManagement() {
       formData.append('title', eventForm.title);
       formData.append('venue', eventForm.venue);
       formData.append('date', eventForm.date);
+      // Marathon uses a per-category start_time instead (set below, per distance) -
+      // never send the single event-level time for it, even if one lingers in state
+      // from switching event types while filling out the form.
+      if (eventForm.event_type !== 'marathon' && eventForm.time) {
+        formData.append('time', eventForm.time);
+      }
       formData.append('event_type', eventForm.event_type);
       formData.append('description', eventForm.description);
       formData.append('distance', eventForm.distance);
@@ -160,6 +169,7 @@ export default function EventManagement() {
           total_slots: row.slots,
           is_relay: row.isRelay,
           relay_roles: row.isRelay ? (RELAY_ROLES_BY_EVENT_TYPE[eventForm.event_type] || []) : [],
+          start_time: eventForm.event_type === 'marathon' && row.startTime ? row.startTime : null,
         });
       }
 
@@ -256,7 +266,7 @@ export default function EventManagement() {
     loadPosts();
   }
 
-  function renderDistanceRow(row, label, { editable = false, onRemove } = {}) {
+  function renderDistanceRow(row, label, { editable = false, onRemove, showStartTime = false } = {}) {
     return (
       <div className="distance-row" key={row.id}>
         <input
@@ -291,6 +301,13 @@ export default function EventManagement() {
             onChange={(e) => setDistanceRows((rows) =>
               rows.map((r) => r.id === row.id ? { ...r, slots: e.target.value } : r))}
           />
+          {showStartTime && (
+            <input
+              type="time" title="Gun time for this category" value={row.startTime || ''}
+              onChange={(e) => setDistanceRows((rows) =>
+                rows.map((r) => r.id === row.id ? { ...r, startTime: e.target.value } : r))}
+            />
+          )}
         </div>
         {onRemove && (
           <button type="button" className="action-btn btn-delete" onClick={onRemove} title="Remove this category">
@@ -330,7 +347,7 @@ export default function EventManagement() {
                     onChange={(e) => setEventForm((f) => ({ ...f, venue: e.target.value }))} required />
                 </div>
               </div>
-              <div className="form-row">
+              <div className="form-row form-row-dense">
                 <div className="form-group">
                   <label>Event Date</label>
                   <input type="date" className="form-control" placeholder="Select event date" value={eventForm.date}
@@ -345,38 +362,43 @@ export default function EventManagement() {
                     <option value="triathlon">Triathlon</option>
                   </select>
                 </div>
-              </div>
-              <div className="form-row">
+                {(eventForm.event_type === 'duathlon' || eventForm.event_type === 'triathlon') && (
+                  <div className="form-group" style={{ gridColumn: '2' }}>
+                    <label>Event Time</label>
+                    <input type="time" className="form-control" value={eventForm.time}
+                      onChange={(e) => setEventForm((f) => ({ ...f, time: e.target.value }))} />
+                  </div>
+                )}
                 <div className="form-group">
                   <label>Distance</label>
                   <input className="form-control" placeholder="Distance for Marathon, Duathlon, or Triathlon"
                     value={eventForm.distance}
                     onChange={(e) => setEventForm((f) => ({ ...f, distance: e.target.value }))} />
                 </div>
-                <div className="form-group">
-                  <label>Event Photo</label>
-                  <input type="file" accept="image/*" className="form-control" value=""
-                    onChange={handleEventPhotoChange} />
-                  {photoPreviewUrl && (
+              </div>
+              <div className="form-group">
+                <label>Event Photo</label>
+                <input type="file" accept="image/*" className="form-control" value=""
+                  onChange={handleEventPhotoChange} />
+                {photoPreviewUrl && (
+                  <div className="photo-picker-preview">
+                    <div className="photo-picker-thumb">
+                      <img src={photoPreviewUrl} alt="Selected event photo" />
+                      <button type="button" className="photo-picker-remove" title="Remove photo"
+                        onClick={removeEventPhoto}>&times;</button>
+                    </div>
+                  </div>
+                )}
+                {!photoPreviewUrl && existingEventPhoto && (
+                  <>
                     <div className="photo-picker-preview">
                       <div className="photo-picker-thumb">
-                        <img src={photoPreviewUrl} alt="Selected event photo" />
-                        <button type="button" className="photo-picker-remove" title="Remove photo"
-                          onClick={removeEventPhoto}>&times;</button>
+                        <img src={existingEventPhoto} alt="Current event photo" />
                       </div>
                     </div>
-                  )}
-                  {!photoPreviewUrl && existingEventPhoto && (
-                    <>
-                      <div className="photo-picker-preview">
-                        <div className="photo-picker-thumb">
-                          <img src={existingEventPhoto} alt="Current event photo" />
-                        </div>
-                      </div>
-                      <p className="form-hint">Current photo will be kept unless you choose a new one.</p>
-                    </>
-                  )}
-                </div>
+                    <p className="form-hint">Current photo will be kept unless you choose a new one.</p>
+                  </>
+                )}
               </div>
               <div className="form-group">
                 <label>Description</label>
@@ -405,6 +427,7 @@ export default function EventManagement() {
                             onRemove: row.isCustom
                               ? () => setDistanceRows((rows) => rows.filter((r) => r.id !== row.id))
                               : undefined,
+                            showStartTime: eventForm.event_type === 'marathon',
                           }))}
                           <button
                             type="button"

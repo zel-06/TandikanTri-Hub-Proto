@@ -91,20 +91,18 @@ export default function EventDetail() {
     <div className="event-detail-page">
       <AuthNavbar />
 
-      <section className="event-hero">
+      <section
+        className="event-hero"
+        style={event.hero_image ? {
+          backgroundImage: `linear-gradient(180deg, rgba(8,17,38,0.25) 0%, rgba(8,17,38,0.92) 100%), url(${event.hero_image})`,
+        } : undefined}
+      >
         <div className="section-content">
-          <span className="event-hero-tag">{EVENT_TYPE_LABEL[event.event_type] || event.event_type}</span>
+          <span className="event-label">{EVENT_TYPE_LABEL[event.event_type] || event.event_type}</span>
           <h1 className="event-hero-title">{event.title}</h1>
-          <div className="event-hero-meta">
-            <span>📅 {new Date(event.date).toLocaleDateString()}</span>
-            <span>📍 {event.venue}</span>
-          </div>
-
-          {event.hero_image && (
-            <div className="event-hero-photo">
-              <img src={event.hero_image} alt={event.title} />
-            </div>
-          )}
+          <p className="event-hero-meta">
+            {new Date(event.date).toLocaleDateString()} · {event.venue}
+          </p>
         </div>
       </section>
 
@@ -123,10 +121,12 @@ export default function EventDetail() {
                 <div className="stat-label">Distance</div>
                 <strong>{event.distance || 'TBA'}</strong>
               </div>
-              <div>
-                <div className="stat-label">Time</div>
-                <strong>{formatTime(event.time) || 'TBA'}</strong>
-              </div>
+              {event.time && (
+                <div>
+                  <div className="stat-label">Time</div>
+                  <strong>{formatTime(event.time)}</strong>
+                </div>
+              )}
             </div>
           </article>
 
@@ -134,7 +134,7 @@ export default function EventDetail() {
             <div className="card-heading"><h3>Choose your category</h3></div>
 
             {event.categories.length === 0 && (
-              <p style={{ padding: '25px 35px', color: '#333' }}>Categories coming soon.</p>
+              <p className="empty-state category-empty-state">Categories coming soon.</p>
             )}
 
             {event.categories.map((category) => (
@@ -151,12 +151,16 @@ export default function EventDetail() {
                   />
                   <div>
                     <h3>{category.name}</h3>
+                    {category.start_time && (
+                      <p className="category-relay-note">
+                        Gun start: {formatTime(category.start_time)}
+                      </p>
+                    )}
                     {category.is_relay && (
-                      <p style={{ margin: '0 0 8px', fontSize: '13px', color: '#5f6f89' }}>
+                      <p className="category-relay-note">
                         Relay roles: {category.relay_roles.join(', ')}
                       </p>
                     )}
-                    <p><span>₱{Number(category.fee).toLocaleString()}</span></p>
 
                     {category.kit_inclusions && (
                       <div className="kit-inclusions">
@@ -175,15 +179,10 @@ export default function EventDetail() {
                   <div className={`slots-left${category.slots_left <= 0 ? ' full' : ''}`}>
                     {category.slots_left <= 0 ? 'Fully Booked' : `${category.slots_left} Slots Left`}
                   </div>
+                  <div className="price-box">₱{Number(category.fee).toLocaleString()}</div>
                   {category.registration_deadline && (
                     <CountdownTimer deadline={category.registration_deadline} />
                   )}
-                  <div className="price-box">
-                    ₱{Number(category.fee).toLocaleString()}
-                    {category.registration_deadline && (
-                      <> (Regular) until {new Date(category.registration_deadline).toLocaleDateString(undefined, { month: 'short', day: '2-digit' })}</>
-                    )}
-                  </div>
                 </div>
               </label>
             ))}
@@ -191,7 +190,7 @@ export default function EventDetail() {
             {selectedCategory && (
               <div className="register-link-wrap">
                 <button
-                  className="register-category-btn"
+                  className="btn btn-primary register-category-btn"
                   type="button"
                   disabled={selectedCategory.slots_left <= 0 || notVerified}
                   onClick={() => navigate(`/events/${event.id}/register/${selectedCategory.id}`)}

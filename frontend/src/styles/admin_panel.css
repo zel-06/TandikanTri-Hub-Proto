@@ -16,6 +16,21 @@ body {
     flex-direction: column;
     justify-content: space-between;
     border-right: 1px solid rgba(255, 255, 255, 0.06);
+    /* .admin-panel only sets min-height, so once dashboard-main's content is taller
+       than the viewport the whole page scrolls - without this the sidebar (nav +
+       "Signed in as" footer) scrolled away with it instead of staying put. */
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    /* Kept scrollable (not hidden) as a safety net for short/zoomed-in viewports
+       where brand+nav+footer genuinely doesn't fit - just without the visible
+       scrollbar, since the sidebar should read as fixed, not as a scroll area. */
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
 }
 
 .brand {
@@ -526,6 +541,15 @@ body {
 
     .dashboard-main {
         padding: 1.5rem 1.5rem 2rem;
+    }
+
+    /* Sidebar stacks above dashboard-main in this single-column layout instead of
+       sitting beside it - staying sticky/100vh here would push all page content
+       below a full-viewport-height sidebar, so it reverts to normal flow. */
+    .sidebar {
+        position: static;
+        height: auto;
+        overflow-y: visible;
     }
 }
 

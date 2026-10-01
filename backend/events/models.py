@@ -17,6 +17,8 @@ class Event(models.Model):
     description = models.TextField(blank=True)
     venue = models.CharField(max_length=200)
     date = models.DateField()
+    # Only meaningful for duathlon/triathlon (one gun time for the whole event) - marathon
+    # events leave this null and use EventCategory.start_time per distance instead.
     time = models.TimeField(null=True, blank=True)
     event_type = models.CharField(max_length=20, choices=EventType.choices)
     distance = models.CharField(
@@ -45,6 +47,9 @@ class EventCategory(models.Model):
     relay_roles = models.JSONField(default=list, blank=True, help_text='e.g. ["Swimmer","Cyclist","Runner"]')
     kit_inclusions = models.TextField(blank=True)
     registration_deadline = models.DateField(null=True, blank=True)
+    # Marathon categories (3K/5K/.../42K) commonly stagger their gun time within
+    # one event - this lives per-category rather than on Event for that reason.
+    start_time = models.TimeField(null=True, blank=True)
 
     class Meta:
         verbose_name_plural = 'event categories'

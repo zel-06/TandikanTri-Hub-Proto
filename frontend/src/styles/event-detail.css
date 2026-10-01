@@ -1,288 +1,318 @@
-/* Ported from the prototype's EventDetails_*.html page-local <style> blocks. */
+/* Matches the site's established light-page look (same #f7fafc background and card
+   treatment as .events-directory / .event-card in style.css) rather than the page-local
+   gray prototype styling this used to carry. */
 
 .event-detail-page {
-  background: #d3d3d3;
-  color: #07101f;
+    background: #f7fafc;
+    flex-grow: 1;
 }
+
+/* No color here on purpose: this wrapper also contains AuthNavbar and Footer, both of
+   which rely on inheriting body's white text color (they're dark-themed, unlike the
+   light page content). Every actual content element below sets its own color
+   explicitly, so nothing needs to inherit from this wrapper. */
 
 .event-detail-page .section-content {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 0 20px;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 0 20px;
 }
 
+/* --- Hero: same dark-gradient-over-photo treatment as .event-card-left on the
+   Events listing, just full width, so the detail page reads as the same product. --- */
 .event-hero {
-  background: white;
-  padding: 65px 0 60px;
-}
-
-.event-hero-tag {
-  background: #d6f6e4;
-  padding: 10px 18px;
-  border-radius: 25px;
-  font-size: 14px;
-  font-weight: 700;
-  display: inline-block;
-  color: #07101f;
+    background: linear-gradient(180deg, #081126 0%, #0b1530 100%);
+    background-size: cover;
+    background-position: center;
+    color: #ffffff;
+    min-height: 340px;
+    display: flex;
+    align-items: flex-end;
+    padding: 2.5rem 0;
 }
 
 .event-hero-title {
-  font-size: 68px;
-  margin: 25px 0 15px;
-  font-weight: 800;
-  color: #07101f;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.08;
+    margin: 1rem 0 0.6rem;
+    font-weight: 800;
+    color: #ffffff;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .event-hero-meta {
-  display: flex;
-  gap: 30px;
-  font-size: 15px;
-  color: #07101f;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.95rem;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
-.event-hero-photo {
-  margin-top: 30px;
-  border-radius: 20px;
-  overflow: hidden;
-  max-height: 420px;
-}
-
-.event-hero-photo img {
-  width: 100%;
-  height: 100%;
-  max-height: 420px;
-  object-fit: cover;
-  display: block;
-}
-
+/* --- Main grid --- */
 .event-detail-main {
-  padding: 45px 0 70px;
+    padding: 2.5rem 0 4rem;
 }
 
 .event-detail-grid {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 30px;
-  align-items: start;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.event-detail-grid > * {
+    min-width: 0;
 }
 
 .event-summary-card,
 .event-register-card {
-  background: white;
-  border-radius: 20px;
-  padding: 30px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.12);
+    background: #ffffff;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: 0 24px 50px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(15, 23, 42, 0.06);
 }
 
 .card-heading h2,
 .card-heading h3 {
-  margin-top: 0;
-  color: #07101f;
+    margin: 0 0 0.75rem;
+    color: #0f172a;
 }
 
 .event-summary-card p {
-  color: #31415e;
-  line-height: 1.7;
+    color: #475569;
+    line-height: 1.75;
+    margin: 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .event-summary-stats {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 25px;
+    display: grid;
+    /* Marathon events show 2 boxes (Categories/Distance, no event-level time - each
+       category has its own gun time instead); duathlon/triathlon show 3. Fluid
+       columns adapt to whichever count actually renders. */
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.85rem;
+    margin-top: 1.5rem;
 }
 
 .event-summary-stats div {
-  background: #eef5ff;
-  padding: 25px 15px;
-  border-radius: 15px;
-  text-align: center;
-}
-
-.stat-label {
-  font-size: 13px;
-  color: #5f6f89;
-  margin-bottom: 18px;
+    background: #f7f9fc;
+    border: 1px solid #e2e8f0;
+    padding: 1rem 0.85rem;
+    border-radius: 16px;
+    text-align: center;
+    min-width: 0;
 }
 
 .event-summary-stats strong {
-  font-size: 18px;
-  color: #07101f;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
+.stat-label {
+    font-size: 0.78rem;
+    color: #64748b;
+    margin-bottom: 0.5rem;
+}
+
+.event-summary-stats strong {
+    font-size: 1rem;
+    color: #0f172a;
+}
+
+/* --- Choose your category --- */
 .category-card {
-  padding: 0;
-  overflow: hidden;
+    padding: 0;
+    overflow: hidden;
 }
 
 .category-card .card-heading {
-  background: #eeeeee;
-  padding: 15px 18px;
+    background: #f7f9fc;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 1.1rem 1.5rem;
+    margin: 0;
 }
 
 .category-card .card-heading h3 {
-  margin: 0;
-  font-size: 18px;
+    margin: 0;
+    font-size: 1.05rem;
+}
+
+.category-empty-state {
+    padding: 1.5rem;
 }
 
 .category-option {
-  display: flex;
-  justify-content: space-between;
-  gap: 30px;
-  background: #e9e9e9;
-  padding: 25px 35px;
-  margin: 10px 0;
-  cursor: pointer;
-  border: 2px solid transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25rem;
+    padding: 1.25rem 1.5rem;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+    border-left: 3px solid transparent;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.category-option:hover {
+    background: #f7f9fc;
 }
 
 .category-option.selected {
-  border-color: #1476ff;
-  background: #eaf3ff;
+    border-left-color: #1476ff;
+    background: #eff6ff;
 }
 
 .category-left {
-  display: flex;
-  gap: 12px;
-  flex: 1;
+    display: flex;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
 }
 
 .category-left input {
-  width: 20px;
-  height: 20px;
-  margin-top: 7px;
+    width: 18px;
+    height: 18px;
+    margin-top: 3px;
+    accent-color: #1476ff;
+    flex-shrink: 0;
+}
+
+.category-left > div {
+    min-width: 0;
 }
 
 .category-left h3 {
-  margin: 0;
-  font-size: 22px;
-  color: #2d3748;
+    margin: 0;
+    font-size: 1.1rem;
+    color: #0f172a;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
-.category-left p {
-  margin: 5px 0 25px;
-  color: #333;
-  font-size: 15px;
+.category-relay-note {
+    margin: 0.35rem 0 0;
+    font-size: 0.8rem;
+    color: #64748b;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
-.category-left p span {
-  color: #1476ff;
-  font-weight: 700;
+.kit-inclusions {
+    margin-top: 0.6rem;
 }
 
 .kit-inclusions small {
-  font-size: 13px;
-  color: #333;
+    font-size: 0.78rem;
+    color: #64748b;
 }
 
 .kit-inclusions ul {
-  margin: 6px 0 0;
-  padding-left: 18px;
-  font-size: 13px;
-  color: #333;
+    margin: 0.35rem 0 0;
+    padding-left: 1.1rem;
+    font-size: 0.8rem;
+    color: #475569;
 }
 
 .kit-inclusions li {
-  margin: 2px 0;
-}
-
-.countdown-label {
-  margin: 14px 0 6px;
-  font-size: 14px;
-  color: #07101f;
-}
-
-.countdown-boxes {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 14px;
-}
-
-.countdown-box {
-  background: #1a2338;
-  color: white;
-  border-radius: 8px;
-  padding: 8px 10px;
-  min-width: 48px;
-  text-align: center;
-}
-
-.countdown-box span {
-  display: block;
-  font-size: 20px;
-  font-weight: 800;
-}
-
-.countdown-box small {
-  display: block;
-  font-size: 11px;
-  color: #9cb3d8;
-  margin-top: 2px;
+    margin: 0.1rem 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
 
 .category-right {
-  flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    flex-shrink: 0;
 }
 
 .slots-left {
-  display: inline-block;
-  margin-bottom: 14px;
-  padding: 8px 14px;
-  background: #d6f6e4;
-  color: #007a4d;
-  border-radius: 20px;
-  font-size: 14px;
-  font-weight: 700;
+    padding: 0.3rem 0.75rem;
+    background: #ecfdf5;
+    color: #166534;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    white-space: nowrap;
 }
 
 .slots-left.full {
-  background: #ffe1e1;
-  color: #a30000;
-}
-
-.category-right p {
-  margin: 0 0 6px;
-  font-size: 16px;
-  color: #07101f;
+    background: #fef2f2;
+    color: #b91c1c;
 }
 
 .price-box {
-  background: white;
-  padding: 18px;
-  border-radius: 5px;
-  font-size: 22px;
-  font-weight: 700;
-  color: #2d3748;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.countdown-label {
+    margin: 0;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    text-align: right;
+}
+
+.countdown-boxes {
+    display: flex;
+    gap: 0.35rem;
+}
+
+.countdown-box {
+    background: #f7f9fc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.3rem 0.4rem;
+    min-width: 2.1rem;
+    text-align: center;
+}
+
+.countdown-box span {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.countdown-box small {
+    display: block;
+    font-size: 0.6rem;
+    color: #94a3b8;
 }
 
 .register-link-wrap {
-  display: block;
-  padding: 20px 35px 30px;
+    padding: 1.25rem 1.5rem 1.5rem;
+    border-top: 1px solid #f1f5f9;
 }
 
 .register-category-btn {
-  width: 100%;
-  border: none;
-  background: linear-gradient(90deg, #37d6de, #43aef0);
-  color: white;
-  padding: 16px;
-  border-radius: 30px;
-  font-size: 16px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.register-category-btn:hover {
-  opacity: 0.9;
-}
-
-.register-category-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+    width: 100%;
+    padding: 0.95rem 1.25rem;
 }
 
 @media (max-width: 900px) {
-  .event-detail-grid { grid-template-columns: 1fr; }
-  .category-option { flex-direction: column; }
-  .event-hero-title { font-size: 45px; }
+    .event-detail-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+    .event-hero { min-height: 240px; padding: 1.75rem 0; }
+    .event-summary-card, .event-register-card { padding: 1.5rem; border-radius: 18px; }
+    .category-option { flex-direction: column; align-items: stretch; gap: 0.85rem; }
+    .category-right { align-items: flex-start; }
+    .countdown-label { text-align: left; }
+}
+
+@media (max-width: 480px) {
+    /* Three columns of fairly wordy values (e.g. "600m swim - 20km bike - 5km
+       run") get cramped into single-word-per-line wrapping at phone widths -
+       a single stacked column with left-aligned text reads far more cleanly. */
+    .event-summary-stats { grid-template-columns: 1fr; }
+    .event-summary-stats div { text-align: left; display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+    .stat-label { margin-bottom: 0; min-width: 5.5rem; }
 }
